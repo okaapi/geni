@@ -1,0 +1,48 @@
+
+
+<table border=1 bordercolor=red>
+
+  <tr>
+    <td align=right>
+
+    </td>
+    <td align=left>
+	  <%= link_to( prettify_name(@father.name), 
+	               tree_path( @father.uid ) ) if @father %>        
+    </td>    
+  </tr>
+    <td align=right>
+	  <%= sex_symbol( @individual.sex ) %> <%= prettify_name(@individual.name) %>
+    </td>  
+  <tr>
+  </tr>
+  <tr>
+    <td align=right>
+       <table border=1 bordercolor=green>
+         <% @unions.each do |union| %>
+           <tr>
+             <td>               
+             </td>
+             <td>  
+                <%= marriage_symbol %>  
+	            <%= link_to( prettify_name(union.spouse(@individual.uid).name), 
+	               tree_path( union.spouse(@individual.uid).uid ) ) if union.spouse(@individual.uid) %>                  
+             </td>             
+           </tr>
+           <% union.children.each do |child| %>
+             <tr>
+               <td>      
+                 <%= sex_symbol( child.sex ) %>  
+	             <%= link_to( prettify_name(child.name), 
+	                    tree_path( child.uid ) ) %>                        
+               </td>           
+             <% end %>
+         <% end %>       
+       </table>
+    </td>
+    <td align=left valign=top>
+	  <%= link_to( prettify_name(@mother.name), 
+	               tree_path( @mother.uid ) ) if @mother %>        
+    </td>   
+  </tr>
+<table>  

@@ -1,0 +1,85 @@
+<%= form_for(@individual) do |f| %>
+  <% if @individual.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@individual.errors.count, "error") %> prohibited this individual from being saved:</h2>
+
+      <ul>
+      <% @individual.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :surname %><br>
+    <%= f.text_field :surname %>
+  </div>
+  <div class="field">
+    <%= f.label :given %><br>
+    <%= f.text_field :given %>
+  </div>
+  <div class="field">
+    <%= f.label :nickname %><br>
+    <%= f.text_field :nickname %>
+  </div>
+  <div class="field">
+    <%= f.label :prefix %><br>
+    <%= f.text_field :prefix %>
+  </div>
+  <div class="field">
+    <%= f.label :suffix %><br>
+    <%= f.text_field :suffix %>
+  </div>
+  <div class="field">
+    <%= f.label :sex %><br>
+    <%= f.text_field :sex %>
+  </div>
+  <div class="field">
+    <%= f.label :birth_id %><br>
+    <%= f.number_field :birth_id %>
+  </div>
+  <div class="field">
+    <%= f.label :death_id %><br>
+    <%= f.number_field :death_id %>
+  </div>
+  <div class="field">
+    <%= f.label :uid %><br>
+    <%= f.text_field :uid %>
+  </div>
+  <div class="field">
+    <%= f.label :parents_uid %><br>
+    <%= f.text_field :parents_uid %>
+  </div>
+  <div class="field">
+    <%= f.label :changed_ged %><br>
+    <%= f.text_area :changed_ged %>
+  </div>
+  <div class="field">
+    <%= f.label :pedigree %><br>
+    <%= f.text_field :pedigree %>
+  </div>
+  <div class="field">
+    <%= f.label :tree %><br>
+    <%= f.text_field :tree %>
+  </div>
+  <div class="field">
+    <%= f.label :gedfile %><br>
+    <%= f.text_field :gedfile %>
+  </div>
+  <div class="field">
+    <%= f.label :note %><br>
+    <%= f.text_area :note %>
+  </div>
+  <div class="field">
+    <%= f.label :gedraw %><br>
+    <%= f.text_area :gedraw %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

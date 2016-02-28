@@ -1,0 +1,11 @@
+<h1>Listing individuals</h1>
+
+<% @individuals.each do |individual| %>
+  <%= link_to( individual.surname, first_names_path( surname: individual.surname.to_s ) ) %> |
+<% end %>
+
+<br>
+<br>
+<br>
+<strong> <%= link_to 'To individuals', all_individuals_by_uid_path %> </strong> <br>
+<strong> <%= link_to 'To marriages', all_unions_by_uid_path %> </strong>

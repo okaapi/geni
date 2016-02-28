@@ -1,0 +1,95 @@
+<table width=100%>
+  <tr valign='top'><td width=50%>
+  	<p id="notice"><%= notice %></p>
+	
+	<p>
+	  <strong>Name:</strong>
+	  <%= @individual.name %>
+	</p>
+	
+	<p>
+	  <strong>Surname:</strong>
+	  <%= @individual.surname %>
+	</p>
+	
+	<p>
+	  <strong>Given:</strong>
+	  <%= @individual.given %>
+	</p>
+	
+	<p>
+	  <strong>Nickname:</strong>
+	  <%= @individual.nickname %>
+	</p>
+	
+	<p>
+	  <strong>Prefix:</strong>
+	  <%= @individual.prefix %>
+	</p>
+	
+	<p>
+	  <strong>Suffix:</strong>
+	  <%= @individual.suffix %>
+	</p>
+	
+	<p>
+	  <strong>Sex:</strong>
+	  <%= @individual.sex %>
+	</p>
+	
+	<p>
+	  <strong>Birth:</strong>
+	  <%= @individual.birth ? link_to( @individual.birth.date, @individual.birth ) : 'n/a'%>
+	</p>
+	
+	<p>
+	  <strong>Death:</strong>
+	  <%= @individual.death ? link_to( @individual.death.date, @individual.death ) : 'n/a'%>
+	</p>
+	
+	<p>
+	  <strong>Uid:</strong>
+	  <%= @individual.uid %>
+	</p>
+	
+	<p>
+	  <strong>Parents uid:</strong>
+	  <%= @individual.parents_uid %>
+	</p>
+	
+	<p>
+	  <strong>Changed ged:</strong>
+	  <%= @individual.changed_ged %>
+	</p>
+	
+	<p>
+	  <strong>Pedigree:</strong>
+	  <%= @individual.pedigree %>
+	</p>
+	
+	<p>
+	  <strong>Tree:</strong>
+	  <%= @individual.tree %>
+	</p>
+	
+	<p>
+	  <strong>Gedfile:</strong>
+	  <%= @individual.gedfile %>
+	</p>
+	
+	<p>
+	  <strong>Note:</strong>
+	  <div style="width:100%">
+	    <%= simple_format( @individual.note ) %> 
+	  </div>
+	  
+	</p>
+  </td><td>
+	  <pre>
+	  <%= @individual.gedraw %>
+	  </pre>
+  </td></tr>
+<table>
+
+<%= link_to 'Edit', edit_individual_path(@individual) %> |
+<%= link_to 'Back', individuals_path %>

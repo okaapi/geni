@@ -1,0 +1,16 @@
+<h1>Listing first names for <%= @surname %> individuals</h1>
+
+<% @individuals.each do |individual| %>
+  
+  <%= link_to ( individual.given ? individual.given : sex_symbol( individual.sex ) ), 
+      tree_path( individual.uid ) %>
+   | 
+  
+<% end %>
+
+<br>
+<br>
+<br>
+<strong> <%= link_to 'Home', root_path %> </strong> <br>
+<strong> <%= link_to 'To individuals', all_individuals_by_uid_path %> </strong> <br>
+<strong> <%= link_to 'To marriages', all_unions_by_uid_path %> </strong>

@@ -1,0 +1,40 @@
+<h1>Listing individuals</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Name</th>
+      <th>Parents</th>        
+      <th><%= link_to 'Surname', all_individuals_by_uid_path( name_sorted: true ) %></th>    
+      <th>Given</th>
+      <th><%= link_to 'Birth', all_individuals_by_uid_path( birth_sorted: true ) %></th>
+      <th>Death</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @individuals.each do |individual| %>
+      <tr>
+        <td align='right'><%= sex_symbol( individual.sex ) %></td>
+        <td><%= link_to prettify_name(individual.name), individual_by_uid_path( individual.uid) %></td>
+        <td>
+        <%= individual.parents_uid ? 
+	     link_to( marriage_symbol, union_by_uid_path( individual.parents_uid ) ) : '' %>
+        </td>
+        <td><%= truncate( individual.surname, length:12 ) %></td>
+        <td><%= truncate( individual.given, length: 12 ) %></td>
+        <td><%= individual.birth ? 
+               link_to( truncate( individual.birth.date, length: 12), individual.birth ) : ''%></td>
+        <td><%= individual.death ? 
+               link_to( truncate( individual.death.date, length: 12), individual.death ) : ''%></td>   
+        <td>&nbsp; &nbsp; <small> -<%= individual.id %>- <%= individual.uid %></small></td>             
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<strong> <%= link_to 'To marriages', all_unions_by_uid_path %> </strong>

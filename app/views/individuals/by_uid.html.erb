@@ -1,0 +1,110 @@
+<strong> <%= link_to 'To tree view', tree_path( @individual.uid ) %> </strong> <br>
+
+<table 'width=100%'>
+  <tr valign='top'><td width='50%'>
+  	<p id="notice"><%= notice %></p>
+	
+	<p>
+	  <strong>Name:</strong>
+	  <%= prettify_name(@individual.name) %>
+	</p>
+	
+	
+	<p>
+	  <strong>Parents:</strong>
+	  <%= @individual.parents_uid ? 
+	     link_to( marriage_symbol, union_by_uid_path( @individual.parents_uid ) ) : '' %>
+	</p>
+	
+	<p>
+	  <strong>Unions:</strong>
+	  <br>
+	  <% @individual.unions.each do |union| %>
+	    <%= link_to( marriage_symbol, union_by_uid_path( union.uid ) ) %>  
+	    <%= link_to( prettify_name(union.spouse(@individual.uid).name), 
+	               individual_by_uid_path( union.spouse(@individual.uid).uid ) ) if union.spouse(@individual.uid) %>  
+        <br>
+	  <% end %>
+	</p>
+		
+	<p>
+	  <strong>Surname:</strong>
+	  <%= @individual.surname %>
+	</p>
+	
+	<p>
+	  <strong>Given:</strong>
+	  <%= @individual.given %>
+	</p>
+	
+	<p>
+	  <strong>Nickname:</strong>
+	  <%= @individual.nickname %>
+	</p>
+	
+	<p>
+	  <strong>Prefix:</strong>
+	  <%= @individual.prefix %>
+	</p>
+	
+	<p>
+	  <strong>Suffix:</strong>
+	  <%= @individual.suffix %>
+	</p>
+	
+	<p>
+	  <strong>Sex:</strong>
+	  <%= sex_symbol( @individual.sex ) %>
+	</p>
+	
+	<p>
+	  <strong>Birth:</strong>
+	  <%= @individual.birth ? link_to( @individual.birth.date, @individual.birth ) : ''%>
+	  <%= @individual.birth.location if @individual.birth %>
+	</p>
+	
+	<p>
+	  <strong>Death:</strong>
+	  <%= @individual.death ? link_to( @individual.death.date, @individual.death ) : ''%>
+	  <%= @individual.death.location if @individual.death %>
+	</p>
+	
+	<p>
+	  <strong>Uid:</strong>
+	  <%= @individual.uid %>
+	</p>
+	
+	<p>
+	  <strong>Changed ged:</strong>
+	  <%= @individual.changed_ged %>
+	</p>
+	
+	<p>
+	  <strong>Pedigree:</strong>
+	  <%= @individual.pedigree %>
+	</p>
+	
+	<p>
+	  <strong>Tree:</strong>
+	  <%= @individual.tree %>
+	</p>
+	
+	<p>
+	  <strong>Gedfile:</strong>
+	  <%= @individual.gedfile %>
+	</p>
+	
+	<p>
+	  <strong>Note:</strong>
+	  <%= simple_format( @individual.note ) %>   
+	</p>
+  </td><td>
+	  <pre style="white-space: pre-wrap">
+	    <%= @individual.gedraw %>
+	  </pre>
+  </td></tr>
+<table>
+
+<strong> <%= link_to 'Back to individuals', all_individuals_by_uid_path %> </strong> <br>
+<strong> <%= link_to 'To marriages', all_unions_by_uid_path %> </strong>
+
