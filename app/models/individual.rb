@@ -48,7 +48,12 @@ class Individual < ActiveRecord::Base
   
   def self.by_uid( uid )
     if uid
-      i = Individual.where( uid: uid ).order( ver: :asc ).last.dup
+      i = Individual.where( uid: uid ).order( ver: :asc ).last
+      if i
+        i.dup 
+      else
+        nil
+      end
     else
       nil
     end 

@@ -1,4 +1,5 @@
 
+<% if individual %>
     <table class="familyview" >	
 	  <tr align=right>
 	    <td width=50%></td>
@@ -14,7 +15,7 @@
 		    <%= link_to( individual.pretty_name(is_user?), 
 		               tree_path( individual.uid ) ) if individual %>	
 		  <% end %>	    	  
-	      <%= "<br>*".html_safe if individual.birth %>
+	      <%= "<br>*".html_safe if individual and individual.birth %>
 	           <%= individual.birth.date if individual.birth %><% individual.birth.location if individual.birth %><%= "<br>&#10013;".html_safe if individual.death %>
 	           <%= individual.death.date if individual.death %>
 	           <% individual.death.location if individual.death %>
@@ -63,3 +64,9 @@
 	    </td> 
 	  </tr>
 	</table>    
+<% else %>
+
+  <h1>You broke it! Not good.</h1>
+  <img src="/Bg_404Image.png" alt="" /> 
+
+<% end %>
