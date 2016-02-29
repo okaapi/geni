@@ -1,0 +1,45 @@
+ <% if individual.father or individual.mother %>
+ 	<table class="parentsview" >
+	  <tr>
+	    <td align=left >
+	    <table>
+	      <tr><td style="font-size: <%=font%>px; 
+	                     min-width: <%= font*12%>px;
+	                     max-width: <%= font*12%>px;" >	    
+	  	    <%= sex_symbol( individual.father.sex ) if individual.father %> 
+		    <%= link_to( prettify_name(individual.father.name), 
+		               tree_path( individual.father.uid ) ) if individual.father %>  	    
+          <% if font > @minfont and individual.father %>
+	        </td><td style="padding: 0px;margin:0px">	          
+	        <%= render partial: "parents", locals: { individual: individual.father, font: font - 2 } %>
+          <% end %> 	
+	      </td>
+	    </table>             	                   
+	    </td>
+	  </tr>
+	  <tr>
+	    <td style="font-size: <%=font%>px;">
+	       <% marriage_symbol %>  
+	    </td>
+	  </tr>   
+	  <tr> 	  
+	    <td align=left valign=top>
+	    <table>
+	      <tr><td style="font-size: <%=font%>px; 
+	                     min-width: <%= font*12%>px;
+	                     max-width: <%= font*12%>px;" >	 
+	        <%= sex_symbol( individual.mother.sex ) if individual.mother %> 
+		    <%= link_to( prettify_name(individual.mother.name), 
+		               tree_path( individual.mother.uid ) ) if individual.mother %>
+		        
+	      <% if font > @minfont  and individual.mother %>
+	       </td><td>
+	         <%= render partial: "parents", locals: { individual: individual.mother, font: font - 2 } %>
+	      <% end %>
+	      </td>
+	    </table>       
+	    </td>   
+	  </tr>
+	</table>
+  <% end %>	
+</div>

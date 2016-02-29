@@ -1,0 +1,66 @@
+
+    <table class="familyview" >	
+	  <tr align=right>
+	    <td width=50%></td>
+	    <td <%= 'class="marriageview"'.html_safe if @individual == individual %>
+	                                         style="font-size: <%=font%>px; 
+	                                         min-width: <%= font*12%>px;
+	                                         max-width: <%= font*12%>px" >		    
+		  <%= sex_symbol( individual.sex ) %> 
+		  <% if @individual == individual %>
+            <%= link_to( prettify_name(individual.name), 
+		               individual_by_uid_path( individual.uid ) ) if individual %>
+		  <% else %>
+		    <%= link_to( prettify_name(individual.name), 
+		               tree_path( individual.uid ) ) if individual %>	
+		  <% end %>	    	  
+	      <%= "<br> &#9774;".html_safe if individual.birth %>
+	           <%= individual.birth.date if individual.birth %> 
+	           <%= individual.birth.location if individual.birth %>
+	      <%= "<br> &#10013;".html_safe if individual.death %>
+	           <%= individual.death.date if individual.death %> 
+	           <%= individual.death.location if individual.death %>
+	    </td>  
+	  </tr>
+	  <tr >
+	    <td align=right colspan=2>
+	
+	       
+	          <% individual.unions.each do |union| %>
+	          <table >
+	            <tr>
+	              <td></td>
+	              <td style="width:<%=font*7%>px">
+	              </td>
+	            </tr>	          
+	            <tr >
+	              <td colspan=2 align=right 
+	                 style="font-size: <%=font%>px;padding-right:<%=font*2%>px">  
+		            <%= marriage_symbol %>              
+		            <%= link_to( prettify_name(union.spouse(individual.uid).name), 
+		               tree_path( union.spouse(individual.uid).uid ) ) if union.spouse(individual.uid) %>
+		            <%= '<br>'.html_safe if union.marriage %> 
+		            <%= union.marriage.date if union.marriage %>                    
+	              </td>             
+	            </tr>
+	            <% union.children.each do |child| %>
+	              <tr >
+	                <td align=right class="childrenview" style="font-size: <%=font%>px;">  
+	                  <% if font > @minfont %>
+	                    <%= render partial: "individual_and_children", 
+	                      locals: { individual: child, font: font - 2 } %>
+	                  <% else %>    
+	                    <%= sex_symbol( child.sex ) %>  
+		                <%= link_to( prettify_name(child.name), 
+		                    tree_path( child.uid ) ) %> 
+		              <% end %>                        
+	                </td>
+	              </tr>           
+	            <% end %>
+	            </table>
+	         <% end %>
+	       
+	  
+	    </td> 
+	  </tr>
+	</table>    

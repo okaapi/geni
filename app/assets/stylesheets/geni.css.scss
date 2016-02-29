@@ -1,3 +1,110 @@
 // Place all the styles related to the Geni controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+body {
+  background-color: #fff;
+  color: #333;
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+p, ol, ul, td {
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+td {
+  padding: 0px 10px 0px 10px;
+}
+
+pre {
+  background-color: #eee;
+  padding: 10px;
+  font-size: 11px;
+}
+
+a {
+  color: #000;
+  &:visited {
+    color: #666;
+  }
+  &:hover {
+    color: #fff;
+    background-color: #000;
+  }
+}
+
+div {
+  &.field, &.actions {
+    margin-bottom: 10px;
+  }
+}
+
+#notice {
+  color: green;
+}
+
+.field_with_errors {
+  padding: 2px;
+  background-color: red;
+  display: table;
+}
+
+#error_explanation {
+  width: 450px;
+  border: 2px solid red;
+  padding: 7px;
+  padding-bottom: 0;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+  h2 {
+    text-align: left;
+    font-weight: bold;
+    padding: 5px 5px 5px 15px;
+    font-size: 12px;
+    margin: -7px;
+    margin-bottom: 0px;
+    background-color: #c00;
+    color: #fff;
+  }
+  ul li {
+    font-size: 12px;
+    list-style: square;
+  }
+}
+
+.treeview td {  
+  padding: 0px;
+  margin:0px;
+  overflow:hidden;
+  white-space: nowrap; 
+  text-overflow: ellipsis;  }
+.parentsview {
+  border-style: none none none solid; 
+  border-color: lightgrey red lightgrey grey; 
+  border-width: 1px 0px 1px 2px; 
+  padding: 0px; }
+.marriageview {
+  background-color: #e5e4e2;
+  border-style: none none none none; 
+  border-color: grey grey grey grey; 
+  border-width: 1px 1px 1px 1px; }
+.treeview .childrenview {
+  margin: 50px;
+  border-style: none solid none none; 
+  border-color: red grey lightgrey red; 
+  border-width: 0px 2px 1px 0px; }  
+.familyview {
+  margin: 0px 0px 0px 0px;
+  border-style: none none none none; 
+  border-color: red grey lightgrey red; 
+  border-width: 0px 2px 1px 0px; }    
+  
+
+  
+  
+
+
+

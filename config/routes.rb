@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   post 'import/file_upload' => 'import#file_upload'
   
   get 'first_names/:surname' => 'geni#first_names', as: 'first_names'
-  get 'tree/:uid' => 'geni#tree', as: 'tree'  
+  get ':uid' => 'geni#tree', as: 'tree'  
   
   root "geni#index", as: "root"
     

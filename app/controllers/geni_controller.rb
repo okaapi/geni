@@ -10,6 +10,8 @@ class GeniController < ApplicationController
   end
   
   def tree
+    @font = 15
+    @minfont = 10
     @individual = Individual.by_uid( params[:uid] )
   end
   
