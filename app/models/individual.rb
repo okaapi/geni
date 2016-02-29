@@ -65,9 +65,7 @@ class Individual < ActiveRecord::Base
   
   def self.all_surnames
     #uid_groups = Individual.group( :surname ).order( surname: :asc )
-    sql = "select surname from individuals where (uid,ver) in " + 
-             "(select uid, max(ver) from individuals group by uid)" +
-             " group by surname order by surname asc;"
+    sql = "select surname from individuals group by surname"
     res = ActiveRecord::Base.connection.execute(sql)
     p res
     arr = []
