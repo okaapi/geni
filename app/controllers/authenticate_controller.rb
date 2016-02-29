@@ -42,8 +42,8 @@ class AuthenticateController < ApplicationController
               # and send him an email
               AuthenticationNotifier.reset(@current_user, request).deliver #_now
               redirect_to_root_js_or_html alert: "user suspended, check your email"
-            rescue Exception => e           
-              redirect_to_root_js_or_html alert: "user suspended, but email sending failed #{e}"
+            rescue Exception => e         
+              redirect_to_root_js_or_html alert: "user suspended, but email sending failed 3 #{e}"
             end
           else
             # else try again but increment the retries (also in the session object)
@@ -76,7 +76,10 @@ class AuthenticateController < ApplicationController
           redirect_to_root_js_or_html notice: "you are logged in, we sent an activation email for the next time!"
         rescue Exception => e
           @current_user.destroy if @current_user
-          redirect_to_root_js_or_html alert: "we sent an activation email, but it failed (#{e})."
+          puts '@@@@@@@@@@@@@@@@@@@@@@'
+          p e
+          p @current_user
+          redirect_to_root_js_or_html alert: "we sent an activation email, but it failed 1 (#{e})."
         end
       end
     end
@@ -135,7 +138,7 @@ class AuthenticateController < ApplicationController
         AuthenticationNotifier.reset(user, request).deliver #_now        
         redirect_to_root_html notice: "user #{user.username} suspended, check your email"
       rescue Exception => e           
-        redirect_to_root_html alert: "user suspended, but email sending failed #{e}"
+        redirect_to_root_html alert: "user suspended, but email sending failed 2 #{e}"
       end        
     else
       redirect_to_root_html

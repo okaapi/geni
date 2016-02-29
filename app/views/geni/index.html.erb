@@ -1,7 +1,11 @@
 <h1>Listing individuals</h1>
 
-<% @individuals.each do |individual| %>
-  <%= link_to( individual.surname, first_names_path( surname: individual.surname.to_s ) ) %> |
+<% @surnames.each_with_index do |surname,index| %>
+  <%= link_to( surname, first_names_path( surname: surname ) ) %> 
+    <%= '|' if index < @surnames.count-1 %> 
 <% end %>
+
+
+<%= render partial: "footer" %>
 
 

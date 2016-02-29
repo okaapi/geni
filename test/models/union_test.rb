@@ -156,11 +156,11 @@ class UnionTest < ActiveSupport::TestCase
     assert_equal fam.children[0].name, 'Camilla'
     assert_equal fam.children[1].name, 'Mats'
     
-    mats.update_birth( date: 'April 28 1996' )
+    mats.update_birth( rawdate: 'April 28 1996' )
     mats.save
     fam.children # execute the sort function with missing birthday
     
-    camilla.update_birth( date: 'November 2 2001')
+    camilla.update_birth( rawdate: 'November 2 2001')
     camilla.save
     assert_equal fam.children[0].name, 'Mats'
     assert_equal fam.children[1].name, 'Camilla'    
@@ -170,19 +170,19 @@ class UnionTest < ActiveSupport::TestCase
   test "add marriage" do
   
     fam = Union.create
-    fam.marriage = Event.new( date: 'October 19 1990' )
+    fam.marriage = Event.new( rawdate: 'October 19 1990' )
     fuid = fam.uid
     fam.save
     
     fam2 = Union.by_uid( fuid )
-    assert_equal fam2.marriage.date, 'October 19 1990'
+    assert_equal fam2.marriage.date, '19 Oct 1990'
     
   end
   
   test "add and change divorce" do
   
     fam = Union.create
-    fam.divorce = Event.new( date: '1880' )
+    fam.divorce = Event.new( rawdate: '1880' )
     fuid = fam.uid
     fam.save
     assert_equal Event.all.count, 1 

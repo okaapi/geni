@@ -18,7 +18,7 @@ class CreateIndividuals < ActiveRecord::Migration
       t.string :gedfile
       t.text :note
       t.text :gedraw
-      t.integer :tstamp, :limit => 8
+      t.integer :ver, default: 0
 
       t.timestamps
     end

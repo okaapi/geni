@@ -14,4 +14,7 @@ module ApplicationHelper
       ( @current_user.role == 'user' or
        @current_user.role == 'admin' ) )
   end
+  def is_admin?
+    ( @current_user and @current_user.role == 'admin' )
+  end  
 end

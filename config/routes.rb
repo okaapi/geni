@@ -30,11 +30,13 @@ Rails.application.routes.draw do
   end    
 
   # resources for the app
-  get 'import' => 'import#index'
-  post 'import/file_upload' => 'import#file_upload'
-  
-  get 'first_names/:surname' => 'geni#first_names', as: 'first_names'
+  get 'first_names/:surname' => 'geni#first_names', as: 'first_names' 
+  get 'import' => 'geni#import', as: 'import'
+  post 'file_upload' => 'geni#file_upload', as: 'file_upload'
+
+  # this has to be the last one or else...
   get ':uid' => 'geni#tree', as: 'tree'  
+        
   root "geni#index", as: "root"
     
 end

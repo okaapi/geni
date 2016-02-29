@@ -26,9 +26,11 @@
         <td><%= truncate( individual.surname, length:12 ) %></td>
         <td><%= truncate( individual.given, length: 12 ) %></td>
         <td><%= individual.birth ? 
-               link_to( truncate( individual.birth.date, length: 12), individual.birth ) : ''%></td>
+               link_to( truncate( individual.birth.date || individual.birth.location || 'n/a', 
+                          length: 12), individual.birth ) : ''%></td>
         <td><%= individual.death ? 
-               link_to( truncate( individual.death.date, length: 12), individual.death ) : ''%></td>   
+               link_to( truncate( individual.death.date || individual.death.location || 'n/a', 
+                          length: 12), individual.death ) : ''%></td>   
         <td>&nbsp; &nbsp; <small> -<%= individual.id %>- <%= individual.uid %></small></td>             
       </tr>
     <% end %>
@@ -37,4 +39,4 @@
 
 <br>
 
-<strong> <%= link_to 'To marriages', all_unions_by_uid_path %> </strong>
+<%= render partial: "geni/footer" %>

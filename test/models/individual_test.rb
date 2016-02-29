@@ -70,12 +70,12 @@ class IndividualTest < ActiveSupport::TestCase
   
     assert Individual.all.count, 0
     wido = Individual.create( name: 'Wido' )
-    wido.birth = Event.new( date: 'October 2nd 1959' )
+    wido.birth = Event.new( rawdate: 'October 2nd 1959' )
     uid = wido.uid    
     wido.save
     
     wido2 = Individual.by_uid( uid )
-    assert_equal wido2.birth.date, 'October 2nd 1959'
+    assert_equal wido2.birth.date, '2 Oct 1959'
     
   end
   
@@ -83,20 +83,20 @@ class IndividualTest < ActiveSupport::TestCase
   
     assert Individual.all.count, 0
     paul = Individual.create( name: 'Paul' )
-    paul.update_death( date: 'October 2nd 1859' )
+    paul.update_death( rawdate: 'October 2nd 1859' )
     uid = paul.uid    
     paul.save
     assert_equal Event.all.count, 1 
     
     paul2 = Individual.by_uid( uid )   
-    assert_equal paul2.death.date, 'October 2nd 1859'    
+    assert_equal paul2.death.date, '2 Oct 1859'    
     
     paul2.update_death( location: 'Kalamazoo', text: 'unfortunately' )
     paul2.save
     assert_equal Event.all.count, 2
     
     paul3 = Individual.by_uid( uid )
-    assert_equal paul3.death.date, 'October 2nd 1859'    
+    assert_equal paul3.death.date, '2 Oct 1859'    
     assert_equal paul3.death.location, 'Kalamazoo'    
     assert_equal paul3.death.text, 'unfortunately' 
     assert_equal Event.all.count, 2

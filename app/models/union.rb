@@ -14,11 +14,11 @@ class Union < ActiveRecord::Base
   end
   
   before_save do
-    self.tstamp = DateTime.now.strftime('%Q')
+    self.ver = self.ver + 1
   end
   
   def self.by_uid( uid )
-    u = Union.where( uid: uid ).order( tstamp: :asc ).last
+    u = Union.where( uid: uid ).order( ver: :asc ).last
     u.dup if u
   end
   

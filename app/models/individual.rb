@@ -17,24 +17,14 @@ class Individual < ActiveRecord::Base
   end
   
   before_save do
-    self.tstamp = DateTime.now.strftime('%Q')
+    self.ver = self.ver + 1
   end  
   
   def pretty_name( is_user = false )
-    birthyear = nil
-    if self.birth
-      begin
-        d = Date.parse( self.birth.date )
-        birthyear = d.strftime('%Y').to_i        
-      rescue  
-        birthyear = self.birth.date.to_i if self.birth.date
-      end
-    end    
-
-    
+     
     if is_user or self.death
       self.name.gsub( /\//, '')      
-    elsif birthyear and birthyear < 1900
+    elsif self.birth and self.birth.date_as_datetime < Date.new(1915,1,1)
       self.name.gsub( /\//, '')    
     else
       n = self.name.gsub( /\//, '').upcase
@@ -43,9 +33,22 @@ class Individual < ActiveRecord::Base
      
   end
   
+  def pretty_first_name( is_user = false )
+     
+    if is_user or self.death
+      self.given || self.pretty_name( is_user ) 
+    elsif self.birth and self.birth.date_as_datetime < Date.new(1915,1,1)
+      self.given || self.pretty_name( is_user ) 
+    else
+      n = self.name.gsub( /\//, '').upcase
+      n.split(' ').collect { |s| s[0] }.join('. ') + '.'
+    end
+     
+  end  
+  
   def self.by_uid( uid )
     if uid
-      i = Individual.where( uid: uid ).order( tstamp: :asc ).last.dup
+      i = Individual.where( uid: uid ).order( ver: :asc ).last.dup
     else
       nil
     end 
@@ -60,11 +63,18 @@ class Individual < ActiveRecord::Base
     arr
   end
   
-  def self.all_last_names
-    uid_groups = Individual.group( :surname ).order( surname: :asc )
+  def self.all_surnames
+    #uid_groups = Individual.group( :surname ).order( surname: :asc )
+    sql = "select surname from individuals where (uid,ver) in " + 
+             "(select uid, max(ver) from individuals group by uid)" +
+             " group by surname order by surname asc;"
+    res = ActiveRecord::Base.connection.execute(sql)
+    p res
     arr = []
-    uid_groups.each do |u|
-      arr << Individual.by_uid( u.uid )
+    res.each do |n|
+      if n[0]
+        arr << n[0]
+      end
     end
     arr
   end  

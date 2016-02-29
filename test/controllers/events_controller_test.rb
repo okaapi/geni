@@ -1,5 +1,6 @@
 require 'test_helper'
 
+module Admin
 class EventsControllerTest < ActionController::TestCase
   setup do
     @event = events(:one)
@@ -18,7 +19,7 @@ class EventsControllerTest < ActionController::TestCase
 
   test "should create event" do
     assert_difference('Event.count') do
-      post :create, event: { date: @event.date, day: @event.day, location: @event.location, month: @event.month, text: @event.text, year: @event.year }
+      post :create, event: { rawdate: @event.rawdate,  location: @event.location,  text: @event.text }
     end
 
     assert_redirected_to event_path(assigns(:event))
@@ -35,7 +36,7 @@ class EventsControllerTest < ActionController::TestCase
   end
 
   test "should update event" do
-    patch :update, id: @event, event: { date: @event.date, day: @event.day, location: @event.location, month: @event.month, text: @event.text, year: @event.year }
+    patch :update, id: @event, event: { rawdate: @event.rawdate, location: @event.location, text: @event.text }
     assert_redirected_to event_path(assigns(:event))
   end
 
@@ -46,4 +47,5 @@ class EventsControllerTest < ActionController::TestCase
 
     assert_redirected_to events_path
   end
+end
 end

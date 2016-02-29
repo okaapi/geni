@@ -11,7 +11,7 @@ class CreateUnions < ActiveRecord::Migration
       t.text :note
       t.string :gedfile
       t.text :gedraw
-      t.integer :tstamp, :limit => 8
+      t.integer :ver, default: 0
 
       t.timestamps
     end

@@ -14,10 +14,8 @@
 ActiveRecord::Schema.define(version: 20160226224239) do
 
   create_table "events", force: true do |t|
-    t.string   "date"
-    t.integer  "year"
-    t.integer  "month"
-    t.integer  "day"
+    t.string   "rawdate"
+    t.datetime "date"
     t.string   "location"
     t.text     "text"
     t.datetime "created_at"
@@ -42,7 +40,7 @@ ActiveRecord::Schema.define(version: 20160226224239) do
     t.string   "gedfile"
     t.text     "note"
     t.text     "gedraw"
-    t.integer  "tstamp",      limit: 8
+    t.integer  "ver",         default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -66,7 +64,7 @@ ActiveRecord::Schema.define(version: 20160226224239) do
     t.text     "note"
     t.string   "gedfile"
     t.text     "gedraw"
-    t.integer  "tstamp",      limit: 8
+    t.integer  "ver",         default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
