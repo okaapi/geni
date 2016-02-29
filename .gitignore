@@ -11,6 +11,10 @@
 /log/*.log
 /tmp
 
+# Ignore yml files
+config/yml
+config/*.yml
+
 # ged files
 lib/*.ged
 db/*.ged

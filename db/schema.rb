@@ -47,6 +47,14 @@ ActiveRecord::Schema.define(version: 20160226224239) do
     t.datetime "updated_at"
   end
 
+  create_table "site_maps", force: true do |t|
+    t.string   "external"
+    t.string   "internal"
+    t.string   "aux"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "unions", force: true do |t|
     t.string   "uid"
     t.string   "husband_uid"
@@ -61,6 +69,42 @@ ActiveRecord::Schema.define(version: 20160226224239) do
     t.integer  "tstamp",      limit: 8
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "user_actions", force: true do |t|
+    t.integer  "user_session_id"
+    t.string   "controller"
+    t.string   "action"
+    t.string   "params"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "site",            default: "localhost"
+  end
+
+  add_index "user_actions", ["user_session_id"], name: "index_user_actions_on_user_session_id", using: :btree
+
+  create_table "user_sessions", force: true do |t|
+    t.integer  "user_id"
+    t.string   "client"
+    t.string   "ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "site",       default: "localhost"
+  end
+
+  add_index "user_sessions", ["user_id"], name: "index_user_sessions_on_user_id", using: :btree
+
+  create_table "users", force: true do |t|
+    t.string   "username"
+    t.string   "email"
+    t.string   "alternate_email", default: ""
+    t.string   "password_digest"
+    t.string   "token"
+    t.string   "role",            default: "user"
+    t.string   "active",          default: "unconfirmed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "site",            default: "localhost"
   end
 
 end

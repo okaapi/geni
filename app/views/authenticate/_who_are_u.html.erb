@@ -1,0 +1,15 @@
+
+
+	<%= form_tag prove_it_path, class: 'form-horizontal login_decor', remote: js? do %>
+	  <div class="alert alert-info" role="alert">
+	    Who are you?
+	  </div>
+	  <%= render "user_errors" %>    
+	  <div class="field form-group">
+	    <%= label_tag :claim, "username/email:", class: 'col-sm-3 control-label' %>
+	    <div class="col-sm-2">
+	      <%= text_field_tag :claim, '', autofocus: true, class: 'form-control' %>
+	    </div>
+	  </div>
+	<% end %>
+

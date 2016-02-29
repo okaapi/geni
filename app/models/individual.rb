@@ -20,6 +20,29 @@ class Individual < ActiveRecord::Base
     self.tstamp = DateTime.now.strftime('%Q')
   end  
   
+  def pretty_name( is_user = false )
+    birthyear = nil
+    if self.birth
+      begin
+        d = Date.parse( self.birth.date )
+        birthyear = d.strftime('%Y').to_i        
+      rescue  
+        birthyear = self.birth.date.to_i if self.birth.date
+      end
+    end    
+
+    
+    if is_user or self.death
+      self.name.gsub( /\//, '')      
+    elsif birthyear and birthyear < 1900
+      self.name.gsub( /\//, '')    
+    else
+      n = self.name.gsub( /\//, '').upcase
+      n.split(' ').collect { |s| s[0] }.join('. ') + '.'
+    end
+     
+  end
+  
   def self.by_uid( uid )
     if uid
       i = Individual.where( uid: uid ).order( tstamp: :asc ).last.dup
