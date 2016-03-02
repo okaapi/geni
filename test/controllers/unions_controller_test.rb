@@ -1,8 +1,14 @@
 require 'test_helper'
 
+module Admin
 class UnionsControllerTest < ActionController::TestCase
   setup do
     @union = unions(:one)
+    # this is required so 'testsite45A67' fixtures get loaded
+    ZiteActiveRecord.site( 'testsite45A67' )
+    @user = users(:wido)
+    admin_login_4_test
+    request.host = 'testhost45A67'	
   end
 
   test "should get index" do
@@ -46,4 +52,5 @@ class UnionsControllerTest < ActionController::TestCase
 
     assert_redirected_to unions_path
   end
+end
 end

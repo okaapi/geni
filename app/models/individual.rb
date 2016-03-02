@@ -69,10 +69,8 @@ class Individual < ActiveRecord::Base
   end
   
   def self.all_surnames
-    #uid_groups = Individual.group( :surname ).order( surname: :asc )
     sql = "select surname from individuals group by surname"
     res = ActiveRecord::Base.connection.execute(sql)
-    p res
     arr = []
     res.each do |n|
       if n[0]

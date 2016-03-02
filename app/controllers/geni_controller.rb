@@ -31,9 +31,10 @@ class GeniController < ApplicationController
     end
         
     treename = params[:tree]['name']
+	original_file = stored_file[:stored_file].original_filename
     gedfile = stored_file[:stored_file].tempfile.path
 
-    ignored = Import.from_gedfile( treename, gedfile )
+    ignored = Import.from_gedfile( treename, gedfile, original_file )
     
     flash[:notice] = ignored
     redirect_to action: :index, params: { ignored: ignored }

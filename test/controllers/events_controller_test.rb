@@ -4,8 +4,13 @@ module Admin
 class EventsControllerTest < ActionController::TestCase
   setup do
     @event = events(:one)
+    # this is required so 'testsite45A67' fixtures get loaded
+    ZiteActiveRecord.site( 'testsite45A67' )
+    @user = users(:wido)
+    admin_login_4_test
+    request.host = 'testhost45A67'	
   end
-
+  
   test "should get index" do
     get :index
     assert_response :success

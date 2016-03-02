@@ -1,6 +1,6 @@
 class Import
   
-  def self.from_gedfile( tree_name, gedfile )
+  def self.from_gedfile( tree_name, gedfile, original_file = nil, log2tt = false )
 
 	  # 
 	  # initialize nodes
@@ -22,18 +22,17 @@ class Import
 	  #chil = Hash.new []
 	  #fams = Hash.new []
 	  #
- 
+     
 	  # 
 	  # open the file!
 	  #
 	  contents = File.open(gedfile,'r')
-	
-  
+	  
 	  Individual.transaction do
 	  
 	    i = 0
 	    contents.each_line do |line|  
-	 	      		
+	 	      					
 	      i += 1      
 	      if line =~ /[\d]* _UID/ or line =~ /[\d]* REFN/
 	        # ignore
@@ -43,7 +42,6 @@ class Import
 	      #        
 	      elsif line =~ /^[^\w\s\d]?0/
 	      
-	
 	        individual.save! if individual
 	        union.save! if union
 	        source.save! if source
@@ -64,16 +62,18 @@ class Import
 	          indi[ "@I#{Regexp.last_match(1)}@" ] = individual.uid
 	          individual.note = ''   
 	          individual.gedraw = line
-	          individual.gedfile = gedfile
+	          individual.gedfile = original_file
 	        elsif line =~ /0 @F(\d+)@ FAM/
 	          mode = :union  
 	          union = Union.create( tree: tree_name )
 	          fam[ "@F#{Regexp.last_match(1)}@" ] = union.uid
 	          union.note = ''   
 	          union.gedraw = line
-	          union.gedfile = gedfile
+	          union.gedfile = original_file
 	        elsif line =~ /0 @S(\d+)@ SOUR/          
-	          mode = :source               
+	          mode = :source    
+            else
+              ignored += line			
 	        end
 	     
 	      # 
@@ -89,14 +89,14 @@ class Import
 	      #  individual!
 	      #
 	      elsif mode == :individual    
-	      
+		  
 	        individual.gedraw += line
-	        if line =~ /^1 NAME (.+)\r/
+	        if line =~ /1 NAME (.+)/  # removed trailing \r for Windows
 	          submode = :name 
 	          individual.name = Regexp.last_match(1)
-	          print '.' if i.modulo(10) == 0
+	          print '.' if log2tt and i.modulo(10) == 0
 	         
-	        elsif line =~ /^1 SEX (.+)\r/
+	        elsif line =~ /^1 SEX (.+)/
 	          submode = :sex
 	          individual.sex = Regexp.last_match(1)  
 	        elsif line =~ /^1 BIRT/
@@ -124,19 +124,19 @@ class Import
 	          individual.note += "\n" + 'Event: '          
 	        elsif line =~ /^1 DEAT/                   
 	          submode = :death
-	        elsif line =~ /^1 FAMC (.+)\r/
+	        elsif line =~ /^1 FAMC (.+)/ 
 	          submode = :child
 	          famc[ individual.uid ] = Regexp.last_match(1)
-	        elsif line =~ /^1 FAMS (.+)\r/
+	        elsif line =~ /^1 FAMS (.+)/
 	          submode = nil        
 	          #fams[ individual.uid ] += [Regexp.last_match(1)]             
 	        elsif line =~ /^1 CHAN/                   
 	          submode = :changed    
 	          individual.changed_ged = ''
-	        elsif line =~ /^1 NOTE(.*)\r/                 
+	        elsif line =~ /^1 NOTE(.*)/                 
 	          submode = :note  
 	          individual.note += "\n" + 'Note: ' + Regexp.last_match(1)    + "\n"         
-	        elsif line =~ /^1 SOUR @S(\d+)@\r/                 
+	        elsif line =~ /^1 SOUR @S(\d+)@/                 
 	          submode = :source     
 	          individual.note += "\n" + "Source: @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"
 	
@@ -144,21 +144,19 @@ class Import
 	        #   submode :name
 	        #
 	        elsif submode == :name 
-	          if line =~ /^2 SURN (.+)\r/
+	          if line =~ /^2 SURN (.+)/ 
 	            individual.surname = Regexp.last_match(1)     
-	          elsif line =~ /^2 GIVN (.+)\r/
+	          elsif line =~ /^2 GIVN (.+)/ 
 	            individual.given = Regexp.last_match(1)   
-	          elsif line =~ /^2 SURN (.+)\r/
-	            individual.surname = Regexp.last_match(1)
-	          elsif line =~ /^2 NICK (.+)\r/
+	          elsif line =~ /^2 NICK (.+)/
 	            individual.nickname = Regexp.last_match(1)  
-	          elsif line =~ /^2 _AKA (.+)\r/
+	          elsif line =~ /^2 _AKA (.+)/
 	            individual.nickname = Regexp.last_match(1)                 
-	          elsif line =~ /^2 NPFX (.+)\r/
+	          elsif line =~ /^2 NPFX (.+)/
 	            individual.prefix = Regexp.last_match(1)    
-	          elsif line =~ /^2 NSFX (.+)\r/
+	          elsif line =~ /^2 NSFX (.+)/
 	            individual.suffix = Regexp.last_match(1)  
-	          elsif line =~ /^2 _MARNM (.+)\r/
+	          elsif line =~ /^2 _MARNM (.+)/
 	            individual.note = 'Married name: ' + Regexp.last_match(1) + "\n"                                          
 	          else
 	            ignored += individual.name + ': ' + line
@@ -169,9 +167,9 @@ class Import
 	        #   submode :child  + "\n"  
 	        #
 	        elsif submode == :child
-	          if line =~ /^2 PEDI (.+)\r/
+	          if line =~ /^2 PEDI (.+)/
 	            individual.pedigree = Regexp.last_match(1)
-	          elsif line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
@@ -181,13 +179,13 @@ class Import
 	        #   submode :death
 	        #
 	        elsif submode == :death
-	          if line =~ /^2 DATE (.+)\r/
+	          if line =~ /^2 DATE (.+)/
 	            individual.update_death( rawdate: Regexp.last_match(1) )
-	          elsif line =~ /^2 PLAC (.+)\r/
+	          elsif line =~ /^2 PLAC (.+)/
 	            individual.update_death( location: Regexp.last_match(1) )  
-	          elsif line =~ /^2 SOUR @(.+)@\r/
+	          elsif line =~ /^2 SOUR @(.+)@/
 	            individual.note += "\n" + "Death: @#{tree_name}#{Regexp.last_match(1)}@ "     + "\n"         
-	          elsif line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line        
@@ -197,25 +195,25 @@ class Import
 	        #   submode :birth
 	        #
 	        elsif submode == :birth
-	          if line =~ /^2 DATE (.+)\r/
+	          if line =~ /^2 DATE (.+)/ 
 	            individual.update_birth( rawdate: Regexp.last_match(1) )
-	          elsif line =~ /^2 PLAC (.+)\r/
+	          elsif line =~ /^2 PLAC (.+)/ 
 	            individual.update_birth( location: Regexp.last_match(1) )
-	          elsif line =~ /^2 SOUR @(.+)@\r/
+	          elsif line =~ /^2 SOUR @(.+)@/
 	            individual.note += "\n" + "Birth: @#{tree_name}#{Regexp.last_match(1)}@ "       + "\n"       
-	          elsif line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
-	            ignored += "Ignored #{mode} #{submode}: " + line        
+	            ignored += "Ignored #{mode} #{submode}: " + line + '|'  
 	          end
 	                    
 	        #
 	        #   submode :note
 	        #
 	        elsif submode == :note
-	          if line =~ /^1 SOUR @(.+)@\r/
+	          if line =~ /^1 SOUR @(.+)@/
 	            individual.note += " @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"     
-	          elsif line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
@@ -225,7 +223,7 @@ class Import
 	        #   submode :change
 	        #
 	        elsif submode == :changed
-	          if line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          if line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            individual.changed_ged += ' ' + Regexp.last_match(1)  
 	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
@@ -235,7 +233,7 @@ class Import
 	        #   submode :source
 	        #
 	        elsif submode == :source 
-	          if line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          if line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
@@ -243,7 +241,6 @@ class Import
 	               
 	        else                  
 	          ignored += "Ignored #{mode} #{submode}: " + line   
-	         
 	        end # elsif mode == :individual    
 	       
 	        
@@ -258,22 +255,22 @@ class Import
 	        elsif line =~ /^1 DIV/
 	          submode = :divorce   
 	          union.divorced = 'Y'            
-	        elsif line =~ /^1 HUSB (.+)\r/
+	        elsif line =~ /^1 HUSB (.+)/
 	          submode = :husband
 	          husb[ union.uid ] = Regexp.last_match(1)
-	        elsif line =~ /^1 WIFE (.+)\r/
+	        elsif line =~ /^1 WIFE (.+)/
 	          submode = :wife
 	          wife[ union.uid ] = Regexp.last_match(1)          
-	        elsif line =~ /^1 CHIL (.+)\r/
+	        elsif line =~ /^1 CHIL (.+)/
 	          submode = :children 
 	          #chil[ union.uid ] += [Regexp.last_match(1)]             
 	        elsif line =~ /^1 CHAN/                   
 	          submode = :changed    
 	          union.changed_ged = ''
-	        elsif line =~ /^1 NOTE(.*)\r/                 
+	        elsif line =~ /^1 NOTE(.*)/                 
 	          submode = :note  
 	          union.note += "\n" + 'Note: ' + Regexp.last_match(1)    + "\n"         
-	        elsif line =~ /^1 SOUR @S(\d+)@\r/                 
+	        elsif line =~ /^1 SOUR @S(\d+)@/                 
 	          submode = :source     
 	          union.note += "\n" + "Source: @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"
 	
@@ -281,13 +278,13 @@ class Import
 	        #   submode :marriage
 	        #
 	        elsif submode == :marriage
-	          if line =~ /^2 DATE (.+)\r/
+	          if line =~ /^2 DATE (.+)/
 	            union.update_marriage( rawdate: Regexp.last_match(1) )
-	          elsif line =~ /^2 PLAC (.+)\r/
+	          elsif line =~ /^2 PLAC (.+)/
 	            union.update_marriage( location: Regexp.last_match(1) )
-	          elsif line =~ /^2 SOUR @(.+)@\r/
+	          elsif line =~ /^2 SOUR @(.+)@/
 	            union.note += "\n" + "Birth: @#{tree_name}#{Regexp.last_match(1)}@ "       + "\n"       
-	          elsif line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            union.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line        
@@ -297,13 +294,13 @@ class Import
 	        #   submode :divorce
 	        #
 	        elsif submode == :divorce
-	          if line =~ /^2 DATE (.+)\r/
+	          if line =~ /^2 DATE (.+)/
 	            union.update_divorce( rawdate: Regexp.last_match(1) )
-	          elsif line =~ /^2 PLAC (.+)\r/
+	          elsif line =~ /^2 PLAC (.+)/
 	            union.update_divorce( location: Regexp.last_match(1) )
-	          elsif line =~ /^2 SOUR @(.+)@\r/
+	          elsif line =~ /^2 SOUR @(.+)@/
 	            union.note += "\n" + "Birth: @#{tree_name}#{Regexp.last_match(1)}@ "       + "\n"       
-	          elsif line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            union.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line        
@@ -313,9 +310,9 @@ class Import
 	        #   submode :note
 	        #
 	        elsif submode == :note
-	          if line =~ /^1 SOUR @(.+)@\r/
+	          if line =~ /^1 SOUR @(.+)@/
 	            union.note += " @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"     
-	          elsif line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            union.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
@@ -325,7 +322,7 @@ class Import
 	        #   submode :change
 	        #
 	        elsif submode == :changed
-	          if line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          if line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            union.changed_ged += ' ' + Regexp.last_match(1)  
 	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
@@ -335,7 +332,7 @@ class Import
 	        #   submode :source
 	        #
 	        elsif submode == :source 
-	          if line =~ /^[1-5] \w\w\w\w+(.*)\r/   
+	          if line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            union.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
@@ -363,7 +360,7 @@ class Import
 	  end # Individual.transaction do
 		
 	  Union.transaction do
-		print 'wives'
+		print 'wives' if log2tt 
 		j = 0
 		wife.each do | uid, i |
 		  j += 1
@@ -371,12 +368,12 @@ class Import
 		  w = Individual.by_uid( indi[i] )
 		  u.wife = w
 		  u.save!
-		  print '.' if j.modulo(10) == 0
+		  print '.' if log2tt and j.modulo(10) == 0
 		end
 	  end
 	
 	  Union.transaction do
-		print 'husbands'
+		print 'husbands' if log2tt
 		j = 0
 		husb.each do | uid, i |
 		  j += 1
@@ -384,12 +381,12 @@ class Import
 		  h = Individual.by_uid( indi[i] )
 		  u.husband = h
 		  u.save!
-		  print '.' if j.modulo(10) == 0
+		  print '.' if log2tt and j.modulo(10) == 0
 		end
 	  end
 	
 	  Individual.transaction do
-		print 'children'
+		print 'children' if log2tt
 		j = 0
 		famc.each do | uid, f |
 		  j += 1
@@ -399,7 +396,7 @@ class Import
 		    i.parents = u
 		    i.save!
 		  end    
-		  print '.' if j.modulo(10) == 0
+		  print '.' if log2tt and  j.modulo(10) == 0
 		end
 	  end
 

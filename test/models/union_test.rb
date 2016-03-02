@@ -3,9 +3,15 @@ require 'test_helper'
 class UnionTest < ActiveSupport::TestCase
 
   setup do
-    assert_equal Individual.all.count, 0  
-    assert_equal Union.all.count, 0  
-    assert_equal Event.all.count, 0    
+  	assert !Individual.all.empty?
+    Individual.destroy_all
+    assert Individual.all.empty?
+  	assert !Event.all.empty?
+    Event.destroy_all
+    assert Event.all.empty?	
+  	assert !Union.all.empty?
+    Union.destroy_all
+    assert Union.all.empty?		
   end
   
   

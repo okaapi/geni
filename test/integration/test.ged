@@ -1,0 +1,236 @@
+﻿0 HEAD
+1 SOUR PAF
+2 NAME Personal Ancestral File
+2 VERS 5.2.18.0
+2 CORP The Church of Jesus Christ of Latter-day Saints
+3 ADDR 50 East North Temple Street
+4 CONT Salt Lake City, UT 84150
+4 CONT USA
+1 DEST Other
+1 DATE 4 Apr 2006
+2 TIME 21:43:54
+1 FILE stammbaum.ged
+1 GEDC
+2 VERS 5.5
+2 FORM LINEAGE-LINKED
+1 CHAR UTF-8
+1 LANG English
+1 SUBM @SUB1@
+0 @SUB1@ SUBM
+1 NAME Wido Menhardt
+1 ADDR 17706 Blackberry Hill
+2 CONT Los Gatos, CA 95030
+0 @I1@ INDI
+1 NAME Mats /Menhardt/
+2 SURN   
+2 GIVN Mats
+1 SEX M
+1 BIRT
+2 DATE 28 Apr 1996
+2 PLAC Toronto,Canada
+1 _UID 1680F9F849F5034190A60CD07EEE5D331781
+1 FAMC @F1@
+1 CHAN
+2 DATE 29 Jan 2006
+3 TIME 00:00:00
+0 @I2@ INDI
+1 NAME Wido /Menhardt/
+2 SURN Menhardt
+2 GIVN Wido
+1 SEX M
+1 BIRT
+2 DATE 2 Oct 1959
+2 PLAC Bad Homburg,Deutschland
+1 _UID 624F9E96632CD547B0F70473C81AB20547CB
+1 FAMS @F1@
+1 FAMC @F2@
+1 CHAN
+2 DATE 2 Jul 2002
+3 TIME 01:00:00
+0 @I3@ INDI
+1 NAME Walther /Menhardt/
+2 SURN Menhardt
+2 GIVN walther
+1 SEX M
+1 BIRT
+2 DATE 18 Dec 1931
+2 PLAC Wien,Oesterreich
+1 _UID 2FAF8597A291344B8547C0AC01AF8DC6E786
+1 FAMS @F2@
+1 FAMC @F3@
+1 CHAN
+2 DATE 4 Jul 2002
+3 TIME 01:00:00
+0 @I4@ INDI
+1 NAME Hermann /Menhardt/
+2 SURN Menhardt
+2 GIVN   
+1 SEX M
+1 BIRT
+2 DATE 22 Dec 1888
+2 PLAC Bludenz, Vorarlberg, Oestereich
+1 DEAT
+2 DATE 4 Mar 1963
+2 PLAC Wien, Oesterreich
+1 _UID 9A450BC3C217F64F9FFD1252845EE69C2F1F
+1 FAMS @F3@
+1 FAMC @F553@
+1 CHAN
+2 DATE 12 Feb 2006
+3 TIME 11:28:09
+0 @I5@ INDI
+1 NAME Johanna /Vieser/
+2 SURN Vieser
+2 GIVN Johanna
+2 NICK Omuli
+1 SEX F
+1 BIRT
+2 DATE 30 Dec 1891
+2 PLAC Karlsruhe
+1 DEAT
+2 DATE 1 Nov 1987
+2 PLAC Wien, Oesterreich
+1 _UID 7803BA100B08424BB360823ED3D3A61C2063
+1 FAMS @F3@
+1 FAMC @F4@
+1 CHAN
+2 DATE 12 Feb 2006
+3 TIME 11:28:54
+0 @I6@ INDI
+1 NAME Lars /Menhardt/
+2 SURN Menhardt
+2 GIVN Lars
+1 SEX M
+1 BIRT
+2 DATE 14 Nov 2000
+2 PLAC Los Gatos, California
+1 DEAT
+2 DATE 25 Nov 2000
+2 PLAC Los Gatos, California
+1 _UID CB9778F612F01D4CBF69EFAE292A0780DA14
+1 FAMC @F1@
+1 CHAN
+2 DATE 29 Jan 2006
+3 TIME 00:00:00
+0 @I7@ INDI
+1 NAME Moje /Wipplinger/
+2 SURN Wipplinger
+2 GIVN Moje
+1 SEX F
+1 BIRT
+2 DATE 20 Jun 1934
+2 PLAC Hamburg,Deutschland
+1 _UID 8C58E536A11D35409CAAA85581CEBAC4420E
+1 FAMS @F2@
+1 FAMC @F5@
+1 CHAN
+2 DATE 25 Oct 2005
+3 TIME 01:00:00
+0 @I8@ INDI
+1 NAME Evert Ernst /Wipplinger/
+2 SURN Wipplinger
+2 GIVN Evert Ernst
+1 SEX M
+1 BIRT
+2 DATE 21 Aug 1911
+2 PLAC Zwoelfaxing,Oesterreich
+1 DEAT
+2 DATE 3 Apr 1993
+2 PLAC Melk,Oesterreich
+1 _UID 7BAFA0782DD4464483F8087E610D809E5AF0
+1 FAMS @F5@
+1 FAMC @F6@
+1 CHAN
+2 DATE 4 Jul 2002
+3 TIME 01:00:00
+0 @I9@ INDI
+1 NAME Christian /Wipplinger/
+2 SURN Wipplinger
+2 GIVN Christian
+1 SEX M
+1 BIRT
+2 DATE 19 Jul 1876
+1 _UID 52AD9E06A5920B489F230567305FA02CB684
+1 FAMS @F6@
+1 FAMC @F7@
+1 NOTE Dr. Chemie, Farbenfabrikant
+2 CONT kauft H.M.Habich von seinem Onkel
+2 CONT Firma gegruendet 1846
+1 CHAN
+2 DATE 1 Mar 2006
+3 TIME 21:57:23
+0 @I10@ INDI
+1 NAME Charlotte /Walther/
+2 SURN Walther
+2 GIVN Charlotte
+2 NICK Gert
+1 SEX F
+1 BIRT
+2 DATE 14 Jun 1911
+2 PLAC Kiel,Deutschland
+1 DEAT
+2 DATE 1 Jul 1992
+2 PLAC Weitenegg ad Donau,Melk
+1 _UID CDAADDE947CC9E44B703E540383FCE388E35
+1 FAMS @F5@
+1 NOTE Charlotte Wilhelmine Marie, Rufname Gert, Kuenstlername Charlotte Walther-Wipplinger
+1 CHAN
+2 DATE 12 Feb 2006
+3 TIME 11:30:37
+0 @F1@ FAM
+1 _UID 2E42C9FA7508264D8363A31E0CF672FC3A9A
+1 HUSB @I2@
+1 CHIL @I1@
+1 CHIL @I6@
+1 MARR
+2 DATE 19 Oct 1990
+2 PLAC Wien, Oesterreich
+0 @F2@ FAM
+1 _UID 9CDC5546A9B0C541870410DFC542C3EDA3AB
+1 HUSB @I3@
+1 WIFE @I7@
+1 CHIL @I2@
+1 MARR
+2 DATE 18 Oct 1958
+2 PLAC Weitenegg ad Donau,Melk
+0 @F3@ FAM
+1 _UID 6DE5C8FC91A4A94790641ECE9F129DAC1576
+1 HUSB @I4@
+1 WIFE @I5@
+1 CHIL @I3@
+1 MARR
+2 DATE 1918
+2 PLAC prob Karlsruhe
+1 NOTE Email von meinem (Wido) Vater:
+2 CONT 1916 wurde meine Vater an der italienischen Front verwundet. Es existiert eine Detailkarte mi
+2 CONC t Blutspuren. Noch viele Jahre arbeiteten sich Schrapnellsplitter heraus. Er lag eine Woche ä
+2 CONC rztlich unversorgt in einem Viehwagen bis er nach Innsbruck ins Spital kam (allerdings hatt
+2 CONC e ein Offizier immer einen Burschen zugeteilt). Die Ärzte hatten ihn aufgegeben. Dann kam mei
+2 CONC ne Mutter ...
+0 @F4@ FAM
+1 _UID 1FBB1E14A5A5B54D98256C9144408A375762
+1 CHIL @I5@
+0 @F5@ FAM
+1 _UID 46A4678B947E774CA18A686B44A669888A0A
+1 HUSB @I8@
+1 WIFE @I10@
+1 CHIL @I7@
+1 MARR
+2 DATE 23 May 1933
+2 PLAC Paris
+0 @F6@ FAM
+1 _UID 7F05E47F8095E5418555DCF8B678D7BE93EF
+1 HUSB @I9@
+1 CHIL @I8@
+1 MARR
+2 DATE 29 Sep 1910
+2 PLAC Wien, Oesterreich
+1 SOUR @S211@
+0 @F7@ FAM
+1 _UID 49FEC99909EFDF4495805F7F702C3A7E0B13
+1 CHIL @I9@
+0 @REPO1@ REPO
+0 @REPO2@ REPO
+0 @REPO3@ REPO
+0 @REPO4@ REPO
+0 TRLR

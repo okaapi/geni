@@ -76,9 +76,6 @@ class AuthenticateController < ApplicationController
           redirect_to_root_js_or_html notice: "you are logged in, we sent an activation email for the next time!"
         rescue Exception => e
           @current_user.destroy if @current_user
-          puts '@@@@@@@@@@@@@@@@@@@@@@'
-          p e
-          p @current_user
           redirect_to_root_js_or_html alert: "we sent an activation email, but it failed 1 (#{e})."
         end
       end
