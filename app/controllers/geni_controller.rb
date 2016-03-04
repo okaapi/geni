@@ -1,12 +1,26 @@
 class GeniController < ApplicationController
 
   def index
-    @surnames = Individual.all_surnames
+    @surnames = Individual.surnames( params[:term])
   end
   
   def first_names
     @surname = params[:surname]
-    @individuals = Individual.all_given_names( @surname )
+	is_user = ( @current_user and ( @current_user.role == 'user' or
+                                    @current_user.role == 'admin' ) )
+    @names = Individual.names_for_surname( @surname, is_user )
+  end
+  
+  def search    
+  end
+  def last_name_search_results
+	@surname = params["books-search-txt"]
+	if @surname
+      is_user = ( @current_user and ( @current_user.role == 'user' or
+                                    @current_user.role == 'admin' ) )	
+	  @individuals = Individual.names_for_surname( @surname, is_user )
+	end
+	render :search
   end
   
   def tree

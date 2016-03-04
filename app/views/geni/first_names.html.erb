@@ -1,10 +1,10 @@
-<h1>Listing first names for <%= @surname %> individuals</h1>
+<h1>First names for <%= @surname %>... </h1>
 
-<% @individuals.each_with_index do |individual, index| %>
+<% @names.each_with_index do |name, index| %>
   
-  <%= link_to individual.pretty_first_name( is_user?), 
-      tree_path( individual.uid ) %>
-  <%= '|' if index < @individuals.count-1 %> 
+  <%= link_to name[:given], 
+      tree_path( name[:uid] ) %>
+  <%= '|' if index < @names.count-1 %> 
   
 <% end %>
 

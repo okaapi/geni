@@ -2,10 +2,8 @@ require 'securerandom'
 
 class Individual < ActiveRecord::Base
   belongs_to :birth, class_name: "Event", foreign_key: "birth_id"
-  belongs_to :baptism, class_name: "Event", foreign_key: "baptism_id"
   belongs_to :death, class_name: "Event", foreign_key: "death_id"
-  belongs_to :adoption, class_name: "Event", foreign_key: "adoption_id"
-  belongs_to :burial, class_name: "Event", foreign_key: "burial_id"
+
   
   def self.new( params = {} )
     if params
@@ -68,8 +66,8 @@ class Individual < ActiveRecord::Base
     arr
   end
   
-  def self.all_surnames
-    sql = "select surname from individuals group by surname"
+  def self.surnames( term = '' )
+    sql = "select surname from individuals where surname like \"#{term}%\" group by surname"
     res = ActiveRecord::Base.connection.execute(sql)
     arr = []
     res.each do |n|
@@ -80,11 +78,13 @@ class Individual < ActiveRecord::Base
     arr
   end  
   
-  def self.all_given_names( surname )
+  def self.names_for_surname( surname, is_user )
     uid_groups = Individual.where( surname: surname ).group( :uid ).order( given: :asc )
     arr = []
     uid_groups.each do |u|
-      arr << Individual.by_uid( u.uid )
+	  indi = Individual.by_uid( u.uid )
+      arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
+	           uid: indi.uid }
     end
     arr  
   end
