@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   
     # for authentication
     resources :users
+    get 'users/:id/role_change/:role' => 'users#role_change', as: 'role_change'
     resources :user_actions
     resources :user_sessions  
     resources :site_maps
@@ -32,13 +33,13 @@ Rails.application.routes.draw do
   # resources for the app
   get 'index' => 'geni#index', as: 'index'
   get 'surnames' => 'geni#index', as: 'surnames'  
-  get 'first_names/:surname' => 'geni#first_names', as: 'first_names' 
+  get 'names/:surname' => 'geni#names', as: 'names' 
   get 'import' => 'geni#import', as: 'import'
   post 'file_upload' => 'geni#file_upload', as: 'file_upload'
   
-  get 'search' => 'geni#search'
-  post 'last_name_search_results' => 'geni#last_name_search_results', as: 'last_name_search_results'
-  post 'first_name_search_results' => 'geni#first_name_search_results', as: 'first_name_search_results'  
+  match 'search' => 'geni#search', as: 'search', via: [:get, :post]
+  post 'search_results' => 'geni#search_results', as: 'search_results'  
+  
   # this has to be the last one or else...
   get ':uid' => 'geni#tree', as: 'tree'  
 

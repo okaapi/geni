@@ -1,33 +1,42 @@
 class GeniController < ApplicationController
 
+  FONT = 15
+  MINFONT = 10
+  
   def index
     @surnames = Individual.surnames( params[:term])
   end
   
-  def first_names
+  def names
     @surname = params[:surname]
+	@term = params[:term]    
 	is_user = ( @current_user and ( @current_user.role == 'user' or
                                     @current_user.role == 'admin' ) )
-    @names = Individual.names_for_surname( @surname, is_user )
+    @names = Individual.names_for_surname( @surname, @term, is_user )
   end
   
   def search    
-  end
-  def last_name_search_results
-	@surname = params["books-search-txt"]
+	@surname = params["surnames-search-txt"]
+	@term = params[:term]
 	if @surname
       is_user = ( @current_user and ( @current_user.role == 'user' or
                                     @current_user.role == 'admin' ) )	
-	  @individuals = Individual.names_for_surname( @surname, is_user )
+	  @individuals = Individual.names_for_surname( @surname, @term, is_user )
 	end
 	render :search
   end
   
+  def search_results
+    @font = FONT
+    @minfont = MINFONT
+    @individual = Individual.by_uid( params[:'names-search-uid'] )
+    render :tree
+  end
+    
   def tree
-    @font = 15
-    @minfont = 10
+    @font = FONT
+    @minfont = MINFONT
     @individual = Individual.by_uid( params[:uid] )
-    @ignored = params[ :ignored ]
   end
   
   def import

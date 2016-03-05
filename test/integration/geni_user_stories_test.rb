@@ -32,13 +32,13 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	assert_select '.container a', 'Vieser' 
 	assert_select '.container a', 'Wipplinger' 	
 	assert_select '.container a', 'Walther' 		
-	assert_select '.container a', 7
+	assert_select '.container a', 9
 	
-	get "/first_names/Menhardt"
+	get "/names/Menhardt"
 	assert_response :success
 	assert_select '.container a', 'W. M.', 2
 	assert_select '.container a', 'Lars'
-	assert_select '.container a', 7
+	assert_select '.container a', 8
 	
 	i = Individual.where( given: 'Wido', surname: 'Menhardt').order( ver: :asc).last
 	get "/" + i.uid
@@ -70,14 +70,14 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	assert_select '.container a', 'Vieser' 
 	assert_select '.container a', 'Wipplinger' 	
 	assert_select '.container a', 'Walther' 		
-	assert_select '.container a', 6
+	assert_select '.container a', 8
 	
-	get "/first_names/Menhardt"
+	get "/names/Menhardt"
 	assert_response :success
 	assert_select '.container a', 'Wido'
 	assert_select '.container a', 'walther'	
 	assert_select '.container a', 'Lars'
-	assert_select '.container a', 6
+	assert_select '.container a', 7
 	
 	i = Individual.where( given: 'Wido', surname: 'Menhardt').order( ver: :asc).last
 	get "/" + i.uid

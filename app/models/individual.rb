@@ -18,12 +18,20 @@ class Individual < ActiveRecord::Base
     self.ver = self.ver + 1
   end  
   
+  def living
+    if self.death
+      false
+    elsif self.birth and self.birth.date and ( self.birth.date_as_datetime < Date.new(1900,1,1) )
+      false
+    else
+      true
+    end
+  end
+  
   def pretty_name( is_user = false )
      
-    if is_user or self.death
-      self.name.gsub( /\//, '')      
-    elsif self.birth and self.birth.date_as_datetime < Date.new(1915,1,1)
-      self.name.gsub( /\//, '')    
+    if is_user or !self.living
+      self.name.gsub( /\//, '')   
     else
       n = self.name.gsub( /\//, '').upcase
       n.split(' ').collect { |s| s[0] }.join('. ') + '.'
@@ -33,9 +41,7 @@ class Individual < ActiveRecord::Base
   
   def pretty_first_name( is_user = false )
      
-    if is_user or self.death
-      self.given || self.pretty_name( is_user ) 
-    elsif self.birth and self.birth.date_as_datetime < Date.new(1915,1,1)
+    if is_user or !self.living
       self.given || self.pretty_name( is_user ) 
     else
       n = self.name.gsub( /\//, '').upcase
@@ -78,13 +84,16 @@ class Individual < ActiveRecord::Base
     arr
   end  
   
-  def self.names_for_surname( surname, is_user )
+  def self.names_for_surname( surname, term, is_user )
     uid_groups = Individual.where( surname: surname ).group( :uid ).order( given: :asc )
     arr = []
     uid_groups.each do |u|
 	  indi = Individual.by_uid( u.uid )
-      arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
-	           uid: indi.uid }
+	  given = indi.pretty_first_name( is_user )
+	  if !term or (term == '') or given.downcase.include?( term.downcase )
+        arr << { fullname: indi.pretty_name( is_user ), given: given, 
+	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ) }
+	  end
     end
     arr  
   end
