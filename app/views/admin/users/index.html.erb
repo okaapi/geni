@@ -25,7 +25,7 @@
         <td><%= user.email %></td>
         <% ['user','editor','admin'].each do |r| %>
           <td>
-            <%= ( user.role == r ) ? r : link_to( r, role_change_path( user, r) ) %>
+            <%= ( user.role == r ) ? r.upcase : link_to( r, role_change_path( user, r) ) %>
           </td>
         <% end %>
         <td><%= user.active %></td>

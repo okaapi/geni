@@ -31,11 +31,24 @@ Rails.application.routes.draw do
   end    
 
   # resources for the app
-  get 'index' => 'geni#index', as: 'index'
-  get 'surnames' => 'geni#index', as: 'surnames'  
+  get 'surnames' => 'geni#surnames', as: 'surnames'  
   get 'names/:surname' => 'geni#names', as: 'names' 
+  
   get 'import' => 'geni#import', as: 'import'
   post 'file_upload' => 'geni#file_upload', as: 'file_upload'
+  
+  get 'edit/:uid' => 'geni#edit', as: 'edit'
+  post 'save/:uid' => 'geni#save', as: 'save'  
+  match 'new_marriage/:uid' => 'geni#new_marriage', as: 'new_marriage', via: [:get, :post]
+  post 'save_marriage/:uid' => 'geni#save_marriage', as: 'save_marriage'  
+  get 'delete_marriage/:uid/:uuid' => 'geni#delete_marriage', as: 'delete_marriage' 
+  match 'add_child/:uid/:uuid' => 'geni#add_child', as: 'add_child', via: [:get, :post]  
+  match 'new_child/:uid/:uuid' => 'geni#new_child', as: 'new_child', via: [:get, :post]    
+  post 'save_child/:uid/:uuid' => 'geni#save_child', as: 'save_child'  
+  post 'create_child/:uid/:uuid' => 'geni#create_child', as: 'create_child'    
+  get 'remove_child/:uid/:puid' => 'geni#remove_child', as: 'remove_child'  
+  get 'new_person' => 'geni#new_person', as: 'new_person' 
+  post 'create_person' => 'geni#create_person', as: 'create_person' 
   
   match 'search' => 'geni#search', as: 'search', via: [:get, :post]
   post 'search_results' => 'geni#search_results', as: 'search_results'  
@@ -43,7 +56,6 @@ Rails.application.routes.draw do
   # this has to be the last one or else...
   get ':uid' => 'geni#tree', as: 'tree'  
 
-  
-  root "geni#index", as: "root"
+  root "geni#surnames", as: "root"
     
 end

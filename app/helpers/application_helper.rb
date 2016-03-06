@@ -9,12 +9,13 @@ module ApplicationHelper
       'sometime'
     end
   end
+  def is_editor?
+    @current_user and @current_user.editor? 
+  end  
   def is_user?
-    ( @current_user and 
-      ( @current_user.role == 'user' or
-       @current_user.role == 'admin' ) )
+    @current_user and @current_user.user? 
   end
   def is_admin?
-    ( @current_user and @current_user.role == 'admin' )
+    @current_user and @current_user.admin?   
   end  
 end

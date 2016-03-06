@@ -4,10 +4,10 @@
 <%= form_tag( file_upload_path,
              { :multipart => true} ) do %>    
 	                                        
-	Tree name  <%= text_field "tree", "name", { "value" => @default_tree } %>    <br>  <p>                                 
-	                                        
-	File <%= file_field "stored_file", "stored_file" %> <br>  <p>
-	
+	Tree name  <%= text_field_tag "tree", "name", { "value" => @default_tree } %>    <br>                                   
+	                                        <br>
+	<%= file_field "stored_file", "stored_file" %> <br>  
+	<br>
 	<%= submit_tag("Upload", 
 	    :onclick => "$('#upload_indicator').show(); ".html_safe ) %>                      
 	    

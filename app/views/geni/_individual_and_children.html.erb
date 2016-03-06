@@ -3,29 +3,25 @@
     <table class="familyview" >	
 	  <tr align=right>
 	    <td width=50%></td>
-	    <td <%= 'class="marriageview"'.html_safe if @individual == individual %>
-	                                         style="font-size: <%=font%>px; 
-	                                         min-width: <%= font*12%>px;
-	                                         max-width: <%= font*12%>px" >		    
-		  <%= sex_symbol( individual.sex ) %> 
-		  <% if @individual == individual and is_user? %>
-            <%= link_to( individual.pretty_name(is_user?), 
-		               individual_by_uid_path( individual.uid ) ) if individual %>
-		  <% else %>
-		    <%= link_to( individual.pretty_name(is_user?), 
-		               tree_path( individual.uid ) ) if individual %>	
-		  <% end %>	    	  
-	      <%= "<br>*".html_safe if individual and individual.birth %>
-	           <%= individual.birth.date if individual.birth %><% individual.birth.location if individual.birth %><%= "<br>&#10013;".html_safe if individual.death %>
-	           <%= individual.death.date if individual.death %>
-	           <% individual.death.location if individual.death %>
+	    <td>
+	      <div <%= 'id="individualview"'.html_safe if @individual == individual %> >		    
+            <%= render partial: 'individual', locals: { individual: individual, font: font } %> 
+          </div>
 	    </td>  
 	  </tr>
+	  <% if @individual == individual and is_editor? %>
+	    <tr>
+	      <td colspan=2 align=right>
+	        <div id="new-marriage-container" >
+              <%= link_to 'add marriage', new_marriage_path( @individual.uid ), remote: true %>
+	        </div>
+	      </td> 
+	    </tr>
+	  <% end %>	  
 	  <tr >
 	    <td align=right colspan=2>
-	
-	       
-	          <% individual.unions.each do |union| %>
+		       
+	        <% individual.unions.each do |union| %>
 	          <table >
 	            <tr>
 	              <td></td>
@@ -36,33 +32,54 @@
 	              <td colspan=2 align=right 
 	                 style="font-size: <%=font%>px;padding-right:<%=font*2%>px">  
 		            <%= marriage_symbol %>   
-		            <%= union.marriage.date if union.marriage %>
+		            <% if is_editor? %>
+		              <%= link_to '<small>X</small>'.html_safe, 
+		                delete_marriage_path( individual.uid, union.uid ), class: 'xdelete',
+		                data: { confirm: 'Are you sure?' } %>				            
+		            <% end %>
+		            <%= union.marriage.date if union.marriage %>            
 		            <%= '<br>'.html_safe if union.marriage %> 		               		                       
 		            <%= link_to( union.spouse(individual.uid).pretty_name(is_user?), 
 		               tree_path( union.spouse(individual.uid).uid ) ) if union.spouse(individual.uid) %>
                  
 	              </td>             
 	            </tr>
+	            <% if is_editor? and @individual == individual  %>
+	              <tr>
+	                <td align=right>
+	                  <div id="new-child-container" >
+                        <%= link_to 'add existing /', add_child_path( individual.uid, union.uid ), 
+                               remote: true %><%= link_to 'new child', 
+                                       new_child_path( individual.uid, union.uid ), remote: true %>                        
+	                  </div>
+	                </td> 
+	              </tr>
+	            <% end %>	            
 	            <% union.children.each do |child| %>
 	              <tr >
-	                <td align=right class="childrenview" style="font-size: <%=font%>px;">  
+	                <td align=right class="childrenview" style="font-size: <%=font%>px;">  	                
 	                  <% if font > @minfont %>
 	                    <%= render partial: "individual_and_children", 
 	                      locals: { individual: child, font: font - 2 } %>
-	                  <% else %>    
+	                  <% else %>         
+
 	                    <%= sex_symbol( child.sex ) %>  
 		                <%= link_to( child.pretty_name(is_user?), 
 		                    tree_path( child.uid ) ) %> 
 		              <% end %>                        
 	                </td>
+	                <td rowspan=1000 class='childrenline'>                
+	                </td>	                
 	              </tr>           
 	            <% end %>
-	            </table>
-	         <% end %>
+
+	          </table>
+	        <% end %>
 	       
 	  
 	    </td> 
 	  </tr>
+
 	</table>    
 <% else %>
 

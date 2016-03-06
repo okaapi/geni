@@ -59,13 +59,13 @@
 	
 	<p>
 	  <strong>Birth:</strong>
-	  <%= @individual.birth ? link_to( @individual.birth.date, @individual.birth ) : ''%>
+	  <%= @individual.birth ? link_to( @individual.birth.date || 'date n/a', @individual.birth ) : ''%>
 	  <%= @individual.birth.location if @individual.birth %>
 	</p>
 	
 	<p>
 	  <strong>Death:</strong>
-	  <%= @individual.death ? link_to( @individual.death.date, @individual.death ) : ''%>
+	  <%= @individual.death ? link_to( @individual.death.date || 'date n/a', @individual.death ) : ''%>
 	  <%= @individual.death.location if @individual.death %>
 	</p>
 	

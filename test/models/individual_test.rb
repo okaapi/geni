@@ -14,9 +14,7 @@ class IndividualTest < ActiveSupport::TestCase
   end
   
   test "new" do
-    
-
-	
+   
     wido = Individual.new( name: 'Wido')
     assert_not_nil wido.uid
     uid = wido.uid

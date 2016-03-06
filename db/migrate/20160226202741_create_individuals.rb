@@ -19,6 +19,7 @@ class CreateIndividuals < ActiveRecord::Migration
       t.text :note
       t.text :gedraw
       t.integer :ver, default: 0
+      t.integer :user_id
 
       t.timestamps
     end

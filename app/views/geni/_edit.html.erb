@@ -1,0 +1,47 @@
+<div id="edit-individual">
+	<b>editing <%= individual.pretty_name( is_user? ) %>... </b><br><br>
+
+	
+	<%= form_tag save_path( @individual.uid ) do  %>
+	  <% if @individual.errors.any? %>
+	    <div id="error_explanation">
+	      <h2><%= pluralize(@individual.errors.count, "error") %> prohibited this individual from being saved:</h2>
+	
+	      <ul>
+	      <% @individual.errors.full_messages.each do |message| %>
+	        <li><%= message %></li>
+	      <% end %>
+	      </ul>
+	    </div>
+	  <% end %>
+
+      <%= text_field :given, @individual.given, 8  %>  
+      <%= text_field :surname, @individual.surname %>
+
+	  <div class="divider"></div>
+      <%= text_field :prefix, @individual.prefix %>
+      <%= text_field :nickname, @individual.nickname %>  
+      <%= text_field :suffix, @individual.suffix %>
+      <%= text_field :sex, @individual.sex %>
+      <%= text_field :pedigree, @individual.pedigree %>
+	  
+	  <div class="divider"></div>
+	  <%= event_field 'Birth', @individual.birth %>
+	  <%= event_field 'Death', @individual.death %>
+       
+	  <div class="divider"></div>	  
+	  <div class="field">
+	    <%= label_tag "Notes" %><br>
+	    <%= text_area_tag :note, @individual.note, cols: 32 %>
+	  </div>      
+	  
+	  <div class="divider"></div>  
+	  
+	  <div class="actions">
+	    <small> Last edit by <%= @individual.user.username if @individual.user %> at <%= @individual.updated_at.strftime("%H:%M on %-d %b %Y") %> 
+	       &nbsp; &nbsp; &nbsp;</small><br>
+	    <%= submit_tag 'save' %>
+	    <%= link_to 'cancel', tree_path( @individual.uid ) %>
+	  </div>	  
+	<% end %>  
+</div>

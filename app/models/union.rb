@@ -3,6 +3,7 @@ require 'date'
 class Union < ActiveRecord::Base
   belongs_to :marriage, class_name: "Event", foreign_key: "marriage_id"
   belongs_to :divorce, class_name: "Event", foreign_key: "divorce_id"
+  belongs_to :user
   
   def self.new( params = {} )
     if params
@@ -49,7 +50,7 @@ class Union < ActiveRecord::Base
   end
   
   def wife=( h )
-    self.wife_uid = h.uid  
+    self.wife_uid = h.uid
   end
   
   def wife
@@ -66,10 +67,15 @@ class Union < ActiveRecord::Base
   end
     
   def children
+    # this might pull uids who in the past had this value of parents_uid
+    # so need to check in the == statement below
     uid_groups = Individual.where( parents_uid: self.uid ).group( :uid )
     child_arr = []
     uid_groups.each do |u|
-      child_arr << Individual.by_uid( u.uid )
+      i = Individual.by_uid( u.uid )
+      if( i.parents_uid == self.uid )
+        child_arr << i
+      end
     end
     child_arr.sort! { |a,b| a.name <=> b.name }    
     child_arr.sort! { |a,b| sort_by_birth_date( a, b ) }

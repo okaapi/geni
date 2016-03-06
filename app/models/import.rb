@@ -32,7 +32,8 @@ class Import
 	  
 	    i = 0
 	    contents.each_line do |line|  
-	 	      					
+	 	      		
+	 	  line.gsub!(/\r/,'')			
 	      i += 1      
 	      if line =~ /[\d]* _UID/ or line =~ /[\d]* REFN/
 	        # ignore
@@ -95,7 +96,6 @@ class Import
 	          submode = :name 
 	          individual.name = Regexp.last_match(1)
 	          print '.' if log2tt and i.modulo(10) == 0
-	         
 	        elsif line =~ /^1 SEX (.+)/
 	          submode = :sex
 	          individual.sex = Regexp.last_match(1)  
@@ -255,15 +255,15 @@ class Import
 	        elsif line =~ /^1 DIV/
 	          submode = :divorce   
 	          union.divorced = 'Y'            
-	        elsif line =~ /^1 HUSB (.+)/
+	        elsif line =~ /^1 HUSB @I(\d+)@/
 	          submode = :husband
-	          husb[ union.uid ] = Regexp.last_match(1)
-	        elsif line =~ /^1 WIFE (.+)/
+	          husb[ union.uid ] = "@I#{Regexp.last_match(1)}@"
+	        elsif line =~ /^1 WIFE @I(\d+)@/
 	          submode = :wife
-	          wife[ union.uid ] = Regexp.last_match(1)          
-	        elsif line =~ /^1 CHIL (.+)/
+	          wife[ union.uid ] = "@I#{Regexp.last_match(1)}@"     
+	        elsif line =~ /^1 CHIL @I(\d+)@/
 	          submode = :children 
-	          #chil[ union.uid ] += [Regexp.last_match(1)]             
+	          #chil[ union.uid ] += ["@I#{Regexp.last_match(1)}@"]             
 	        elsif line =~ /^1 CHAN/                   
 	          submode = :changed    
 	          union.changed_ged = ''

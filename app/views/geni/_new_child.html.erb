@@ -1,0 +1,17 @@
+<div id="new-child">
+  <%= form_tag create_child_path do %>
+    <%= text_field :given, '', 8 %>   
+    <%= text_field :nickname, '' %>     
+    <%= text_field :surname, individual.surname %>
+    <%= text_field :sex, '' %>     
+    <%= hidden_field_tag 'uuid', union.uid %>
+	<%= hidden_field_tag 'uid', individual.uid %>	
+			    
+    <div class="divider"></div>
+    <%= event_field 'Birth', Event.new %>	
+
+    <div class="divider"></div>	          
+    <%= submit_tag 'create' %>
+    <%= link_to 'cancel', tree_path( individual.uid ) %>	          		
+  <% end %>	    
+</div>

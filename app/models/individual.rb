@@ -3,7 +3,7 @@ require 'securerandom'
 class Individual < ActiveRecord::Base
   belongs_to :birth, class_name: "Event", foreign_key: "birth_id"
   belongs_to :death, class_name: "Event", foreign_key: "death_id"
-
+  belongs_to :user
   
   def self.new( params = {} )
     if params
@@ -15,6 +15,7 @@ class Individual < ActiveRecord::Base
   end
   
   before_save do
+    self.updated_at = nil
     self.ver = self.ver + 1
   end  
   
@@ -54,7 +55,9 @@ class Individual < ActiveRecord::Base
     if uid
       i = Individual.where( uid: uid ).order( ver: :asc ).last
       if i
-        i.dup 
+        idup = i.dup
+        idup.updated_at = i.updated_at
+        idup 
       else
         nil
       end
@@ -115,33 +118,8 @@ class Individual < ActiveRecord::Base
       self.birth = Event.new( params )
     end
   end  
+ 
   
-  def update_baptism( params )
-    if self.baptism
-      self.baptism = self.baptism.dup
-      self.baptism.update_attributes( params )
-    else
-      self.baptism = Event.new( params )
-    end
-  end   
-  
-  def update_adoption( params )
-    if self.adoption
-      self.adoption = self.adoption.dup
-      self.adoption.update_attributes( params )
-    else
-      self.adoption = Event.new( params )
-    end
-  end  
-  
-  def update_burial( params )
-    if self.burial
-      self.burial = self.burial.dup
-      self.burial.update_attributes( params )
-    else
-      self.burial = Event.new( params )
-    end
-  end   
   
   def unions
     uid_groups = Union.where( "husband_uid = ? OR wife_uid = ?", self.uid, self.uid ).group( :uid )
@@ -153,7 +131,7 @@ class Individual < ActiveRecord::Base
   end
   
   def parents=( u )
-    self.parents_uid = u.uid  
+    self.parents_uid = u ? u.uid : nil  
   end
   
   def parents
@@ -167,6 +145,15 @@ class Individual < ActiveRecord::Base
     u = Union.by_uid( self.parents_uid )
     u ? Individual.by_uid( u.wife_uid ) : nil
   end   
+  def is_my_child?( child )
+    if child and child.father and child.father.uid == self.uid 
+      true
+    elsif child and child.mother and child.mother.uid == self.uid
+      true
+    else
+      false
+    end
+  end
   
   def self.compare_names( i1, i2, order )
     

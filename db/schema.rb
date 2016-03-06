@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20160226224239) do
     t.text     "note"
     t.text     "gedraw"
     t.integer  "ver",         default: 0
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -65,6 +66,7 @@ ActiveRecord::Schema.define(version: 20160226224239) do
     t.string   "gedfile"
     t.text     "gedraw"
     t.integer  "ver",         default: 0
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

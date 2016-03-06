@@ -6,10 +6,12 @@
 	      <tr>
 		    <td style="font-size: <%=font%>px; 
 	                   min-width: <%= font*12%>px;
-	                   max-width: <%= font*12%>px;" >	    
+	                   max-width: <%= font*12%>px;" >	
+	                   <div class='parentline'>    
 	  	      <%= sex_symbol( individual.father.sex ) if individual.father %> 
 		      <%= link_to( individual.father.pretty_name(is_user?), 
-		                   tree_path( individual.father.uid ) ) if individual.father %>  	    
+		                   tree_path( individual.father.uid ) ) if individual.father %>
+		                   </div>  	    
             </td>
 			<% if font > @minfont and individual.father %>
 	          <td style="padding: 0px;margin:0px">	          

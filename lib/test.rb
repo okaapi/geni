@@ -33,7 +33,6 @@ def parse_date( date_string )
     # if the year is known, we try to parse it...
     begin
       date = Date.parse( date_string )
-      puts date
       # we check that it find the same year as us!
       if ( date.strftime('%Y').to_i == year )
         return date, year
@@ -53,7 +52,9 @@ dates.each do |dstring|
 
   date, year = parse_date( dstring )
   puts
-  puts "#{dstring} => ->#{date}<-  (guessed year; #{year})"
+  #puts "#{dstring} => ->#{date}<-  (guessed year; #{year})"
+  puts "date, year = Event.parse_date( dstring )"
+  puts "assert_equal date, #{date}"
 
 end 
 

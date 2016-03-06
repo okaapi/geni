@@ -43,7 +43,7 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	i = Individual.where( given: 'Wido', surname: 'Menhardt').order( ver: :asc).last
 	get "/" + i.uid
 	assert_response :success
-	assert_select '.marriageview  a', 'W. M.'
+	assert_select '#show-individual  a', 'W. M.'
 	
 	
   end
@@ -82,8 +82,7 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	i = Individual.where( given: 'Wido', surname: 'Menhardt').order( ver: :asc).last
 	get "/" + i.uid
 	assert_response :success
-	assert_select '.marriageview  a', 'Wido Menhardt'
-	
+	assert_select '#show-individual  a', 'Wido Menhardt'
 	
   end
   

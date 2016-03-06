@@ -5,6 +5,9 @@
   
 <strong> <%= link_to 'Home', root_path %> </strong> <br>
 <strong> <%= link_to 'Search', search_path %> </strong> <br>
+<% if is_editor? %>
+  <strong> <%= link_to 'New person', new_person_path %> </strong> <br>
+<% end %>
 <% if is_admin? %>
   <strong> <%= link_to 'To individuals', all_individuals_by_uid_path %> </strong> <br>
   <strong> <%= link_to 'To marriages', all_unions_by_uid_path %> </strong> <br>

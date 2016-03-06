@@ -97,14 +97,15 @@ div {
   border-color: lightgrey red lightgrey grey; 
   border-width: 1px 0px 1px 2px; 
   padding: 0px 0px 0px 0px; 
-  margin: 4px 0px 0px 0px;  }
-td .marriageview {
-  background-color: #e5e4e2;
-  border-style: none none none none; 
-  border-color: grey grey grey grey; 
-  border-width: 1px 1px 1px 1px; 
-  padding: 5px;
- }
+  margin: 4px 0px 0px 0px;  
+
+  .parentline {
+  border-style: none none solid none; 
+  border-color: red grey lightgrey red; 
+  border-width: 1px 1px 1px 1px;  
+  }  
+}
+
 .treeview .childrenview {
   margin: 50px;
   border-style: none solid none none; 
@@ -112,14 +113,130 @@ td .marriageview {
   border-width: 0px 2px 1px 0px;
   padding: 0px 4px 0px 0px;}  
 td .familyview {
+
+  .childrenline {
+    
+    border-style: solid none none none; 
+    border-color: grey green lightgrey red; 
+    border-width: 1px 1px 1px 1px;  
+  }  
   margin: 0px 0px 0px 0px;
   border-style: none none none none; 
   border-color: red grey lightgrey red; 
   border-width: 0px 2px 1px 0px; }    
   
-
   
-  
+#individualview {
+  background-color: #e5e4e2;
+}
 
+#show-individual {
+  padding: 5px;
+}
+
+#edit-individual {
+  padding: 5px;
+  width: 300px;
+  background-color: #e5e4e2;
+  float: left;
+  b, small {
+    float: left;
+  }
+  .field {
+    float: left;
+    label {
+      font-size: x-small;      
+      line-height: 0.8;      
+      margin: 0px;   
+      float: left;
+    }
+    input {
+      font-size: small;      
+      margin: 0px 10px 0px 0px;    
+      float: left;
+    }    
+  }
+
+}  
+
+  .divider {
+    padding: 0px 0px 10px 0px;    
+    border-style: solid; 
+    border-color: grey; 
+    border-width: 1px 0px 0px 0px;
+    clear: both;
+  }
+  
+.xdelete {
+  background-color: #e5e4e2;  
+}
+
+#new-marriage-container {
+  margin-top: 5px;
+  a {
+    padding: 5px;
+    background-color: #e5e4e2;  
+  }
+
+}
+
+#new-marriage {
+
+  padding: 5px;
+  width: 300px;
+  background-color: #e5e4e2;
+  float: left;
+}
+
+#new-marriage .surnames-search {
+  .field {
+    float: left;
+    label {
+      font-size: x-small;      
+      line-height: 0.8;      
+      margin: 0px;   
+      float: left;
+    }
+    input {
+      font-size: small;      
+      margin: 0px 10px 0px 0px;    
+      float: left;
+    }    
+  }
+}
+
+#new-child-container {
+  margin-top: 5px;
+  a {
+    padding: 5px;
+    margin: 0px;
+    background-color: #e5e4e2;  
+  }
+
+}
+
+#new-child {
+  padding: 5px;
+  width: 300px;
+  background-color: #e5e4e2;
+  float: left;
+}
+
+#new-child  {
+  .field {
+    float: left;
+    label {
+      font-size: x-small;      
+      line-height: 0.8;      
+      margin: 0px;   
+      float: left;
+    }
+    input {
+      font-size: small;      
+      margin: 0px 10px 0px 0px;    
+      float: left;
+    }    
+  }
+}
 
 

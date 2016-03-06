@@ -12,6 +12,7 @@ class CreateUnions < ActiveRecord::Migration
       t.string :gedfile
       t.text :gedraw
       t.integer :ver, default: 0
+      t.integer :user_id
 
       t.timestamps
     end
