@@ -10,32 +10,36 @@
 		
 	  <% end %>
     </div>
-	<% if @surname %>
-	  <div id="surnames-search-div">
-		  <div class="surnames-search">
+
+
 		    <%= form_tag save_child_path do %>
-	          <div class="field">
-	            <%= label_tag 'Full name' %><br>	
-			    <%= hidden_field_tag 'names-search-uid', 'default' %>	
-			    <%= hidden_field_tag 'uuid', union.uid %>
-			    <%= hidden_field_tag 'uid', individual.uid %>			    
-			    <%= text_field_tag 'names-search-txt', '', autofocus: true, size: 15 %>
-			  </div>
-		      <div class="results" style="float:left" id="names-search-results"></div>    
-		      
+
+				  <div id="surnames-search-div" >
+					  <div class="surnames-search">		    
+				          <div class="field">
+				            <%= label_tag 'Full name' %><br>	
+						    <%= hidden_field_tag 'names-search-uid', 'default' %>	
+						    <%= hidden_field_tag 'uuid', union.uid %>
+						    <%= hidden_field_tag 'uid', individual.uid %>			    
+						    <%= text_field_tag 'names-search-txt', '', autofocus: true, size: 15 %>
+						  </div>
+					      <div class="results" style="float:left" id="names-search-results"></div>    
+						  </div>
+				  </div>  	
+
+	          <div class="divider"></div>	   
+	          <%= submit_tag 'add' %>
+	          <%= link_to 'cancel', tree_path( individual.uid ) %>			      
         		
 		    <% end %>
-		  </div>
-	  </div>  	
-	<% end %>
-	<div class="divider"></div>	   
-	<%= submit_tag 'add' %>
-	<%= link_to 'cancel', tree_path( individual.uid ) %>	  
+
+
+  
 	    
 </div>
 
 <script>
-  var surname = "<%= @surname %>";
+  var surname = "<%= @surname %>";  
   $(function() {
     new app.Surnames;
   });

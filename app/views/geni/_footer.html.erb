@@ -5,6 +5,12 @@
   
 <strong> <%= link_to 'Home', root_path %> </strong> <br>
 <strong> <%= link_to 'Search', search_path %> </strong> <br>
+
+<% uid = ( @individual ? @individual.uid : nil ) %>
+<strong> <%= link_to 'increment', depth_change_path(-2,uid) %>/<%= link_to 'decrement', 
+        depth_change_path(2,uid) %> 
+depth</strong> <br>
+
 <% if is_editor? %>
   <strong> <%= link_to 'New person', new_person_path %> </strong> <br>
 <% end %>

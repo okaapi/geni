@@ -40,6 +40,7 @@ app.Surnames.prototype = {
 
   _select: function(e, ui) {
     this._input.val(ui.item.surname);
+    surname = ui.item.surname;
     return false;
   }
 };
@@ -51,7 +52,7 @@ app.Names = function() {
 	
 app.Names.prototype = {
   _initAutocomplete: function() {
-		
+
     this._input
       .autocomplete({
         source: '/names/'+surname,

@@ -10,8 +10,8 @@
 		
 	  <% end %>
     </div>
-	<% if @surname %>
-	  <div id="surnames-search-div">
+
+	  <div id="surnames-search-div" >
 		  <div class="surnames-search">
 		    <%= form_tag save_marriage_path do %>
 	          <div class="field">
@@ -30,13 +30,13 @@
 		  </div>
 	  </div>  
 	
-	<% end %>
+
 	
 	    
 </div>
 
 <script>
-  var surname = "<%= @surname %>";
+  var surname = "<%= @surname %>";   
   $(function() {
     new app.Surnames;
   });

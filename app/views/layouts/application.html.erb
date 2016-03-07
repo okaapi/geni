@@ -3,9 +3,6 @@
 <head>
   <title><%= @center ? @center.name.capitalize.gsub(/_/,' ') : "" %></title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <style type="text/css">
-    <%= @css %>
-  </style>  
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <meta name="viewport" content="width=device-width, initial-scale=1">  
   <meta name="robots" content="index,follow" />
@@ -14,6 +11,7 @@
   <meta name="description" content="<%= @meta_desc %>" />
 </head>
 <body>
+
   
   <div class="container">
   

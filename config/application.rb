@@ -26,11 +26,6 @@ module Geni
       mail_config["server"].merge(mail_config["credentials"]).symbolize_keys
     config.action_mailer.raise_delivery_errors = true
 	
-    # for bower/angular
-	config.assets.paths << Rails.root.join("vendor","assets","bower_components")
-    config.assets.paths << Rails.root.join("vendor","assets","bower_components","bootstrap-sass-official","assets","fonts")
-    config.assets.precompile << %r(.*.(?:eot|svg|ttf|woff|woff2)$)
-	
-
+	config.assets.paths << "#{Rails}/vendor/assets/fonts"
   end
 end

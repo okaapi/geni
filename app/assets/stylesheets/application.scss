@@ -1,5 +1,6 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
 @import "geni";
 @import "search";
  
@@ -8,7 +9,7 @@
 a {
  color: #777777;
  &:visited {
-  color: #777777;
+  //color: #777777;
   text-decoration: none;
   }  
  &:hover {

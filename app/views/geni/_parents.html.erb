@@ -6,12 +6,23 @@
 	      <tr>
 		    <td style="font-size: <%=font%>px; 
 	                   min-width: <%= font*12%>px;
-	                   max-width: <%= font*12%>px;" >	
-	                   <div class='parentline'>    
-	  	      <%= sex_symbol( individual.father.sex ) if individual.father %> 
-		      <%= link_to( individual.father.pretty_name(is_user?), 
-		                   tree_path( individual.father.uid ) ) if individual.father %>
-		                   </div>  	    
+	                   max-width: <%= font*12%>px;" >
+	          <% if individual.father %>	
+	            <div class='parentline'>    	          
+		          <% if( is_editor? and individual.uid == @individual.uid ) %>
+		            <%= link_to( delete_symbol, 
+		                delete_parent_path( individual.uid, individual.father.uid ), class: 'xdelete',
+		                data: { confirm: 'Are you sure?' } ) %>				            
+		          <% end %>	          
+	  	          <%= sex_symbol( individual.father.sex )  %> 
+		          <%= link_to( individual.father.pretty_name(is_user?), 
+		                   tree_path( individual.father.uid ) )   %>
+		        </div>
+		      <% else %>
+	            <div id="new-father-container" >
+                  <%= link_to sex_symbol( 'm' ), new_father_path( individual.uid ), remote: true %>                        
+	            </div>		      
+		      <% end %>  	    
             </td>
 			<% if font > @minfont and individual.father %>
 	          <td style="padding: 0px;margin:0px">	          
@@ -33,10 +44,17 @@
 	      <tr>
 		    <td style="font-size: <%=font%>px; 
 	                   min-width: <%= font*12%>px;
-	                   max-width: <%= font*12%>px;" >	 
-	          <%= sex_symbol( individual.mother.sex ) if individual.mother %> 
-		      <%= link_to( individual.mother.pretty_name(is_user?), 
+	                   max-width: <%= font*12%>px;" >	
+	          <div class='parentline'>  
+		        <% if( is_editor? and individual.uid == @individual.uid ) %>
+		          <%= link_to( delete_symbol, 
+		              delete_parent_path( individual.uid, individual.mother.uid ), class: 'xdelete',
+		              data: { confirm: 'Are you sure?' } ) if individual.mother %>				            
+		        <% end %>	 	          	                    
+	            <%= sex_symbol( individual.mother.sex ) if individual.mother %> 
+		        <%= link_to( individual.mother.pretty_name(is_user?), 
 		                   tree_path( individual.mother.uid ) ) if individual.mother %>
+		      </div>
 		    </td>
 	        <% if font > @minfont  and individual.mother %>
 	          <td style="padding: 0px;margin:0px">	
@@ -48,4 +66,21 @@
 	  </td>   
 	</tr>
   </table>
+<% else %>
+  <table class="parentsview" >
+	<tr>
+	  <td align=left >
+	            <div id="new-father-container" class='parentline' >
+                  <%= link_to sex_symbol( 'm' ), new_father_path( individual.uid ), remote: true %>                        
+	            </div>		  
+      </td>
+    </tr>
+	<tr>
+	  <td align=left >
+	            <div id="new-mother-container" >
+                  <%= link_to sex_symbol( 'f' ), new_mother_path( individual.uid ), remote: true %>                        
+	            </div>		  
+      </td>
+    </tr>
+  </table>    
 <% end %>	

@@ -14,6 +14,9 @@ module TreeHelper
   def marriage_symbol
     "<span style='font-size:large'>&#8734;</span>".html_safe
   end
+  def delete_symbol
+    '<i class="glyphicon glyphicon-remove-circle"></i>'.html_safe
+  end
   
   def text_field( field_name, field, size = nil  )
     if !size

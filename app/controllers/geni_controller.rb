@@ -1,7 +1,5 @@
 class GeniController < ApplicationController
 
-  FONT = 15
-  MINFONT = 11
   
   ###################################################################################
   #
@@ -20,10 +18,29 @@ class GeniController < ApplicationController
   end
     
   def tree
-    @font = FONT
-    @minfont = MINFONT
+    #  tree-font is where we start with the fonts
+    #  min-tree-font is how far we go down... translates into
+    #    tree-depth, one depth increment corresponds to 2 font increments
+    #  absolute-min-tree-font is what you think it is
+    @font = ( session[:'tree-font'] ||= 15 )
+    @minfont = ( session[:'min-tree-font'] ||= 13 )
+    session[:'absolute-min-tree-font'] ||= 11
     @individual = Individual.by_uid( params[:uid] )
   end  
+  def depth_change
+    session[:'min-tree-font'] += params[:change].to_i
+    if session[:'min-tree-font'] < session[:'absolute-min-tree-font']
+      session[:'min-tree-font'] = session[:'absolute-min-tree-font']
+    elsif session[:'min-tree-font'] > session[:'tree-font']
+      session[:'min-tree-font'] = session[:'tree-font']
+    end
+    @individual = Individual.by_uid( params[:uid] )
+    if @individual 
+      redirect_to tree_path( @individual.uid )
+    else
+      redirect_to root_path
+    end
+  end
   
   ###################################################################################
   #
@@ -94,10 +111,12 @@ class GeniController < ApplicationController
   def save_child
     @individual = Individual.by_uid( params[:uid] )
     @union = Union.by_uid( params[:uuid] )
-    @child = Individual.by_uid( params[:'names-search-uid'] )
-    @child.parents = @union
-    @child.user_id = @current_user.id    
-    @child.save
+    @child = Individual.by_uid( params[:'names-search-uid'] )    
+    if @child
+      @child.parents = @union
+      @child.user_id = @current_user.id    
+      @child.save
+    end
     redirect_to tree_path( @individual.uid )    
   end
   def create_child
@@ -119,6 +138,29 @@ class GeniController < ApplicationController
     @child.save 
     @parent = Individual.by_uid( params[:puid] )
     redirect_to tree_path( @parent.uid )
+  end  
+  
+  ###################################################################################
+  #
+  #  delete parents
+  #   
+  def delete_parent
+    @individual = Individual.by_uid( params[:uid] )
+    @parent = Individual.by_uid( params[:puid] )
+    @parents = @individual.parents
+    if @parents.husband and @parents.husband.uid == @parent.uid
+      @parents.husband = nil
+    elsif @parents.wife and @parents.wife.uid == @parent.uid
+      @parents.wife = nil
+    end
+    @parents.save
+
+    if @parents.husband == nil and @parents.wife == nil
+      @individual.parents = nil
+      @individual.save
+    end
+    
+    redirect_to tree_path( @individual.uid )
   end  
   
   ###################################################################################

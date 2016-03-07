@@ -12,20 +12,21 @@
 	  <% end %>
 	</div>
 	<br>
-	<% if @surname %>
+
+    <% if @surname %>
 	  <div id="surnames-search-div">
 		  <div class="surnames-search">
 		    <%= form_tag search_results_path do %>
-	          <%= label_tag 'First name for ' + @surname %>		      
+	          <%= label_tag ('First name for ' + @surname) if @surname %>		      
 			  <%= text_field_tag 'names-search-txt', '', autofocus: true %>
 			  <%= hidden_field_tag 'names-search-uid', 'default' %>
 		      <div class="results" id="names-search-results"></div>
 			
 		    <% end %>
 		  </div>
-	  </div>  
+    <% end %>
 	
-	<% end %>
+
 	<br>
 	<i>Press enter to search or to continue...</i>
 </center>

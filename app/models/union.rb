@@ -42,7 +42,7 @@ class Union < ActiveRecord::Base
   end
     
   def husband=( h )
-    self.husband_uid = h.uid
+    self.husband_uid = h ? h.uid : nil
   end
   
   def husband
@@ -50,7 +50,7 @@ class Union < ActiveRecord::Base
   end
   
   def wife=( h )
-    self.wife_uid = h.uid
+    self.wife_uid = h ? h.uid : nil
   end
   
   def wife

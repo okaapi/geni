@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   # resources for the app
   get 'surnames' => 'geni#surnames', as: 'surnames'  
   get 'names/:surname' => 'geni#names', as: 'names' 
-  
+  get 'depth_change/:change/(:uid)' => 'geni#depth_change', as: 'depth_change' 
   get 'import' => 'geni#import', as: 'import'
   post 'file_upload' => 'geni#file_upload', as: 'file_upload'
   
@@ -49,6 +49,9 @@ Rails.application.routes.draw do
   get 'remove_child/:uid/:puid' => 'geni#remove_child', as: 'remove_child'  
   get 'new_person' => 'geni#new_person', as: 'new_person' 
   post 'create_person' => 'geni#create_person', as: 'create_person' 
+  get 'delete_parent/:uid/:puid' => 'geni#delete_parent', as: 'delete_parent'
+  match 'new_father/:uid' => 'geni#new_father', as: 'new_father', via: [:get, :post]   
+  match 'new_mother/:uid' => 'geni#new_father', as: 'new_mother', via: [:get, :post]   
   
   match 'search' => 'geni#search', as: 'search', via: [:get, :post]
   post 'search_results' => 'geni#search_results', as: 'search_results'  

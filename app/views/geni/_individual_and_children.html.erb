@@ -32,8 +32,8 @@
 	              <td colspan=2 align=right 
 	                 style="font-size: <%=font%>px;padding-right:<%=font*2%>px">  
 		            <%= marriage_symbol %>   
-		            <% if is_editor? %>
-		              <%= link_to '<small>X</small>'.html_safe, 
+		            <% if @individual == individual and is_editor? %>
+		              <%= link_to delete_symbol, 
 		                delete_marriage_path( individual.uid, union.uid ), class: 'xdelete',
 		                data: { confirm: 'Are you sure?' } %>				            
 		            <% end %>
