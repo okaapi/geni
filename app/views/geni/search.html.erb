@@ -1,45 +1,18 @@
-<center id="main-search">
-	<h1>Search</h1>
-	<br>	
-	
-	<div class="surnames-search">
-	  <%= form_tag search_path do %>  
-	  
-	    <%= label_tag 'Last name' %>
-		<%= text_field_tag 'surnames-search-txt', @surname, autofocus: !@surname %>
-	    <div class="results" id="surnames-search-results"></div>
-		
-	  <% end %>
-	</div>
-	<br>
-
-    <% if @surname %>
-	  <div id="surnames-search-div">
-		  <div class="surnames-search">
-		    <%= form_tag search_results_path do %>
-	          <%= label_tag ('First name for ' + @surname) if @surname %>		      
-			  <%= text_field_tag 'names-search-txt', '', autofocus: true %>
-			  <%= hidden_field_tag 'names-search-uid', 'default' %>
-		      <div class="results" id="names-search-results"></div>
-			
-		    <% end %>
-		  </div>
-    <% end %>
-	
-
-	<br>
-	<i>Press enter to search or to continue...</i>
+<center>
+  <h1>Search</h1>
+  <br>	
+  <%= form_tag search_results_path do %>
+    <div class="row">
+      <div class="col-xs-5">
+	  </div>
+      <div class="col-xs-6">
+	    <%= render partial: "search" %>
+      </div>	
+    </div>	
+  <% end %>
 </center>
 
 <%= render partial: "footer" %>
 
-<script>
-  var surname = "<%= @surname %>";
-  $(function() {
-    new app.Surnames;
-  });
-  $(function() {
-    new app.Names;
-  });  
-</script>
+
 

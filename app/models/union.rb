@@ -15,12 +15,19 @@ class Union < ActiveRecord::Base
   end
   
   before_save do
+    self.updated_at = nil
     self.ver = self.ver + 1
-  end
+  end  
   
   def self.by_uid( uid )
     u = Union.where( uid: uid ).order( ver: :asc ).last
-    u.dup if u
+    if u
+      udup = u.dup
+      udup.updated_at = u.updated_at
+      udup 
+    else
+      nil
+    end
   end
   
   def update_divorce( params )

@@ -32,26 +32,41 @@ Rails.application.routes.draw do
 
   # resources for the app
   get 'surnames' => 'geni#surnames', as: 'surnames'  
-  get 'names/:surname' => 'geni#names', as: 'names' 
+  get 'names_for_surname' => 'geni#names_for_surname', as: 'names_for_surname'     
+  get 'names_for_term' => 'geni#names_for_term', as: 'names_for_term' 
   get 'depth_change/:change/(:uid)' => 'geni#depth_change', as: 'depth_change' 
   get 'import' => 'geni#import', as: 'import'
   post 'file_upload' => 'geni#file_upload', as: 'file_upload'
   
   get 'edit/:uid' => 'geni#edit', as: 'edit'
+  get 'union_edit/:uuid/:uid' => 'geni#union_edit', as: 'union_edit'
   post 'save/:uid' => 'geni#save', as: 'save'  
-  match 'new_marriage/:uid' => 'geni#new_marriage', as: 'new_marriage', via: [:get, :post]
-  post 'save_marriage/:uid' => 'geni#save_marriage', as: 'save_marriage'  
+  post 'union_save/:uid/:uuid' => 'geni#union_save', as: 'union_save'   
+  
+  match 'marriage_new/:uid' => 'geni#marriage_new', as: 'marriage_new', via: [:get, :post]
+  post 'save_marriage_new/:uid' => 'geni#save_marriage_new', as: 'save_marriage_new'  
+  match 'marriage_existing/:uid' => 'geni#marriage_existing', as: 'marriage_existing', via: [:get, :post]
+  post 'save_marriage_existing/:uid' => 'geni#save_marriage_existing', as: 'save_marriage_existing'    
   get 'delete_marriage/:uid/:uuid' => 'geni#delete_marriage', as: 'delete_marriage' 
+
+  match 'add_spouse/:uid/(:uuid)' => 'geni#add_spouse', as: 'add_spouse', via: [:get, :post]  
+  match 'new_spouse/:uid/:uuid' => 'geni#new_spouse', as: 'new_spouse', via: [:get, :post]    
+  post 'save_added_spouse/:uid/:uuid' => 'geni#save_added_spouse', as: 'save_added_spouse'  
+  post 'create_new_spouse/:uid/:uuid' => 'geni#create_new_spouse', as: 'create_new_spouse'   
+  get 'remove_spouse/:uid/:uuid' => 'geni#remove_spouse', as: 'remove_spouse'  
+	
   match 'add_child/:uid/:uuid' => 'geni#add_child', as: 'add_child', via: [:get, :post]  
   match 'new_child/:uid/:uuid' => 'geni#new_child', as: 'new_child', via: [:get, :post]    
-  post 'save_child/:uid/:uuid' => 'geni#save_child', as: 'save_child'  
-  post 'create_child/:uid/:uuid' => 'geni#create_child', as: 'create_child'    
+  post 'save_added_child/:uid/:uuid' => 'geni#save_added_child', as: 'save_added_child'  
+  post 'create_new_child/:uid/:uuid' => 'geni#create_new_child', as: 'create_new_child'    
   get 'remove_child/:uid/:puid' => 'geni#remove_child', as: 'remove_child'  
+  
   get 'new_person' => 'geni#new_person', as: 'new_person' 
   post 'create_person' => 'geni#create_person', as: 'create_person' 
+  
   get 'delete_parent/:uid/:puid' => 'geni#delete_parent', as: 'delete_parent'
-  match 'new_father/:uid' => 'geni#new_father', as: 'new_father', via: [:get, :post]   
-  match 'new_mother/:uid' => 'geni#new_father', as: 'new_mother', via: [:get, :post]   
+  match 'new_parent/:uid/:sex/(:uuid)' => 'geni#new_parent', as: 'new_parent', via: [:get, :post]    
+  match 'create_new_parent/:uid/(:uuid)' => 'geni#create_new_parent', as: 'create_new_parent', via: [:get, :post]  
   
   match 'search' => 'geni#search', as: 'search', via: [:get, :post]
   post 'search_results' => 'geni#search_results', as: 'search_results'  

@@ -1,49 +1,17 @@
- <div id="new-child">
-	<div class="surnames-search">
-	  <%= form_tag add_child_path, remote: true do %>  
-	    <div class="field">
-	      <%= label_tag 'Last name' %><br>
-	      <%= hidden_field_tag 'uuid', union.uid %>
-		  <%= text_field_tag 'surnames-search-txt', @surname, autofocus: !@surname, size: 10 %>
-		</div>
-	    <div class="results" id="surnames-search-results"></div>
-		
-	  <% end %>
-    </div>
-
-
-		    <%= form_tag save_child_path do %>
-
-				  <div id="surnames-search-div" >
-					  <div class="surnames-search">		    
-				          <div class="field">
-				            <%= label_tag 'Full name' %><br>	
-						    <%= hidden_field_tag 'names-search-uid', 'default' %>	
-						    <%= hidden_field_tag 'uuid', union.uid %>
-						    <%= hidden_field_tag 'uid', individual.uid %>			    
-						    <%= text_field_tag 'names-search-txt', '', autofocus: true, size: 15 %>
-						  </div>
-					      <div class="results" style="float:left" id="names-search-results"></div>    
-						  </div>
-				  </div>  	
-
-	          <div class="divider"></div>	   
-	          <%= submit_tag 'add' %>
-	          <%= link_to 'cancel', tree_path( individual.uid ) %>			      
-        		
-		    <% end %>
-
-
-  
-	    
+<div class="panel panel-danger">
+  <div class="panel-heading">
+     <b>Add existing person as child of </b><%= individual.pretty_name(is_user?) %> 
+	    <%= ( "<b>and </b>".html_safe + 
+		         union.spouse( individual.uid ).pretty_name(is_user?) ) if 
+		                 union.spouse( individual.uid ) %>
+  </div>
+  <div class="panel-body">
+    <%= form_tag save_added_child_path do %>
+      <%= render partial: "search" %>
+    
+	<br>
+	<%= submit_tag 'add', class: "btn btn-default" %>
+    <%= link_to 'cancel', tree_path( individual.uid ) %>	
+   <% end %>	
+   </div>
 </div>
-
-<script>
-  var surname = "<%= @surname %>";  
-  $(function() {
-    new app.Surnames;
-  });
-  $(function() {
-    new app.Names;
-  });  
-</script>

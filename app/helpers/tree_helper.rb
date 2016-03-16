@@ -12,13 +12,13 @@ module TreeHelper
     end
   end
   def marriage_symbol
-    "<span style='font-size:large'>&#8734;</span>".html_safe
+    "<span style=''>&#8734;</span>".html_safe
   end
   def delete_symbol
     '<i class="glyphicon glyphicon-remove-circle"></i>'.html_safe
   end
   
-  def text_field( field_name, field, size = nil  )
+  def geni_text_field( field_name, field, size = nil  )
     if !size
       s = field ? ( field.length > 0 ? field.length : 3 ) : 3
     else
@@ -30,7 +30,7 @@ module TreeHelper
     '</div>'.html_safe          
   end
   
-  def event_field( field_name, event )
+  def geni_event_field( field_name, event )
     date = ( event and event.rawdate ) ? event.rawdate : ''
     location = ( event and event.location ) ? event.location : ''
     '<div class="field">'.html_safe + 

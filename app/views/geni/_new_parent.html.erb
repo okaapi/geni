@@ -1,12 +1,11 @@
 
 <div class="panel panel-danger">
   <div class="panel-heading">
-    <b>Create new person as child of </b><%= individual.pretty_name(is_user?) %> <b>and </b>
-        <%= ( union.spouse( individual.uid ) ? 
-		        union.spouse( individual.uid ).pretty_name(is_user?) : '?' ) %>
+    <b>Create new person as </b><%= @sex == 'f' ? 'mother' : 'father' %> <b>for </b>
+           <%= individual.pretty_name(is_user?) %>
   </div>
   <div class="panel-body">
-    <%= form_tag create_new_child_path do %>
+    <%= form_tag create_new_parent_path do %>
   
 	  <div class="row">
         <div class="col-xs-4">
@@ -19,37 +18,47 @@
           <%= text_field_tag :surname, individual.surname ,
                              class: "form-control input-sm" %>
         </div>
-        <div class="col-xs-2">
+        <div class="col-xs-1">
           <%= label_tag :sex,"M/F" %>
-          <%= text_field_tag :sex, '', class: "form-control input-sm" %>
+          <%= text_field_tag :sex, @individual.sex, class: "form-control input-sm" %>
         </div>			
       </div>
 	  <div class="row">
         <div class="col-xs-2">
           <%= label_tag :prefix,"Prefix" %>
-          <%= text_field_tag :prefix, '', class: "form-control input-sm" %>
+          <%= text_field_tag :prefix, @individual.prefix, class: "form-control input-sm" %>
         </div>
         <div class="col-xs-2">
           <%= label_tag :prefix,"Nickname" %>
-          <%= text_field_tag :nickname, '', class: "form-control input-sm" %>
+          <%= text_field_tag :nickname, @individual.nickname, class: "form-control input-sm" %>
         </div>
         <div class="col-xs-2">
           <%= label_tag :prefix,"Suffix" %>
-          <%= text_field_tag :suffix, '', class: "form-control input-sm" %>
+          <%= text_field_tag :suffix, @individual.suffix, class: "form-control input-sm" %>
         </div>
         <div class="col-xs-2">
           <%= label_tag :pedigree,"Pedigree" %>
-          <%= text_field_tag :pedigree, '', class: "form-control input-sm" %>
+          <%= text_field_tag :pedigree, @individual.pedigree, class: "form-control input-sm" %>
         </div>			
       </div>
 	  <br>
       <%= render partial: "event_edit", 
 		         locals: { eventname: "Birth", event: Event.new, autofocus: false } %>
+      <% if ! union %>	
+        <%= render partial: "event_edit", 
+	           locals: { eventname: "Marriage", event: Event.new, autofocus: true } %>		  
+	  <% end %>
 	  <br>
+   
+      <%= hidden_field_tag 'uuid', union.uid if union %>
+	  <%= hidden_field_tag 'uid', individual.uid %>	
+
 	  <div class="actions">
 	    <%= submit_tag 'create', class: "btn btn-default" %>
 	    <%= link_to 'cancel', tree_path( individual.uid ) %>
 	  </div>        		
     <% end %>	 
   </div>  	
-</div>
+</div>	  
+	  
+

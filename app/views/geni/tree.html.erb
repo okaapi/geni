@@ -1,15 +1,26 @@
-<center class="treeview">
-<table>
-  <tr><td>&nbsp;</td>
-  <td rowspan=2 valign=top style="padding:0px">	
-    <%= render partial: "parents", locals: { individual: @individual, font: @font } %>
-  </td>
-  </tr>
-  <tr><td style="padding:0px">
-	<%= render partial: "individual_and_children", locals: { individual: @individual, font: @font } %>
-  </td></tr>
-</table>
+<center class="treecontainer panel panel-success"> 
+  <div class="panel-heading">Family tree for <%= @individual.pretty_name(is_user?) %></div>
+  <br>
+  <table border=0 class="panel-body">
+    <tr>
+	  <td width=50% height=20px >&nbsp;</td>
+      <td rowspan=2 valign=top >	
+        <%= render partial: "parents", 
+		           locals: { individual: @individual, font: @font } %>
+        <div  id="editcontainer"></div>				
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:0px" valign=top align=right>
+	    <%= render partial: "individual_and_children", 
+	             locals: { individual: @individual, font: @font } %>
+
+      </td>
+    </tr>
+  </table>
+  <br>
 </center>
 
-
 <%= render partial: "footer" %>
+
+<script> $(function() { $( "#editcontainer" ).draggable(); }); </script>

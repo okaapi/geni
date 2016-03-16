@@ -1,89 +1,129 @@
+<div class="familycontainer" style="font-size: <%=font%>px;" >
+  <% if individual %>  
+    <table>	
 
-<% if individual %>
-    <table class="familyview" >	
 	  <tr align=right>
-	    <td width=50%></td>
+	    <td width=50%>
+		  <div class="halfwidth"></div>
+		</td>
 	    <td>
-	      <div <%= 'id="individualview"'.html_safe if @individual == individual %> >		    
-            <%= render partial: 'individual', locals: { individual: individual, font: font } %> 
-          </div>
+	      <%= render partial: 'individual', 
+			           locals: { individual: individual, font: font } %> 
 	    </td>  
 	  </tr>
-	  <% if @individual == individual and is_editor? %>
-	    <tr>
-	      <td colspan=2 align=right>
-	        <div id="new-marriage-container" >
-              <%= link_to 'add marriage', new_marriage_path( @individual.uid ), remote: true %>
-	        </div>
-	      </td> 
-	    </tr>
-	  <% end %>	  
+	    
 	  <tr >
-	    <td align=right colspan=2>
-		       
-	        <% individual.unions.each do |union| %>
-	          <table >
-	            <tr>
-	              <td></td>
-	              <td style="width:<%=font*7%>px">
-	              </td>
-	            </tr>	          
-	            <tr >
-	              <td colspan=2 align=right 
-	                 style="font-size: <%=font%>px;padding-right:<%=font*2%>px">  
-		            <%= marriage_symbol %>   
-		            <% if @individual == individual and is_editor? %>
+	    <td align=right colspan=2>	
+		
+          <% individual.unions.each do |union| %>
+	        <table>
+			  
+	          <tr>
+	            <td></td>
+	            <td>
+                  <div style="width:<%=font*7%>px"></div>		  
+	            </td>
+	          </tr>	          
+	
+	          <tr>
+	            <td colspan=2 align=right>  
+				  <div class="namebox">
+					<%= marriage_symbol %>
+			        <% if @individual == individual and is_editor? %>
 		              <%= link_to delete_symbol, 
-		                delete_marriage_path( individual.uid, union.uid ), class: 'xdelete',
-		                data: { confirm: 'Are you sure?' } %>				            
-		            <% end %>
-		            <%= union.marriage.date if union.marriage %>            
-		            <%= '<br>'.html_safe if union.marriage %> 		               		                       
-		            <%= link_to( union.spouse(individual.uid).pretty_name(is_user?), 
-		               tree_path( union.spouse(individual.uid).uid ) ) if union.spouse(individual.uid) %>
-                 
-	              </td>             
-	            </tr>
-	            <% if is_editor? and @individual == individual  %>
-	              <tr>
-	                <td align=right>
-	                  <div id="new-child-container" >
-                        <%= link_to 'add existing /', add_child_path( individual.uid, union.uid ), 
-                               remote: true %><%= link_to 'new child', 
-                                       new_child_path( individual.uid, union.uid ), remote: true %>                        
-	                  </div>
-	                </td> 
-	              </tr>
-	            <% end %>	            
-	            <% union.children.each do |child| %>
-	              <tr >
-	                <td align=right class="childrenview" style="font-size: <%=font%>px;">  	                
+		                       delete_marriage_path( individual.uid, union.uid ), 
+					           class: 'editlink',
+		                       data: { confirm: 'Are you sure?' } %>						
+                      <%= link_to(  (( union.marriage and union.marriage.date) ? 
+						                                  union.marriage.date : 'date n/a'), 
+		                                 union_edit_path( union.uid, individual.uid ), 
+										 class: "editlink",
+										 remote: true )  %><br>               	               
+		            <% else %>
+                      <%= union.marriage ? union.marriage.date : 'date n/a'  %><br>  
+                    <% end %>	
+					  
+					<% if union.spouse(individual.uid)  %>	
+		              <%= link_to delete_symbol, 
+		                       remove_spouse_path( individual.uid, union.uid ), 
+					           class: 'editlink',
+		                       data: { confirm: 'Are you sure?' } %>					
+					  <%= link_to( union.spouse(individual.uid).pretty_name(is_user?), 
+		                   tree_path( union.spouse(individual.uid).uid ) ) %>
+				    <% elsif @individual == individual and is_editor? %>                   							
+					  <%= link_to 'add spouse - existing /', 
+						            add_spouse_path( individual.uid, union.uid ), 
+                                    class: 'editlink', remote: true %><%= link_to 'new person', 
+                                    new_spouse_path( individual.uid, union.uid ), 
+									class: 'editlink', remote: true %>
+                          <br>									   
+					<% end %>
+				  </div>
+	            </td>             
+	          </tr>
+			
+            
+   
+	          <tr>
+				<td></td>
+				<td>
+				  <div class="childrenline"></div>
+				</td>
+			  </tr>
+
+	          <% union.children.each do |child| %>
+	            <tr >
+	              <td align=right>
+                    <div class="childrencontainer namebox">  	                
 	                  <% if font > @minfont %>
 	                    <%= render partial: "individual_and_children", 
-	                      locals: { individual: child, font: font - 2 } %>
-	                  <% else %>         
-
-	                    <%= sex_symbol( child.sex ) %>  
-		                <%= link_to( child.pretty_name(is_user?), 
-		                    tree_path( child.uid ) ) %> 
+	                        locals: { individual: child, font: font - 2 } %>
+	                 <% else %>         
+	                    <div class="namebox" style="font-size: <%=font-2%>px;">
+				          <%= sex_symbol( child.sex ) %>  
+		                  <%= link_to( child.pretty_name(is_user?), 
+		                      tree_path( child.uid ) ) %> 
+						</div>					      
 		              <% end %>                        
-	                </td>
-	                <td rowspan=1000 class='childrenline'>                
-	                </td>	                
-	              </tr>           
-	            <% end %>
+					</div>
+	              </td>	                
+	            </tr>           
+	          <% end %>
+			  
+	          <% if is_editor? and @individual == individual  %>
+	            <tr>
+	              <td align=right>
+                      <%= link_to 'add child - existing /', 
+						       add_child_path( individual.uid, union.uid ), 
+                               class: 'editlink', remote: true %><%= link_to 'new person', 
+                               new_child_path( individual.uid, union.uid ), 
+									   class: 'editlink', remote: true %>                        
+	              </td> 
+                </tr>
+	          <% end %>				  
 
-	          </table>
-	        <% end %>
-	       
-	  
+	        </table>
+	      <% end %>       	    
 	    </td> 
 	  </tr>
 
+	  <% if @individual == individual and is_editor? %>
+	    <tr>
+	      <td colspan=2 align=right>
+            <%= link_to 'add marriage with existing', 
+			     marriage_existing_path( @individual.uid ), 
+				 class: 'editlink', remote: true %><%= link_to '/ new person', 
+			     marriage_new_path( @individual.uid ), 
+				 class: 'editlink', remote: true %>
+	      </td> 
+	    </tr>
+	  <% end %>	  
+
 	</table>    
-<% else %>
+  <% else %>
 
-  <h1>You broke it! Not good.</h1>
-  <img src="/Bg_404Image.png" alt="" /> 
+    <h1>You broke it! Not good.</h1>
+    <img src="/Bg_404Image.png" alt="" /> 
 
-<% end %>
+  <% end %>
+</div>

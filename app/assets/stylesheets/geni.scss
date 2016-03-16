@@ -1,276 +1,109 @@
-// Place all the styles related to the Geni controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
-body {
-  background-color: #fff;
-  color: #333;
-  font-family: verdana, arial, helvetica, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
-}
 
-p, ol, ul, td {
-  font-family: verdana, arial, helvetica, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
-}
+/*
+ *  viewing the family tree...
+ */
+.treecontainer {
 
-td {
-  padding: 0px 10px 0px 10px;
-}
+  /*
+   *  general stuff
+   */
+  .namebox {  
+    padding: 0px 5px 0px 5px;
+    margin: 0px;
+    overflow:hidden;
+    white-space: nowrap; 
+    text-overflow: ellipsis;  }
 
-pre {
-  background-color: #eee;
-  padding: 10px;
-  font-size: 11px;
-}
-
-
-div {
-  &.field, &.actions {
-    margin-bottom: 10px;
+  .halfwidth {
+    width: 50%;
   }
-}
 
-#notice {
-  color: green;
-}
-
-.field_with_errors {
-  padding: 2px;
-  background-color: red;
-  display: table;
-}
-
-#error_explanation {
-  width: 450px;
-  border: 2px solid red;
-  padding: 7px;
-  padding-bottom: 0;
-  margin-bottom: 20px;
-  background-color: #f0f0f0;
-  h2 {
-    text-align: left;
-    font-weight: bold;
-    padding: 5px 5px 5px 15px;
-    font-size: 12px;
-    margin: -7px;
-    margin-bottom: 0px;
-    background-color: #c00;
-    color: #fff;
+  /*
+   *  the right side - parents 
+   */
+  .parentscontainer {
+    border-style: none none none solid; 
+    border-color: orange orange orange grey; 
+    border-width: 1px 1px 1px 2px;   
+	margin: 5px 0px 5px 0px;
+    .parentline {
+      width: 100%;
+      border-style: solid none none none; 
+      border-color: grey grey grey grey; 
+      border-width: 1px 1px 1px 2px; 
+    }  
   }
-  ul li {
-    font-size: 12px;
-    list-style: square;
+
+  /*
+   *  the left side - family
+   */
+  .familycontainer {
+    border:0px solid purple;
   }
-}
-
-.spinner {
-  display: inline-block;
-  opacity: 0;
-  width: 0;
-
-  -webkit-transition: opacity 0.25s, width 0.25s;
-  -moz-transition: opacity 0.25s, width 0.25s;
-  -o-transition: opacity 0.25s, width 0.25s;
-  transition: opacity 0.25s, width 0.25s;
-}
-
-.treeview td {  
-  padding: 0px;
-  margin:0px;
-  overflow:hidden;
-  white-space: nowrap; 
-  text-overflow: ellipsis;  }
-.parentsview {
-  border-style: none none none solid; 
-  border-color: lightgrey red lightgrey grey; 
-  border-width: 1px 0px 1px 2px; 
-  padding: 0px 0px 0px 0px; 
-  margin: 4px 0px 0px 0px;  
-
-  .parentline {
-  border-style: none none solid none; 
-  border-color: red grey lightgrey red; 
-  border-width: 1px 1px 1px 1px;  
-  }  
-}
-
-.treeview .childrenview {
-  margin: 50px;
-  border-style: none solid none none; 
-  border-color: red grey lightgrey red; 
-  border-width: 0px 2px 1px 0px;
-  padding: 0px 4px 0px 0px;}  
-td .familyview {
-
-  .childrenline {
-    
+  .childrenline {   
+    width: 100%;  
     border-style: solid none none none; 
     border-color: grey green lightgrey red; 
     border-width: 1px 1px 1px 1px;  
   }  
-  margin: 0px 0px 0px 0px;
-  border-style: none none none none; 
-  border-color: red grey lightgrey red; 
-  border-width: 0px 2px 1px 0px; }    
-  
-  
-#individualview {
-  background-color: #e5e4e2;
-  .individual-edit a {
-    color: rgb(255,150,150); 
-    &:hover {
-      color: red;
-    }    
+
+  .childrencontainer {
+    border-style: none solid none none; 
+    border-color: grey grey grey grey; 
+    border-width: 1px 1px 1px 2px; 
+    padding: 0px 0px 0px 0px;
+  } 
+  .currentindividualcontainer {
+    background-color: #e5e4e2;
+	border-radius: 4px;
+	border: 1px solid grey; 
+	display: inline-block;
+    padding: 0px 5px 0px 20px;	
   }
-}
-
-#show-individual {
-  padding: 5px;
-}
-
-#edit-individual {
-  padding: 5px;
-  width: 300px;
-  background-color: #e5e4e2;
-  border: 2px solid grey;
-  float: left;
-  b, small {
-    float: left;
-  }
-  .field {
-    float: left;
-    label {
-      font-size: x-small;      
-      line-height: 0.8;      
-      margin: 0px;   
-      float: left;
-    }
-    input {
-      font-size: small;      
-      margin: 0px 10px 0px 0px;    
-      float: left;
-    }    
-  }
-
-}  
-
-  .divider {
-    padding: 0px 0px 10px 0px;    
-    border-style: solid; 
-    border-color: grey; 
-    border-width: 1px 0px 0px 0px;
-    clear: both;
-  }
-  
-.xdelete {
-    color: rgb(255,150,150);
-    font-size: small;    
-    &:hover {
-      color: red;
-    }    
-}
-
-#new-marriage-container {
-  margin-top: 5px;
-  a {
+  .individualcontainer {
     padding: 5px;
-    color: rgb(255,150,150);
-    background-color: #e5e4e2;  
-    &:hover {
-      color: red;
-    }
   }
-
-}
-
-#new-marriage {
-
-  padding: 5px;
-  width: 300px;
-  background-color: #e5e4e2;
-  border: 2px solid grey;  
-  float: left;
-}
-
-#new-marriage .surnames-search {
-  .field {
-    float: left;
-    label {
-      font-size: x-small;      
-      line-height: 0.8;      
-      margin: 0px;   
-      float: left;
-    }
-    input {
-      font-size: small;      
-      margin: 0px 10px 0px 0px;    
-      float: left;
-    }    
+ 
+  /*
+   *  editing union and individual
+   */
+ 
+  #editcontainer {
+    margin: 50px 20px 20px 20px;
+    z-index: 100;  
   }
-}
-
-#new-child-container {
-  margin-top: 5px;
-  a {
+  .editlink {
     color: rgb(255,150,150);  
     padding: 5px;
     margin: 0px;
-    background-color: #e5e4e2;  
     &:hover {
       color: red;
     }    
+    &:visited {
+      color: red;
+    }  	  
   }
-
 }
 
-#new-child {
-  padding: 5px;
-  width: 300px;
-  background-color: #e5e4e2;
-  border: 2px solid grey;  
-  float: left;
-}
-
-#new-child  {
-  .field {
-    float: left;
-    label {
-      font-size: x-small;      
-      line-height: 0.8;      
-      margin: 0px;   
-      float: left;
+.search {
+  .results {
+    text-align: left;
+	.ui-widget-content {
+      padding: .5em 0;
+      overflow: hidden;
+      overflow-y: auto;
     }
-    input {
-      font-size: small;      
-      margin: 0px 10px 0px 0px;    
-      float: left;
-    }    
+    .ui-menu-item {
+	  margin: 0em 0em 0em 1em;
+      padding: .2em .6em .2em 1em;   
+      position: relative;
+      border: 0;
+        border-left: 5px solid transparent;
+    }
+    .ui-state-focus {
+      border-left-color: grey;
+    }
   }
 }
+.ui-helper-hidden-accessible { color: red;  }
 
-#new-father-container {
-  margin-top: 5px;
-  a {
-    color: rgb(255,150,150);  
-    padding: 5px;
-    margin: 0px;
-    //background-color: #e5e4e2;  
-    &:hover {
-      color: red;
-    }    
-  }
-}
-#new-mother-container {
-  margin-top: 5px;
-  a {
-    color: rgb(255,150,150);  
-    padding: 5px;
-    margin: 0px;
-    //background-color: #e5e4e2;  
-    &:hover {
-      color: red;
-    }    
-  }
-}

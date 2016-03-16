@@ -31,6 +31,7 @@ GEM
     autoprefixer-rails (6.3.3.1)
       execjs
     bcrypt (3.1.11)
+    bcrypt (3.1.11-x64-mingw32)
     bootstrap-sass (3.3.6)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
@@ -62,6 +63,7 @@ GEM
     minitest (5.8.4)
     multi_json (1.11.2)
     mysql2 (0.3.20)
+    mysql2 (0.3.20-x64-mingw32)
     rack (1.5.5)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -115,6 +117,7 @@ GEM
 
 PLATFORMS
   ruby
+  x64-mingw32
 
 DEPENDENCIES
   autoprefixer-rails
@@ -130,3 +133,6 @@ DEPENDENCIES
   turbolinks
   tzinfo-data
   uglifier
+
+BUNDLED WITH
+   1.11.2

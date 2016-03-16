@@ -1,0 +1,45 @@
+<div class="panel panel-danger">
+  <div class="panel-heading">
+	<b>Editing marriage of </b>
+	  <% if union.wife %>
+		<%= union.wife.pretty_name(is_user?) %>&nbsp;
+		<%= '('+union.wife.birth.date+')' if ( union.wife.birth and union.wife.birth.date ) %>
+	  <% else %>
+	   <%= sex_symbol( 'f' )  %> 
+	  <% end %> 
+	<b>to</b>
+	<% if union.husband %>
+	  <%= union.husband.pretty_name(is_user?) %>&nbsp;
+	      <%= '('+union.husband.birth.date+')' if union.husband.birth %>
+	<% else %>
+	   <%= sex_symbol( 'm' )  %> 
+    <% end %>	
+  </div>
+  <div class="panel-body">
+	<%= form_tag union_save_path( individual.uid, union.uid ) do  %>
+
+      <%= render partial: "event_edit", 
+		         locals: { eventname: "Marriage", event: union.marriage, autofocus: true } %>
+      <%= render partial: "event_edit", 
+		         locals: { eventname: "Divorce", event: union.divorce, autofocus: false } %>				 
+	  <br>
+	  
+	  <div class="row">
+	    <div class="col-xs-12">
+		  <%= label_tag :note, "Notes" %>
+          <%= text_area_tag :note, union.note, cols: 32, class: "form-control" %>
+        </div>	  
+	  </div>
+	  <br>
+	  
+	  <div class="actions">
+	    <small> Last edit by <%= union.user.username if union.user %> 
+		   at <%= union.updated_at.strftime("%H:%M on %-d %b %Y") if union.updated_at %> 
+	       &nbsp; &nbsp; &nbsp;</small><br>
+	    <%= submit_tag 'save', class: "btn btn-default" %>
+	    <%= link_to 'cancel', tree_path( individual.uid ) %>
+	  </div>	
+	  
+	<% end %>  
+  </div>
+</div>

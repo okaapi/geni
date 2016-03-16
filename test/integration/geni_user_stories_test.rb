@@ -1,6 +1,10 @@
 require 'test_helper'
 
+
+  
 class GeniUserStoriesTest < ActionDispatch::IntegrationTest
+  
+
   
   setup do
 
@@ -18,7 +22,7 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
   	assert !Union.all.empty?
     Union.destroy_all
     assert Union.all.empty?			
-	Import.from_gedfile('test-tree', 'test/integration/test.ged','test.ged', false)
+	Import.from_gedfile('test-tree', 'test/fixtures/test.ged','test.ged', false)
 	assert_equal Individual.all.count, 18
 	assert_equal Union.all.count, 15
   end
@@ -32,37 +36,26 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	assert_select '.container a', 'Vieser' 
 	assert_select '.container a', 'Wipplinger' 	
 	assert_select '.container a', 'Walther' 		
-	assert_select '.container a', 9
+	assert_select '.container a', 11
 	
-	get "/names/Menhardt"
+	get "/names_for_surname", surname: 'Menhardt'
 	assert_response :success
 	assert_select '.container a', 'W. M.', 2
 	assert_select '.container a', 'Lars'
-	assert_select '.container a', 8
+	assert_select '.container a', 10
 	
 	i = Individual.where( given: 'Wido', surname: 'Menhardt').order( ver: :asc).last
 	get "/" + i.uid
 	assert_response :success
-	assert_select '#show-individual  a', 'W. M.'
-	
-	
+	assert_select '.currentindividualcontainer  a', 'W. M.'
+		
   end
   
   
   
   test "logged in as user get surnames, first names and tree" do
 
-    # enters correct password and gets logged in and session is created
-    if @not_java
-      post "/_prove_it", claim: "arnaud", xylophone: "secret"
-      assert_redirected_to root_path
-    else
-      xhr :post, "/_prove_it", claim: "arnaud", xylophone: "secret"
-      assert_response :success
-    end
-    assert_equal flash[:notice], 'arnaud logged in'
-    get "/"
-    assert_response :success
+    user_login
 	
     get  "/" 	
     assert_response :success
@@ -70,19 +63,19 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	assert_select '.container a', 'Vieser' 
 	assert_select '.container a', 'Wipplinger' 	
 	assert_select '.container a', 'Walther' 		
-	assert_select '.container a', 8
+	assert_select '.container a', 10
 	
-	get "/names/Menhardt"
+	get "/names_for_surname", surname: 'Menhardt'
 	assert_response :success
 	assert_select '.container a', 'Wido'
 	assert_select '.container a', 'walther'	
 	assert_select '.container a', 'Lars'
-	assert_select '.container a', 7
+	assert_select '.container a', 9
 	
 	i = Individual.where( given: 'Wido', surname: 'Menhardt').order( ver: :asc).last
 	get "/" + i.uid
 	assert_response :success
-	assert_select '#show-individual  a', 'Wido Menhardt'
+	assert_select '.currentindividualcontainer  a', 'Wido Menhardt'
 	
   end
   
@@ -98,17 +91,7 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
  
   test "logged in as user - trying to access user page" do
   
-    # enters correct password and gets logged in and session is created
-    if @not_java
-      post "/_prove_it", claim: "arnaud", xylophone: "secret"
-      assert_redirected_to root_path
-    else
-      xhr :post, "/_prove_it", claim: "arnaud", xylophone: "secret"
-      assert_response :success
-    end
-    assert_equal flash[:notice], 'arnaud logged in'
-    get "/"
-    assert_response :success
+    user_login
 	
     # should NOT get users (only as admin)
     get_via_redirect "/users"
@@ -120,6 +103,34 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
   
   test "logged in as admin - trying to access user page" do
   
+    admin_login
+	
+    # should get users (only as admin)
+    get_via_redirect "/users"
+    assert_response :success
+	
+	assert_select 'a', 'wido_admin'
+	assert_select 'td', 'arnaud@gmail.com'
+	
+  end  
+  
+  private
+  
+  def user_login
+    # enters correct password and gets logged in and session is created
+    if @not_java
+      post "/_prove_it", claim: "arnaud", xylophone: "secret"
+      assert_redirected_to root_path
+    else
+      xhr :post, "/_prove_it", claim: "arnaud", xylophone: "secret"
+      assert_response :success
+    end
+    assert_equal flash[:notice], 'arnaud logged in'
+    get "/"
+    assert_response :success
+  end	
+  
+  def admin_login
     # enters correct password and gets logged in and session is created
     if @not_java
       post "/_prove_it", claim: "wido_admin", xylophone: "secret"
@@ -130,15 +141,7 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
     end
     assert_equal flash[:notice], 'wido_admin logged in'
     get "/"
-    assert_response :success
-	
-    # should get users (only as admin)
-    get_via_redirect "/users"
-    assert_response :success
-	
-	assert_select 'a', 'wido_admin'
-	assert_select 'td', 'arnaud@gmail.com'
-	
-  end  
+    assert_response :success  
+  end
  
 end

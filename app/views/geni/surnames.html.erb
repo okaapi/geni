@@ -1,7 +1,7 @@
 <h1>Last names...</h1>
 
 <% @surnames.each_with_index do |surname,index| %>
-  <%= link_to( surname, names_path( surname: surname ) ) %> 
+  <%= link_to( surname, names_for_surname_path( surname: surname ) ) %> 
     <%= '|' if index < @surnames.count-1 %> 
 <% end %>
 

@@ -1,47 +1,66 @@
-<div id="edit-individual">
-	<b>editing <%= individual.pretty_name( is_user? ) %>... </b><br><br>
+<div class="panel panel-danger">
+  <div class="panel-heading">
 
-	
+	<b>Editing</b> <%= individual.pretty_name( is_user? ) %> 
+  </div>
+  <div class="panel-body">
 	<%= form_tag save_path( @individual.uid ) do  %>
-	  <% if @individual.errors.any? %>
-	    <div id="error_explanation">
-	      <h2><%= pluralize(@individual.errors.count, "error") %> prohibited this individual from being saved:</h2>
-	
-	      <ul>
-	      <% @individual.errors.full_messages.each do |message| %>
-	        <li><%= message %></li>
-	      <% end %>
-	      </ul>
-	    </div>
-	  <% end %>
 
-      <%= text_field :given, @individual.given, 8  %>  
-      <%= text_field :surname, @individual.surname %>
-
-	  <div class="divider"></div>
-      <%= text_field :prefix, @individual.prefix %>
-      <%= text_field :nickname, @individual.nickname %>  
-      <%= text_field :suffix, @individual.suffix %>
-      <%= text_field :sex, @individual.sex %>
-      <%= text_field :pedigree, @individual.pedigree %>
+	  <div class="row">
+        <div class="col-xs-4">
+          <%= label_tag :given,"Given" %>
+          <%= text_field_tag :given, @individual.given,
+                             class: "form-control input-sm", autofocus: true %>
+        </div>
+        <div class="col-xs-6">
+          <%= label_tag :surname, "Surname" %>
+          <%= text_field_tag :surname, @individual.surname,
+                             class: "form-control input-sm" %>
+        </div>
+      </div>	
+	  <div class="row">
+        <div class="col-xs-2">
+          <%= label_tag :prefix,"Prefix" %>
+          <%= text_field_tag :prefix, @individual.prefix, class: "form-control input-sm" %>
+        </div>
+        <div class="col-xs-2">
+          <%= label_tag :prefix,"Nickname" %>
+          <%= text_field_tag :nickname, @individual.nickname, class: "form-control input-sm" %>
+        </div>
+        <div class="col-xs-2">
+          <%= label_tag :prefix,"Suffix" %>
+          <%= text_field_tag :suffix, @individual.suffix, class: "form-control input-sm" %>
+        </div>
+        <div class="col-xs-2">
+          <%= label_tag :sex,"M/F" %>
+          <%= text_field_tag :sex, @individual.sex, class: "form-control input-sm" %>
+        </div>	
+        <div class="col-xs-2">
+          <%= label_tag :pedigree,"Pedigree" %>
+          <%= text_field_tag :pedigree, @individual.pedigree, class: "form-control input-sm" %>
+        </div>			
+      </div>
+	  <br>
+      <%= render partial: "event_edit", 
+		         locals: { eventname: "Birth", event: individual.birth, autofocus: false } %>
+      <%= render partial: "event_edit", 
+		         locals: { eventname: "Death", event: individual.death, autofocus: false } %>				 
+	  <br>
 	  
-	  <div class="divider"></div>
-	  <%= event_field 'Birth', @individual.birth %>
-	  <%= event_field 'Death', @individual.death %>
-       
-	  <div class="divider"></div>	  
-	  <div class="field">
-	    <%= label_tag "Notes" %><br>
-	    <%= text_area_tag :note, @individual.note, cols: 32 %>
-	  </div>      
-	  
-	  <div class="divider"></div>  
-	  
+	  <div class="row">
+	    <div class="col-xs-12">
+		  <%= label_tag :note, "Notes" %>
+          <%= text_area_tag :note,  individual.note, cols: 32, class: "form-control" %>
+        </div>	  
+	  </div>
+	  <br>
 	  <div class="actions">
-	    <small> Last edit by <%= @individual.user.username if @individual.user %> at <%= @individual.updated_at.strftime("%H:%M on %-d %b %Y") %> 
+	    <small> Last edit by <%= individual.user.username if individual.user %> 
+		   at <%= individual.updated_at.strftime("%H:%M on %-d %b %Y") if individual.updated_at %> 
 	       &nbsp; &nbsp; &nbsp;</small><br>
-	    <%= submit_tag 'save' %>
-	    <%= link_to 'cancel', tree_path( @individual.uid ) %>
-	  </div>	  
+	    <%= submit_tag 'save', class: "btn btn-default" %>
+	    <%= link_to 'cancel', tree_path( individual.uid ) %>
+	  </div>
+	  
 	<% end %>  
 </div>

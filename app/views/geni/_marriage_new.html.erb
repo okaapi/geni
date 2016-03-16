@@ -1,12 +1,12 @@
 
 <div class="panel panel-danger">
   <div class="panel-heading">
-    <b>Create new person as child of </b><%= individual.pretty_name(is_user?) %> <b>and </b>
-        <%= ( union.spouse( individual.uid ) ? 
-		        union.spouse( individual.uid ).pretty_name(is_user?) : '?' ) %>
+    <b>Create new person as spouse for </b>
+    <%= individual.pretty_name(is_user?) %> 
+		  
   </div>
   <div class="panel-body">
-    <%= form_tag create_new_child_path do %>
+    <%= form_tag save_marriage_new_path do %>
   
 	  <div class="row">
         <div class="col-xs-4">
@@ -16,12 +16,13 @@
         </div>
         <div class="col-xs-6">
           <%= label_tag :surname, "Surname" %>
-          <%= text_field_tag :surname, individual.surname ,
+          <%= text_field_tag :surname, '' ,
                              class: "form-control input-sm" %>
         </div>
         <div class="col-xs-2">
           <%= label_tag :sex,"M/F" %>
-          <%= text_field_tag :sex, '', class: "form-control input-sm" %>
+          <%= text_field_tag :sex, ( individual.male? ? 'F': 'M' ),
+                      class: "form-control input-sm" %>
         </div>			
       </div>
 	  <div class="row">
@@ -45,6 +46,8 @@
 	  <br>
       <%= render partial: "event_edit", 
 		         locals: { eventname: "Birth", event: Event.new, autofocus: false } %>
+      <%= render partial: "event_edit", 
+	            locals: { eventname: "Marriage", event: Event.new, autofocus: true } %>					 
 	  <br>
 	  <div class="actions">
 	    <%= submit_tag 'create', class: "btn btn-default" %>
