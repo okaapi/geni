@@ -29,35 +29,37 @@
 	            <td colspan=2 align=right>  
 				  <div class="namebox">
 					<%= marriage_symbol %>
-			        <% if @individual == individual and is_editor? %>
-		              <%= link_to delete_symbol, 
-		                       delete_marriage_path( individual.uid, union.uid ), 
-					           class: 'editlink',
-		                       data: { confirm: 'Are you sure?' } %>						
-                      <%= link_to(  (( union.marriage and union.marriage.date) ? 
-						                                  union.marriage.date : 'date n/a'), 
-		                                 union_edit_path( union.uid, individual.uid ), 
-										 class: "editlink",
-										 remote: true )  %><br>               	               
-		            <% else %>
-                      <%= union.marriage ? union.marriage.date : 'date n/a'  %><br>  
-                    <% end %>	
-					  
-					<% if union.spouse(individual.uid)  %>	
-		              <%= link_to delete_symbol, 
-		                       remove_spouse_path( individual.uid, union.uid ), 
-					           class: 'editlink',
-		                       data: { confirm: 'Are you sure?' } %>					
+					<% if union.spouse(individual.uid)  %>					
 					  <%= link_to( union.spouse(individual.uid).pretty_name(is_user?), 
 		                   tree_path( union.spouse(individual.uid).uid ) ) %>
+		              <% if @individual == individual and is_editor? %>
+		                <%= link_to( delete_symbol, 
+		                         remove_spouse_path( individual.uid, union.uid ), 
+					             class: 'editlink',
+		                         data: { confirm: 'Are you sure?' } )  %>
+		              <% end %>		                   
 				    <% elsif @individual == individual and is_editor? %>                   							
 					  <%= link_to 'add spouse - existing /', 
 						            add_spouse_path( individual.uid, union.uid ), 
                                     class: 'editlink', remote: true %><%= link_to 'new person', 
                                     new_spouse_path( individual.uid, union.uid ), 
-									class: 'editlink', remote: true %>
-                          <br>									   
-					<% end %>
+									class: 'editlink', remote: true %>                       								   
+					<% end %>	
+				  </div>
+				  <div class="namebox">									
+			        <% if @individual == individual  %>				
+                      <%= link_to(  (( union.marriage and union.marriage.date) ? 
+						                                  union.marriage.date : 'date n/a'), 
+		                                 union_edit_path( union.uid, individual.uid ), 
+										 class: "editlink",
+										 remote: true )  %>
+		              <%= link_to( delete_symbol, 
+		                       delete_marriage_path( individual.uid, union.uid ), 
+					           class: 'editlink',
+		                       data: { confirm: 'Are you sure?' } ) if is_editor? %>												                	               
+		            <% else %>
+                      <%= union.marriage ? union.marriage.date : 'date n/a'  %>
+                    <% end %>	
 				  </div>
 	            </td>             
 	          </tr>

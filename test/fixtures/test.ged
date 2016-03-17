@@ -1,0 +1,182 @@
+﻿0 HEAD
+1 SOUR PAF
+2 NAME Personal Ancestral File
+2 VERS 5.2.18.0
+2 CORP The Church of Jesus Christ of Latter-day Saints
+3 ADDR 50 East North Temple Street
+4 CONT Salt Lake City, UT 84150
+4 CONT USA
+1 DEST Other
+1 DATE 4 Apr 2006
+2 TIME 21:43:54
+1 FILE stammbaum.ged
+1 GEDC
+2 VERS 5.5
+2 FORM LINEAGE-LINKED
+1 CHAR UTF-8
+1 LANG English
+1 SUBM @SUB1@
+0 @SUB1@ SUBM
+0 @I1@ INDI
+1 NAME Joe /Miller/
+2 SURN 
+2 GIVN Joe
+1 SEX M
+1 BIRT
+2 DATE 27 Feb 1995
+2 PLAC Calgary,Canada
+1 FAMC @F1@
+0 @I2@ INDI
+1 NAME Jack /Miller/
+2 SURN Miller
+2 GIVN Jack
+1 SEX M
+1 BIRT
+2 DATE 21 Aug 1958
+2 PLAC Frankfurt
+1 FAMS @F1@
+1 FAMC @F2@
+0 @I3@ INDI
+1 NAME Walther /Miller/
+2 SURN Miller
+2 GIVN walther
+1 SEX M
+1 BIRT
+2 DATE 17 May 1935
+2 PLAC Wien,Oesterreich
+1 FAMS @F2@
+1 FAMC @F3@
+0 @I4@ INDI
+1 NAME Hermann /Miller/
+2 SURN Miller
+2 GIVN 
+1 SEX M
+1 BIRT
+2 DATE 21 Dec 1878
+2 PLAC Bludenz, Vorarlberg
+1 DEAT
+2 DATE 4 Apr 1953
+2 PLAC Linz, Oesterreich
+1 FAMS @F3@
+1 FAMC @F553@
+0 @I5@ INDI
+1 NAME Johanna /Viss/
+2 SURN Viss
+2 GIVN Joan
+2 NICK Omuli
+1 SEX F
+1 BIRT
+2 DATE 30 Dec 1891
+2 PLAC Karlsruhe
+1 DEAT
+2 DATE 1 Nov 1987
+2 PLAC Wien, Oesterreich
+1 FAMS @F3@
+1 FAMC @F4@
+0 @I6@ INDI
+1 NAME Leon /Miller/
+2 SURN Miller
+2 GIVN Leon
+1 SEX M
+1 BIRT
+2 DATE 14 Apr 1990
+2 PLAC Los Altos, California
+1 DEAT
+2 DATE 25 Oct 1991
+2 PLAC Los Altos, California
+1 FAMC @F1@
+1 CHAN
+2 DATE 29 Jan 2006
+3 TIME 00:00:00
+0 @I7@ INDI
+1 NAME Maya /Smith/
+2 SURN Smith
+2 GIVN Maya
+1 SEX F
+1 BIRT
+2 DATE 20 Jun 1934
+2 PLAC Paris,Deutschland
+1 FAMS @F2@
+1 FAMC @F5@
+1 CHAN
+2 DATE 25 Oct 2005
+3 TIME 01:00:00
+0 @I8@ INDI
+1 NAME Gerald Ernst /Smith/
+2 SURN Smith
+2 GIVN Gerald Ernst
+1 SEX M
+1 BIRT
+2 DATE 21 Aug 1911
+2 PLAC Strassburg
+1 DEAT
+2 DATE 3 Apr 1993
+2 PLAC Munich
+1 FAMS @F5@
+1 FAMC @F6@
+0 @I9@ INDI
+1 NAME Christian /Smith/
+2 SURN Smith
+2 GIVN Christian
+1 SEX M
+1 BIRT
+2 DATE 19 Jul 1876
+1 FAMS @F6@
+1 FAMC @F7@
+0 @I10@ INDI
+1 NAME Laura /Walther/
+2 SURN Walther
+2 GIVN Laura
+2 NICK Laurie
+1 SEX F
+1 BIRT
+2 DATE 14 Jun 1911
+2 PLAC Kiel,Deutschland
+1 DEAT
+2 DATE 1 Jul 1992
+2 PLAC Chicago
+1 FAMS @F5@
+0 @F1@ FAM
+1 HUSB @I2@
+1 CHIL @I1@
+1 CHIL @I6@
+1 MARR
+2 DATE 19 Oct 1992
+2 PLAC Rome
+0 @F2@ FAM
+1 HUSB @I3@
+1 WIFE @I7@
+1 CHIL @I2@
+1 MARR
+2 DATE 18 Oct 1958
+2 PLAC Prague
+0 @F3@ FAM
+1 HUSB @I4@
+1 WIFE @I5@
+1 CHIL @I3@
+1 MARR
+2 DATE 1918
+2 PLAC prob Karlsruhe
+0 @F4@ FAM
+1 CHIL @I5@
+0 @F5@ FAM
+1 HUSB @I8@
+1 WIFE @I10@
+1 CHIL @I7@
+1 MARR
+2 DATE 23 May 1933
+2 PLAC Paris
+0 @F6@ FAM
+1 HUSB @I9@
+1 CHIL @I8@
+1 MARR
+2 DATE 29 Sep 1910
+2 PLAC Berlin, Germany
+1 SOUR @S211@
+0 @F7@ FAM
+1 CHIL @I9@
+0 @REPO1@ REPO
+0 @REPO2@ REPO
+0 @REPO3@ REPO
+0 @REPO4@ REPO
+0 TRLR

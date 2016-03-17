@@ -186,7 +186,7 @@ class GeniControllerTest < ActionController::TestCase
 	@spouse = Individual.find_by_given( "Mary" )
 	assert_equal @individual.unions.count, 0
 	post :save_marriage_existing, uid: @individual.uid, uuid: nil,
-	     'names-search-uid': @spouse.uid,
+	     'names-search-uid' => @spouse.uid,
 		 Marriagedate: '17 Mar 1987', Marriagelocation: 'Rome'
     assert_redirected_to root_path + @individual.uid.to_s		
 
@@ -279,7 +279,7 @@ class GeniControllerTest < ActionController::TestCase
 	@spouse = Individual.new( name: 'Marc')
 	@spouse.save
 	post :save_added_spouse, uid: @individual.uid, uuid: @union.uid,
-	     'names-search-uid': @spouse.uid
+	     'names-search-uid' => @spouse.uid
     assert_redirected_to root_path + @individual.uid.to_s	
 
     spouse = assigns(:spouse)
@@ -349,7 +349,7 @@ class GeniControllerTest < ActionController::TestCase
 	@child = Individual.new( name: 'New Child')
 	@child.save
 	post :save_added_child, uid: @individual.uid, uuid: @union.uid,
-	     'names-search-uid': @child.uid
+	     'names-search-uid' => @child.uid
     assert_redirected_to root_path + @individual.uid.to_s	
 
     child = assigns(:child)

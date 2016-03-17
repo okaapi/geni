@@ -74,22 +74,8 @@ class Individual < ActiveRecord::Base
     end 
   end
     
-  def self.all_by_uid_old
-    
-    uid_groups = Individual.group( :uid )
-    arr = []
-    uid_groups.each do |u|
-      arr << Individual.by_uid( u.uid )
-    end
-    arr
-  end
-  
   def self.all_by_uid
-    sql = "select id from individuals where (uid, ver) in (select uid, max(ver) from individuals group by uid) ;"
-    res = ActiveRecord::Base.connection.execute(sql)
-    array_of_ids = []
-    res.each {|r| array_of_ids << r[0]}
-    Individual.find( array_of_ids )
+    self.all_by_uid_old
   end  
   
   def self.surnames( term = '' )
@@ -104,75 +90,12 @@ class Individual < ActiveRecord::Base
     arr
   end  
 
-  def self.names_for_surname_old( surname, is_user )
-    uid_groups = Individual.where( surname: surname ).group( :uid ).order( given: :asc )
-    arr = []	
-    uid_groups.each do |u|
-	  indi = Individual.by_uid( u.uid )
-	  given = indi.pretty_first_name( is_user )
-      arr << { fullname: indi.pretty_name( is_user ), given: given, 
-	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ), ver: indi.ver }
-    end
-    arr  
-  end
-  
-  def self.names_for_surname( surname, is_user )
-    sql = "select id, right(uid,5), ver from individuals where (uid, ver) in (select uid, max(ver) from individuals where surname = '#{surname}' group by uid) order by given, ver ASC;"
-    res = ActiveRecord::Base.connection.execute(sql)
-    array_of_ids = []
-    res.each {|r| array_of_ids << r[0]}
-    indis = Individual.find( array_of_ids )
-    indis.sort! {|a,b| a.given <=> b.given }
-	arr = []
-    indis.each do |indi|
-      arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
-	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ), ver: indi.ver }
- 	end
-    arr  
+  def self.names_for_surname( surname, is_user)
+    self.names_for_surname_old( surname, is_user )
   end
 
-  def self.names_for_term_old( searchterm, is_user )
-    terms = searchterm.split(' ')
-    sql = ""
-	terms.each_with_index do |term,index|
-	  sql = sql + "(surname LIKE '%#{term}%' or given LIKE '%#{term}%')"
-	  sql = sql + " and "  if index < terms.count-1
-    end
-
-    uid_groups = Individual.where( sql ).group( :uid ).order( given: :asc )
-    arr = []
-	uid_groups.each do |u|
-	  indi = Individual.by_uid( u.uid )
-      arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
-	           ver: indi.ver,
-	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ) }
-    end
-    arr 
-  end  
-  
   def self.names_for_term( searchterm, is_user )
-    terms = searchterm.split(' ')
-    search_sql = ""
-	terms.each_with_index do |term,index|
-	  search_sql = search_sql + "(surname LIKE '%#{term}%' or given LIKE '%#{term}%')"
-	  search_sql = search_sql + " and "  if index < terms.count-1
-    end
-	
-	sql = "select id, right(uid,5), ver from individuals where (uid, ver) in (select uid, max(ver) from individuals where (#{search_sql}) group by uid) order by given, ver ASC;"
-    res = ActiveRecord::Base.connection.execute(sql)
-	array_of_ids = []
-    res.each {|r| array_of_ids << r[0]}
-    indis = Individual.find( array_of_ids )
-    indis.sort! {|a,b| (a.given ? a.given : '') <=> (b.given ? b.given : '') }
-	arr = []
-    indis.each do |indi|
-	  if !indi.living? || is_user
-        arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
-	             ver: indi.ver,
-	             uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ) }
-      end
-    end
-    arr  
+    self.names_for_term_old( searchterm, is_user )
   end
   
   def update_death( params )
@@ -193,23 +116,8 @@ class Individual < ActiveRecord::Base
     end
   end  
  
-  def unions_old
-    uid_groups = Union.where( "husband_uid = ? OR wife_uid = ?", self.uid, self.uid ).group( :uid )
-    union_arr = []
-    uid_groups.each do |u|
-      union_arr << Union.by_uid( u.uid )
-    end
-    union_arr
-  end
-
-
   def unions
-    sql = "select id, right(uid,5), ver from unions where (uid, ver) in (select uid, max(ver) from unions where (husband_uid = '#{uid}' or wife_uid = '#{uid}') group by uid);"
-    res = ActiveRecord::Base.connection.execute(sql)
-    array_of_ids = []
-    res.each {|r| array_of_ids << r[0]}
-    unions = Union.find( array_of_ids )
-    unions.sort {|a,b| Event.compare_dates( a.marriage, b.marriage, true ) }
+    unions_old
   end
   
   def parents=( u )
@@ -263,6 +171,115 @@ class Individual < ActiveRecord::Base
     
   end
  
+  #
+  #  these should be private, this is for testing
+  #
+  
+  def self.all_by_uid_old  
+    uid_groups = Individual.group( :uid )
+    arr = []
+    uid_groups.each do |u|
+      arr << Individual.by_uid( u.uid )
+    end
+    arr
+  end
+  
+  def self.all_by_uid_new
+    sql = "select id from individuals where (uid, ver) in (select uid, max(ver) from individuals group by uid) ;"
+    res = ActiveRecord::Base.connection.execute(sql)
+    array_of_ids = []
+    res.each {|r| array_of_ids << r[0]}
+    Individual.find( array_of_ids )
+  end 
+  
+  def unions_old
+    uid_groups = Union.where( "husband_uid = ? OR wife_uid = ?", self.uid, self.uid ).group( :uid )
+    union_arr = []
+    uid_groups.each do |u|
+      union_arr << Union.by_uid( u.uid )
+    end
+    union_arr
+  end
+
+  def unions_new
+    sql = "select id, right(uid,5), ver from unions where (uid, ver) in (select uid, max(ver) from unions where (husband_uid = '#{uid}' or wife_uid = '#{uid}') group by uid);"
+    res = ActiveRecord::Base.connection.execute(sql)
+    array_of_ids = []
+    res.each {|r| array_of_ids << r[0]}
+    unions = Union.find( array_of_ids )
+    unions.sort {|a,b| Event.compare_dates( a.marriage, b.marriage, true ) }
+  end
+  
+  def self.names_for_surname_old( surname, is_user )
+    uid_groups = Individual.where( surname: surname ).group( :uid ).order( given: :asc )
+    arr = []	
+    uid_groups.each do |u|
+	  indi = Individual.by_uid( u.uid )
+	  given = indi.pretty_first_name( is_user )
+      arr << { fullname: indi.pretty_name( is_user ), given: given, 
+	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ), ver: indi.ver }
+    end
+    arr  
+  end
+  
+  def self.names_for_surname_new( surname, is_user )
+    sql = "select id, right(uid,5), ver from individuals where (uid, ver) in (select uid, max(ver) from individuals where surname = '#{surname}' group by uid) order by given, ver ASC;"
+    res = ActiveRecord::Base.connection.execute(sql)
+    array_of_ids = []
+    res.each {|r| array_of_ids << r[0]}
+    indis = Individual.find( array_of_ids )
+    indis.sort! {|a,b| a.given <=> b.given }
+	arr = []
+    indis.each do |indi|
+      arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
+	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ), ver: indi.ver }
+ 	end
+    arr  
+  end
     
+  def self.names_for_term_old( searchterm, is_user )
+    terms = searchterm.split(' ')
+    sql = ""
+	terms.each_with_index do |term,index|
+	  sql = sql + "(surname LIKE '%#{term}%' or given LIKE '%#{term}%')"
+	  sql = sql + " and "  if index < terms.count-1
+    end
+
+    uid_groups = Individual.where( sql ).group( :uid ).order( given: :asc )
+    arr = []
+	uid_groups.each do |u|
+	  indi = Individual.by_uid( u.uid )
+      arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
+	           ver: indi.ver,
+	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ) }
+    end
+    arr 
+  end  
+  
+  def self.names_for_term_new( searchterm, is_user )
+    terms = searchterm.split(' ')
+    search_sql = ""
+	terms.each_with_index do |term,index|
+	  search_sql = search_sql + "(surname LIKE '%#{term}%' or given LIKE '%#{term}%')"
+	  search_sql = search_sql + " and "  if index < terms.count-1
+    end
+	
+	sql = "select id, right(uid,5), ver from individuals where (uid, ver) in (select uid, max(ver) from individuals where (#{search_sql}) group by uid) order by given, ver ASC;"
+    res = ActiveRecord::Base.connection.execute(sql)
+	array_of_ids = []
+    res.each {|r| array_of_ids << r[0]}
+    indis = Individual.find( array_of_ids )
+    indis.sort! {|a,b| (a.given ? a.given : '') <=> (b.given ? b.given : '') }
+	arr = []
+    indis.each do |indi|
+	  if !indi.living? || is_user
+        arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
+	             ver: indi.ver,
+	             uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ) }
+      end
+    end
+    arr  
+  end
+      
 end
 

@@ -32,19 +32,19 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 
     get  "/" 	
     assert_response :success
-    assert_select '.container a', 'Menhardt'   
-	assert_select '.container a', 'Vieser' 
-	assert_select '.container a', 'Wipplinger' 	
+    assert_select '.container a', 'Miller'   
+	assert_select '.container a', 'Smith' 
+	assert_select '.container a', 'Viss' 	
 	assert_select '.container a', 'Walther' 		
-	assert_select '.container a', 11
-	
-	get "/names_for_surname", surname: 'Menhardt'
-	assert_response :success
-	assert_select '.container a', 'W. M.', 2
-	assert_select '.container a', 'Lars'
 	assert_select '.container a', 10
 	
-	i = Individual.where( given: 'Wido', surname: 'Menhardt').order( ver: :asc).last
+	get "/names_for_surname", surname: 'Miller'
+	assert_response :success
+	assert_select '.container a', 'W. M.', 2
+	assert_select '.container a', 'Leon'
+	assert_select '.container a', 10
+	
+	i = Individual.where( given: 'Walther', surname: 'Miller').order( ver: :asc).last
 	get "/" + i.uid
 	assert_response :success
 	assert_select '.currentindividualcontainer  a', 'W. M.'
@@ -59,23 +59,23 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	
     get  "/" 	
     assert_response :success
-    assert_select '.container a', 'Menhardt'   
-	assert_select '.container a', 'Vieser' 
-	assert_select '.container a', 'Wipplinger' 	
+    assert_select '.container a', 'Miller'   
+	assert_select '.container a', 'Smith' 
+	assert_select '.container a', 'Viss' 	
 	assert_select '.container a', 'Walther' 		
-	assert_select '.container a', 10
-	
-	get "/names_for_surname", surname: 'Menhardt'
-	assert_response :success
-	assert_select '.container a', 'Wido'
-	assert_select '.container a', 'walther'	
-	assert_select '.container a', 'Lars'
 	assert_select '.container a', 9
 	
-	i = Individual.where( given: 'Wido', surname: 'Menhardt').order( ver: :asc).last
+	get "/names_for_surname", surname: 'Miller'
+	assert_response :success
+	assert_select '.container a', 'Jack'
+	assert_select '.container a', 'walther'	
+	assert_select '.container a', 'Leon'
+	assert_select '.container a', 9
+	
+	i = Individual.where( given: 'Walther', surname: 'Miller').order( ver: :asc).last
 	get "/" + i.uid
 	assert_response :success
-	assert_select '.currentindividualcontainer  a', 'Wido Menhardt'
+	assert_select '.currentindividualcontainer  a', 'Walther Miller'
 	
   end
   

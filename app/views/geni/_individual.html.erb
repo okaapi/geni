@@ -7,7 +7,7 @@
     <% if @individual == individual and is_editor? %>
       <%= link_to( individual.pretty_name(is_user?), 
 	        edit_path( individual.uid ), 
-		    remote: true, class: "editlink" ) if individual %>	               	               
+		    remote: true, class: "individualeditlink" ) if individual %>	               	               
     <% else %>
 	  <%= link_to( individual.pretty_name(is_user?),
 	               tree_path( individual.uid ) ) if individual %>	

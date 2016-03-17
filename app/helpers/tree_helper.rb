@@ -15,7 +15,7 @@ module TreeHelper
     "<span style=''>&#8734;</span>".html_safe
   end
   def delete_symbol
-    '<i class="glyphicon glyphicon-remove-circle"></i>'.html_safe
+    '<i style="font-size:smaller" class="glyphicon glyphicon-remove-circle"></i>'.html_safe
   end
   
   def geni_text_field( field_name, field, size = nil  )

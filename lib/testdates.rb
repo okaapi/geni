@@ -50,11 +50,9 @@ end
 
 dates.each do |dstring|
 
-  date, year = parse_date( dstring )
-  puts
-  #puts "#{dstring} => ->#{date}<-  (guessed year; #{year})"
-  puts "date, year = Event.parse_date( dstring )"
-  puts "assert_equal date, #{date}"
+  e = Event.new( rawdate: dstring )  
+  puts "e = Event.new( rawdate: \"#{dstring}\" )"
+  puts "assert_equal e.date, \"#{e.date}\""
 
 end 
 
