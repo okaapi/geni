@@ -247,11 +247,13 @@ class Individual < ActiveRecord::Base
 
     uid_groups = Individual.where( sql ).group( :uid ).order( given: :asc )
     arr = []
-	uid_groups.each do |u|
+	uid_groups.each do |u|	
 	  indi = Individual.by_uid( u.uid )
-      arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
+	  if !indi.living? || is_user
+        arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
 	           ver: indi.ver,
 	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ) }
+	  end
     end
     arr 
   end  
