@@ -1,29 +1,14 @@
 
-<table align=center>
-  <tr><td>
-  	<h1>Create New Person</h1>
-	<br>
-  </td></tr>  
-  <tr><td>  
-	<div id="new-child-container" >
-		<div id="new-child">
-		  <%= form_tag create_person_path do %>
-		    <%= geni_text_field :given, '', 10 %>    
-		    <%= geni_text_field :surname, '', 12 %>
-		    <%= geni_text_field :sex, '' %>     
-					    
-		    <div class="divider"></div>
-		    <%= geni_event_field 'Birth', Event.new %>	
-		
-		    <div class="divider"></div>	          
-		    <%= submit_tag 'create' %>
-		    <%= link_to 'cancel', root_path %>	          		
-		  <% end %>	    
-		</div>
-	</div>
-  </td></tr>
-</table>
 
-<div style="clear:both"></div>	 
+<div class="row">
+  <div class="col-xs-3">
+  </div>
+  <div class="col-xs-6">
+    <%= render partial: 'edit', locals: { individual: @individual } %> 
+  </div>	
+  <div class="col-xs-3">
+  </div>      
+</div>	
+
 
 <%= render partial: "footer" %>

@@ -11,7 +11,7 @@ module Admin
 	  end
 	
 	  # GET /all_unions_by_uid
-	  def all_by_uid
+	  def all_unions_by_uid
 	    @unions = Union.all_by_uid
 	    
 	    if params[:marriage_sorted] 
@@ -23,7 +23,7 @@ module Admin
 	  end
 	  
 	  # GET /union_by_uid
-	  def by_uid
+	  def union_by_uid
 	    @union = Union.by_uid( params[:uid] )
 	  end  
 	  

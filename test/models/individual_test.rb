@@ -76,18 +76,17 @@ class IndividualTest < ActiveSupport::TestCase
   
     assert Individual.all.count, 0
     wido = Individual.create( name: 'Wido' )
-    wido.birth = Event.new( rawdate: 'October 2nd 1959' )
+    wido.birth = Event.new( rawdate: 'October 2nd 1859' )
     uid = wido.uid    
     wido.save
     
     wido2 = Individual.by_uid( uid )
-    assert_equal wido2.birth.date, '2 Oct 1959'
+    assert_equal wido2.birth.date, '2 Oct 1859'
     
+    assert_equal wido2.living?, false
   end
   
   test "add and change death" do
-  
-
 	
     assert Individual.all.count, 0
     paul = Individual.create( name: 'Paul' )
@@ -110,5 +109,41 @@ class IndividualTest < ActiveSupport::TestCase
     assert_equal Event.all.count, 2
     
   end  
+  
+  test "compare names" do
+    paul = Individual.create( given: 'Paul', surname: 'Smith' )
+    peter = Individual.create( given: 'Peter', surname: 'Smith' )
+    smith = Individual.create( surname: 'Smith' )
+    assert_equal Individual.compare_names( paul, peter, true ), -1
+    assert_equal Individual.compare_names( paul, peter, false ), -1    
+    assert_equal Individual.compare_names( peter, paul, true ), 1
+    assert_equal Individual.compare_names( paul, smith, true ), -1
+    assert_equal Individual.compare_names( paul, smith, false ), -1    
+    assert_equal Individual.compare_names( smith, paul, true ), 1
+    assert_equal Individual.compare_names( smith, smith, true ), 0
+       
+    paul = Individual.create( given: 'Paul' )
+    peter = Individual.create( given: 'Peter' )
+    smith = Individual.create( surname: 'Smith' )
+    miller = Individual.create( surname: 'Miller' )   
+    assert_equal Individual.compare_names( smith, miller, true ), 1 
+    assert_equal Individual.compare_names( smith, miller, false ), -1    
+    assert_equal Individual.compare_names( miller, smith, false ), 1   
+    assert_equal Individual.compare_names( paul, peter, true ), -1
+    assert_equal Individual.compare_names( paul, peter, false ), -1    
+    assert_equal Individual.compare_names( peter, paul, true ), 1    
+    assert_equal Individual.compare_names( peter, smith, true ), 1             
+    assert_equal Individual.compare_names( miller, paul, true ), -1   
+        
+  end
     
 end
+
+
+
+
+
+
+
+
+

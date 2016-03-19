@@ -27,15 +27,17 @@ class GeniController < ApplicationController
     #  min-tree-font is how far we go down... translates into
     #    tree-depth, one depth increment corresponds to 2 font increments
     #  absolute-min-tree-font is what you think it is
-    @font = ( session[:'tree-font'] ||= 15 )
-    @minfont = ( session[:'min-tree-font'] ||= 13 )
-    session[:'absolute-min-tree-font'] ||= 11
+    init_session
+    @font = session[:'tree-font']
+    @minfont = session[:'min-tree-font']
+    session[:'absolute-min-tree-font']
     @individual = Individual.by_uid( params[:uid] )
 	if !@individual
 	  redirect_to root_path
 	end
   end  
   def depth_change
+    init_session
     session[:'min-tree-font'] += params[:change].to_i
     if session[:'min-tree-font'] < session[:'absolute-min-tree-font']
       session[:'min-tree-font'] = session[:'absolute-min-tree-font']
@@ -56,12 +58,14 @@ class GeniController < ApplicationController
   #   
   def edit
     @individual = Individual.by_uid( params[:uid] )
-  end
-  
+  end 
+  def new_person
+    @individual = Individual.new( name: "New Person" )
+    @individual.save
+  end  
   def save
 
     @individual = Individual.by_uid( params[:uid] )  
-
     @individual.surname = params[:surname]
     @individual.given = params[:given]
     @individual.nickname = params[:nickname]
@@ -115,24 +119,7 @@ class GeniController < ApplicationController
     redirect_to tree_path( @individual.uid )
   end
   
-  ###################################################################################
-  #
-  #  create new person
-  #   
-  def new_person
-  end
-  def create_person
-    @individual = Individual.new( given: params[:given], surname: params[:surname], 
-               sex: params[:sex], nickname: params[:nickname],
-               prefix: params[:prefix], suffix: params[:suffix], 
-			   pedigree: params[:pedigree] )			   
-    @individual.name = @individual.given + ' /' + @individual.surname + '/'    
-    @individual.update_birth( rawdate: params[:Birthdate] ) 
-    @individual.update_birth( location: params[:Birthlocation] ) 
-    @individual.user = @current_user
-    @individual.save
-    redirect_to tree_path( @individual.uid )    
-  end 
+
       
   ###################################################################################
   #
@@ -342,7 +329,7 @@ class GeniController < ApplicationController
     @spouse = Individual.new( given: params[:given], surname: params[:surname], 
                sex: params[:sex], nickname: params[:nickname],
                prefix: params[:prefix], suffix: params[:suffix], 
-			   pedigree: params[:pedigree] )			   
+			   pedigree: params[:pedigree] )	   
     @spouse.name = @spouse.given + ' /' + @spouse.surname + '/'    
     @spouse.update_birth( rawdate: params[:Birthdate] ) 
     @spouse.update_birth( location: params[:Birthlocation] ) 
@@ -421,5 +408,13 @@ class GeniController < ApplicationController
     flash[:notice] = ignored
     redirect_to action: :surnames, params: { ignored: ignored }
   end  
+  
+  private
+  
+  def init_session
+    session[:'tree-font'] ||= 15
+    session[:'min-tree-font'] ||= 13
+    session[:'absolute-min-tree-font'] ||= 11
+  end
     
 end

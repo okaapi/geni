@@ -13,7 +13,6 @@ class CreateIndividuals < ActiveRecord::Migration
       t.integer :death_id
       t.string :uid
       t.string :parents_uid
-      t.text :changed_ged
       t.string :tree
       t.string :gedfile
       t.text :note

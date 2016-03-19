@@ -169,6 +169,9 @@ class UnionTest < ActiveSupport::TestCase
     camilla.update_birth( rawdate: 'November 2 2001')
     camilla.save
     assert_equal fam.children[0].name, 'Mats'
+    assert wido.is_my_child?( mats )
+    assert trixi.is_my_child?( camilla )
+    assert !trixi.is_my_child?( wido )    
     assert_equal fam.children[1].name, 'Camilla'    
     
   end  

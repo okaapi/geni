@@ -17,6 +17,7 @@ app.Names.prototype = {
           results: function() {}
         },
         appendTo: '#names-search-results',
+        //focus: $.proxy(this._focus, this),   //moves the list item into the box... no refinement
         select: $.proxy(this._select, this)
       })
       .autocomplete('instance')._renderItem = $.proxy(this._render, this);
@@ -32,6 +33,13 @@ app.Names.prototype = {
   },
 
   _select: function(e, ui) {
+    var hidden = document.getElementById('names-search-uid');
+    hidden.value = ui.item.uid;   
+    this._input.val( ui.item.fullname );
+    return false;
+  },
+  
+  _focus: function(e, ui) {
     var hidden = document.getElementById('names-search-uid');
     hidden.value = ui.item.uid;   
     this._input.val( ui.item.fullname );

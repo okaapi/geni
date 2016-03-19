@@ -19,10 +19,15 @@ class GeniControllerTest < ActionController::TestCase
     #
 	# some simple fixtures
 	#
-	Individual.new( given: 'John', name: 'John /Smith/', 
-	                surname: 'Smith', sex: 'm' ).save
-	Individual.new( given: 'Erin', name: 'Erin /Smith/', 
-	                surname: 'Smith', sex: 'f' ).save					
+	john = Individual.new( given: 'John', name: 'John /Smith/', 
+	                surname: 'Smith', sex: 'm' )
+	john.save
+	                
+	erin = Individual.new( given: 'Erin', name: 'Erin /Smith/', 
+	                surname: 'Smith', sex: 'f' )
+    erin.update_birth( rawdate: '4 oct 1858' )	
+    erin.save
+    	               				
 	Individual.new( given: 'Mary', name: 'Mary /Jones/', 
 	                surname: 'Jones', sex: 'f' ).save
 	
@@ -41,6 +46,11 @@ class GeniControllerTest < ActionController::TestCase
 	individual = assigns(:individual)
 	assert_select '.currentindividualcontainer  a', 'John Smith'
   end  
+  
+  test "should get tree w/o individual" do
+	get :tree, uid: 7
+	assert_redirected_to root_path 
+  end  
 
   test "surnames" do
 	get :surnames
@@ -58,15 +68,26 @@ class GeniControllerTest < ActionController::TestCase
 	assert_equal names[1][:given], 'John'
   end
   
-  ##########################################################################
-  # needs to be json test
   test "names for term" do
-    ###get :names_for_term, term: 'ith'
-    ###p names = assigns(:names)
+    get :names_for_term, :format => :json, term: 'ith'
+    body = JSON.parse(response.body)
+    assert_equal body.count, 2
+    assert_equal body[0]["fullname"], 'Erin Smith'
+    assert_equal body[0]["birth"], '4 Oct 1858'    
+    assert_equal body[1]["fullname"], 'John Smith'
   end  
   
-  test "depth_change" do
+  test "depth_change with individual" do
     get :tree, uid: Individual.find_by_given( "John" ).uid
+    get :depth_change, change: 2, uid: Individual.find_by_given( "John" ).uid
+	assert_equal @controller.session[:'min-tree-font'], 15
+    get :depth_change, change: 2	
+	assert_equal @controller.session[:'min-tree-font'], 15
+    get :depth_change, change: -6
+	assert_equal @controller.session[:'min-tree-font'], 11
+  end
+  
+  test "depth_change w/o individual" do
     get :depth_change, change: 2
 	assert_equal @controller.session[:'min-tree-font'], 15
     get :depth_change, change: 2	

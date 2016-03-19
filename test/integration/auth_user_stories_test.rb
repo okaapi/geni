@@ -163,7 +163,7 @@ class AuthUserStoriesTest < ActionDispatch::IntegrationTest
     assert_select '#authentication_launchpad', /francois/
     
   end
-
+  
   private
      
     def root_path

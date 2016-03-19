@@ -13,7 +13,8 @@
 	<p>
 	  <strong>Husband:</strong>
 	  <%= link_to( @union.husband.pretty_name(is_user?), 
-	               individual_by_uid_path( @union.husband.uid ) ) if @union.husband %>   	
+	               individual_by_uid_path( @union.husband.uid ) ) if @union.husband %>   
+	</p>	               	
 	<p>
 	  <strong>Wife:</strong>
 	  <%= link_to( @union.wife.pretty_name(is_user?), 
@@ -60,6 +61,6 @@
 	  <%= @union.gedraw %>
 	  </pre>
   </td></tr>
-<table>
+</table>
 
 <%= render partial: "geni/footer" %>

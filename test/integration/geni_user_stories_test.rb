@@ -28,6 +28,7 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
   end
 
 
+  
   test "not logged in get surnames, first names and tree" do
 
     get  "/" 	
@@ -36,13 +37,13 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	assert_select '.container a', 'Smith' 
 	assert_select '.container a', 'Viss' 	
 	assert_select '.container a', 'Walther' 		
-	assert_select '.container a', 10
+	assert_select '.container a', 12
 	
 	get "/names_for_surname", surname: 'Miller'
 	assert_response :success
 	assert_select '.container a', 'W. M.', 2
 	assert_select '.container a', 'Leon'
-	assert_select '.container a', 10
+	assert_select '.container a', 12
 	
 	i = Individual.where( given: 'Walther', surname: 'Miller').order( ver: :asc).last
 	get "/" + i.uid
@@ -63,14 +64,14 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	assert_select '.container a', 'Smith' 
 	assert_select '.container a', 'Viss' 	
 	assert_select '.container a', 'Walther' 		
-	assert_select '.container a', 9
+	assert_select '.container a', 11
 	
 	get "/names_for_surname", surname: 'Miller'
 	assert_response :success
 	assert_select '.container a', 'Jack'
 	assert_select '.container a', 'walther'	
 	assert_select '.container a', 'Leon'
-	assert_select '.container a', 9
+	assert_select '.container a', 11
 	
 	i = Individual.where( given: 'Walther', surname: 'Miller').order( ver: :asc).last
 	get "/" + i.uid
@@ -112,6 +113,44 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	assert_select 'a', 'wido_admin'
 	assert_select 'td', 'arnaud@gmail.com'
 	
+  end  
+  
+  
+  test "all individuals by uid" do
+    admin_login
+    get "/all_individuals_by_uid"   
+    assert_select '.admin-table tr', 11   
+    assert_select '.admin-table td', 80
+    assert_select '.admin-table td', 'Joe'
+    assert_select '.admin-table td', 'Walther'
+    get "/all_individuals_by_uid", name_sorted: true
+    get "/all_individuals_by_uid", birth_sorted: true
+  end
+  
+  test "individuals by uid" do
+    admin_login
+    i = Individual.first
+    get "/individual_by_uid/#{i.uid}" 
+    assert_select 'table tr td p', 18
+    assert_select 'table tr td p b', 'Name:'
+    assert_select 'table tr td p', /Joe Miller/    
+  end 
+    
+  test "all unions by uid" do
+    admin_login
+    get "/all_unions_by_uid"
+    assert_select '.admin-table tr', 8  
+    assert_select '.admin-table td', 35
+    assert_select '.admin-table td a', 'Walther Miller'
+    assert_select '.admin-table td a', 'Laura Walther'
+    get "/all_unions_by_uid", marriage_sorted: true
+  end  
+  
+  test "unions by uid" do
+    admin_login
+    u = Union.first
+    get "/union_by_uid/#{u.uid}" 
+    assert_select 'table tr p a', "Jack Miller"  
   end  
   
   private

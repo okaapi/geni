@@ -16,7 +16,7 @@ module Admin
 	  end
 	
 	  # GET /all_individuals_by_uid
-	  def all_by_uid          
+	  def all_individuals_by_uid          
 	    @individuals = Individual.all_by_uid
 	    
 	    if params[:name_sorted] 
@@ -32,7 +32,7 @@ module Admin
 	  end
 	  
 	  # GET /individual_by_uid
-	  def by_uid
+	  def individual_by_uid
 	    @individual = Individual.by_uid( params[:uid] )
 	  end
 	  

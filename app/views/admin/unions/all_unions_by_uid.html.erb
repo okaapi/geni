@@ -1,6 +1,6 @@
 <h1>Listing unions</h1>
 
-<table>
+<table class="admin-table">
   <thead>
     <tr>
       <th>Marriages</th>    
@@ -19,12 +19,12 @@
         ( union.marriage.date ? union.marriage.date : 'w/o date' ) : 'unknown'), length: 20 ), 
                        union_by_uid_path( union.uid) ) %></td>
         <td><%= union.husband ? 
-                   link_to( union.husband.pretty_name(is_user?), 
-                            individual_by_uid_path( union.husband.uid) ) : '' %>
+                   link_to( truncate( union.husband.pretty_name(is_user?), length: 30), 
+                            individual_by_uid_path( union.husband.uid) ) : '' %></td>
         <td><%= union.wife ? 
-                   link_to( union.wife.pretty_name(is_user?), 
-                            individual_by_uid_path( union.wife.uid) ) : '' %>                            
-        <td>&nbsp; &nbsp; <small> -<%= union.id %>- <%= union.uid %></small></td>
+                   link_to( truncate( union.wife.pretty_name(is_user?), length: 30), 
+                            individual_by_uid_path( union.wife.uid) ) : '' %>  </td>                          
+        <td>&nbsp; &nbsp; <small> <%= union.uid %></small></td>
       </tr>
     <% end %>
   </tbody>

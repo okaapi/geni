@@ -3,21 +3,27 @@
 <br>
 <br>
   
-<strong> <%= link_to 'Home', root_path %> </strong> <br>
-<strong> <%= link_to 'Search', search_path %> </strong> <br>
+<strong> <%= link_to 'Home', root_path, class: "btn btn-info" %> </strong> 
+<strong> <%= link_to 'Search', search_path, class: "btn btn-default" %> </strong>
 
 <% uid = ( @individual ? @individual.uid : nil ) %>
-<strong> <%= link_to 'increment', depth_change_path(-2,uid) %>/<%= link_to 'decrement', 
-        depth_change_path(2,uid) %> 
-depth</strong> <br>
 
+<div class="btn-group">
+  <%= link_to 'depth <span class="badge">up</span>'.html_safe, 
+            depth_change_path(-2,uid), class: "btn btn-default"  %>
+  <%= link_to '<span class="badge">down</span>'.html_safe, 
+            depth_change_path(2,uid), class: "btn btn-default"  %>
+</div>
+          
 <% if is_editor? %>
-  <strong> <%= link_to 'New person', new_person_path %> </strong> <br>
+  <%= link_to 'New person', new_person_path, class: "btn btn-warning"%> 
 <% end %>
+ <%= link_to 'To individuals', all_individuals_by_uid_path, class: "btn btn-warning" %> 
+ <%= link_to 'To marriages', all_unions_by_uid_path, class: "btn btn-warning" %> 
 <% if is_admin? %>
-  <strong> <%= link_to 'To individuals', all_individuals_by_uid_path %> </strong> <br>
-  <strong> <%= link_to 'To marriages', all_unions_by_uid_path %> </strong> <br>
-  <strong> <%= link_to 'Import', import_path %> </strong>
+ <%= link_to 'Import', import_path, class: "btn btn-warning" %> 
+ <%= link_to 'Users', users_path, class: "btn btn-warning" %>  
 <% end %>
+<br>.
 
   

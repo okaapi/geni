@@ -1,6 +1,6 @@
 <h1>Listing individuals</h1>
 
-<table>
+<table class="admin-table">
   <thead>
     <tr>
       <th></th>
@@ -18,7 +18,8 @@
     <% @individuals.each do |individual| %>
       <tr>
         <td align='right'><%= sex_symbol( individual.sex ) %></td>
-        <td><%= link_to individual.pretty_name(is_user?), individual_by_uid_path( individual.uid) %></td>
+        <td><%= link_to truncate( individual.pretty_name(is_user?), length: 20 ), 
+                     individual_by_uid_path( individual.uid) %></td>
         <td>
         <%= individual.parents_uid ? 
 	     link_to( marriage_symbol, union_by_uid_path( individual.parents_uid ) ) : '' %>
@@ -31,7 +32,7 @@
         <td><%= individual.death ? 
                link_to( truncate( individual.death.date || individual.death.location || 'n/a', 
                           length: 12), individual.death ) : ''%></td>   
-        <td>&nbsp; &nbsp; <small> -<%= individual.id %>- <%= individual.uid %></small></td>             
+        <td>&nbsp; &nbsp; <small> <%= individual.uid %></small></td>             
       </tr>
     <% end %>
   </tbody>

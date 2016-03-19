@@ -12,7 +12,8 @@
     margin: 0px;
     overflow:hidden;
     white-space: nowrap; 
-    text-overflow: ellipsis;  }
+    text-overflow: ellipsis;
+  }
 
   .halfwidth {
     width: 50%;
@@ -98,12 +99,15 @@
       overflow: hidden;
       overflow-y: auto;
     }
+    .ui-autocomplete {
+      list-style-type: none;
+    }
     .ui-menu-item {
 	  margin: 0em 0em 0em 1em;
-      padding: .2em .6em .2em 1em;   
+      padding: .2em .6em .2em .5em;   
       position: relative;
       border: 0;
-        border-left: 5px solid transparent;
+      border-left: 5px solid transparent;
     }
     .ui-state-focus {
       border-left-color: grey;

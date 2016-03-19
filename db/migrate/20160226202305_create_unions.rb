@@ -9,7 +9,7 @@ class CreateUnions < ActiveRecord::Migration
       t.string :divorced
       t.string :tree
       t.text :note
-      t.string :gedfile
+      t.string :gedfile  
       t.text :gedraw
       t.integer :ver, default: 0
       t.integer :user_id

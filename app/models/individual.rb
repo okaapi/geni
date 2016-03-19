@@ -163,11 +163,9 @@ class Individual < ActiveRecord::Base
                          i2.surname.downcase <=> i1.surname.downcase )
     elsif i1.surname
       return -1
-    elsif i2.given
+    elsif i2.surname
       return 1
-    else
-      return 0
-    end
+    end #  else is not possible...  if both surnames don't exist, first clause hits
     
   end
  
@@ -184,6 +182,7 @@ class Individual < ActiveRecord::Base
     arr
   end
   
+=begin  
   def self.all_by_uid_new
     sql = "select id from individuals where (uid, ver) in (select uid, max(ver) from individuals group by uid) ;"
     res = ActiveRecord::Base.connection.execute(sql)
@@ -191,6 +190,7 @@ class Individual < ActiveRecord::Base
     res.each {|r| array_of_ids << r[0]}
     Individual.find( array_of_ids )
   end 
+=end
   
   def unions_old
     uid_groups = Union.where( "husband_uid = ? OR wife_uid = ?", self.uid, self.uid ).group( :uid )
@@ -201,6 +201,7 @@ class Individual < ActiveRecord::Base
     union_arr
   end
 
+=begin
   def unions_new
     sql = "select id, right(uid,5), ver from unions where (uid, ver) in (select uid, max(ver) from unions where (husband_uid = '#{uid}' or wife_uid = '#{uid}') group by uid);"
     res = ActiveRecord::Base.connection.execute(sql)
@@ -209,6 +210,7 @@ class Individual < ActiveRecord::Base
     unions = Union.find( array_of_ids )
     unions.sort {|a,b| Event.compare_dates( a.marriage, b.marriage, true ) }
   end
+=end
   
   def self.names_for_surname_old( surname, is_user )
     uid_groups = Individual.where( surname: surname ).group( :uid ).order( given: :asc )
@@ -222,6 +224,7 @@ class Individual < ActiveRecord::Base
     arr  
   end
   
+=begin  
   def self.names_for_surname_new( surname, is_user )
     sql = "select id, right(uid,5), ver from individuals where (uid, ver) in (select uid, max(ver) from individuals where surname = '#{surname}' group by uid) order by given, ver ASC;"
     res = ActiveRecord::Base.connection.execute(sql)
@@ -236,6 +239,7 @@ class Individual < ActiveRecord::Base
  	end
     arr  
   end
+=end
     
   def self.names_for_term_old( searchterm, is_user )
     terms = searchterm.split(' ')
@@ -257,7 +261,8 @@ class Individual < ActiveRecord::Base
     end
     arr 
   end  
-  
+
+=begin  
   def self.names_for_term_new( searchterm, is_user )
     terms = searchterm.split(' ')
     search_sql = ""
@@ -282,6 +287,7 @@ class Individual < ActiveRecord::Base
     end
     arr  
   end
+=end
       
 end
 

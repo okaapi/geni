@@ -1,5 +1,9 @@
-<center class="treecontainer panel panel-success"> 
+<!--
+<center class="panel panel-success"> 
   <div class="panel-heading">Family tree for <%= @individual.pretty_name(is_user?) %></div>
+</center>  
+-->
+<center class="treecontainer">
   <br>
   <table border=0 class="panel-body">
     <tr>
@@ -19,8 +23,11 @@
     </tr>
   </table>
   <br>
+  <%= render partial: "footer" %>
+  <br>.
 </center>
 
-<%= render partial: "footer" %>
+
+
 
 <script> $(function() { $( "#editcontainer" ).draggable(); }); </script>

@@ -22,11 +22,11 @@ Rails.application.routes.draw do
     # for administration
     resources :events
     resources :individuals
-    get 'all_individuals_by_uid' => 'individuals#all_by_uid', as: 'all_individuals_by_uid'
-    get 'individuals_by_uid/:uid' => 'individuals#by_uid', as: 'individual_by_uid'
+    get 'all_individuals_by_uid' => 'individuals#all_individuals_by_uid', as: 'all_individuals_by_uid'
+    get 'individual_by_uid/:uid' => 'individuals#individual_by_uid', as: 'individual_by_uid'
     resources :unions
-    get 'all_unions_by_uid' => 'unions#all_by_uid', as: 'all_unions_by_uid'
-    get 'union_by_uid/:uid' => 'unions#by_uid', as: 'union_by_uid'
+    get 'all_unions_by_uid' => 'unions#all_unions_by_uid', as: 'all_unions_by_uid'
+    get 'union_by_uid/:uid' => 'unions#union_by_uid', as: 'union_by_uid'
            
   end    
 

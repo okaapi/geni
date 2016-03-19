@@ -10,7 +10,7 @@ class IndividualsControllerTest < ActionController::TestCase
     admin_login_4_test
     request.host = 'testhost45A67'		
   end
-
+  
   test "should get index" do
     get :index
     assert_response :success
@@ -24,7 +24,7 @@ class IndividualsControllerTest < ActionController::TestCase
 
   test "should create individual" do
     assert_difference('Individual.count') do
-      post :create, individual: { birth_id: @individual.birth_id, changed_ged: @individual.changed_ged, death_id: @individual.death_id, gedfile: @individual.gedfile, gedraw: @individual.gedraw, given: @individual.given, name: @individual.name, nickname: @individual.nickname, note: @individual.note, parents_uid: @individual.parents_uid, pedigree: @individual.pedigree, prefix: @individual.prefix, sex: @individual.sex, suffix: @individual.suffix, surname: @individual.surname, tree: @individual.tree, uid: @individual.uid }
+      post :create, individual: { birth_id: @individual.birth_id, death_id: @individual.death_id, gedfile: @individual.gedfile, gedraw: @individual.gedraw, given: @individual.given, name: @individual.name, nickname: @individual.nickname, note: @individual.note, parents_uid: @individual.parents_uid, pedigree: @individual.pedigree, prefix: @individual.prefix, sex: @individual.sex, suffix: @individual.suffix, surname: @individual.surname, tree: @individual.tree, uid: @individual.uid }
     end
 
     assert_redirected_to individual_path(assigns(:individual))
@@ -41,7 +41,7 @@ class IndividualsControllerTest < ActionController::TestCase
   end
 
   test "should update individual" do
-    patch :update, id: @individual, individual: { birth_id: @individual.birth_id, changed_ged: @individual.changed_ged, death_id: @individual.death_id, gedfile: @individual.gedfile, gedraw: @individual.gedraw, given: @individual.given, name: @individual.name, nickname: @individual.nickname, note: @individual.note, parents_uid: @individual.parents_uid, pedigree: @individual.pedigree, prefix: @individual.prefix, sex: @individual.sex, suffix: @individual.suffix, surname: @individual.surname, tree: @individual.tree, uid: @individual.uid }
+    patch :update, id: @individual, individual: { birth_id: @individual.birth_id, death_id: @individual.death_id, gedfile: @individual.gedfile, gedraw: @individual.gedraw, given: @individual.given, name: @individual.name, nickname: @individual.nickname, note: @individual.note, parents_uid: @individual.parents_uid, pedigree: @individual.pedigree, prefix: @individual.prefix, sex: @individual.sex, suffix: @individual.suffix, surname: @individual.surname, tree: @individual.tree, uid: @individual.uid }
     assert_redirected_to individual_path(assigns(:individual))
   end
 

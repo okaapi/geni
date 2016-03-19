@@ -31,8 +31,8 @@ class Import
 	  Individual.transaction do
 	  
 	    i = 0
-	    contents.each_line do |line|  
-	 	      		
+	    contents.each_line do |line|    
+
 	 	  line.gsub!(/\r/,'')			
 	      i += 1      
 	      if line =~ /[\d]* _UID/ or line =~ /[\d]* REFN/
@@ -42,19 +42,19 @@ class Import
 	      #  new block starts
 	      #        
 	      elsif line =~ /^[^\w\s\d]?0/
-	      
+
 	        individual.save! if individual
 	        union.save! if union
 	        source.save! if source
 	        individual = union = source = nil       
 	        submode = nil
-	        if line =~ /[^\w\s\d]0 HEAD/
+	        if line =~ /[^\w\s\d]?0 HEAD/
 	          mode = :header  
 	          ignored += "Header : " + line        
-	        elsif line =~ /^0 @S\d+@ SUBM/
+	        elsif line =~ /^0 @SUB\d+@ SUBM/
 	          mode = :submitter  
 	          ignored += "Submitter : " + line  
-	        elsif line =~ /^0 @R\d+@ REPO/
+	        elsif line =~ /^0 @REPO\d+@ REPO/
 	          mode = :repo
 	          ignored += "Repo : " + line                              
 	        elsif line =~ /^0 @I(\d+)@ INDI/
@@ -76,7 +76,7 @@ class Import
             else
               ignored += line			
 	        end
-	     
+	        
 	      # 
 	      #  header is ignored
 	      # 
@@ -132,7 +132,7 @@ class Import
 	          #fams[ individual.uid ] += [Regexp.last_match(1)]             
 	        elsif line =~ /^1 CHAN/                   
 	          submode = :changed    
-	          individual.changed_ged = ''
+	          individual.note += "\n" + 'Ged changed: ' 
 	        elsif line =~ /^1 NOTE(.*)/                 
 	          submode = :note  
 	          individual.note += "\n" + 'Note: ' + Regexp.last_match(1)    + "\n"         
@@ -211,7 +211,7 @@ class Import
 	        #   submode :note
 	        #
 	        elsif submode == :note
-	          if line =~ /^1 SOUR @(.+)@/
+	          if line =~ /^2 SOUR @(.+)@/
 	            individual.note += " @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"     
 	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
@@ -223,12 +223,8 @@ class Import
 	        #   submode :change
 	        #
 	        elsif submode == :changed
-	          if line =~ /^[1-5] \w\w\w\w+(.*)/   
-	            individual.changed_ged += ' ' + Regexp.last_match(1)  
-	          else
-	            ignored += "Ignored #{mode} #{submode}: " + line            
-	          end
-	
+              ignored += "Ignored #{mode} #{submode}: " + line            
+		
 	        #
 	        #   submode :source
 	        #
@@ -266,7 +262,7 @@ class Import
 	          #chil[ union.uid ] += ["@I#{Regexp.last_match(1)}@"]             
 	        elsif line =~ /^1 CHAN/                   
 	          submode = :changed    
-	          union.changed_ged = ''
+	          union.note += "\n" + 'Ged changed: ' 
 	        elsif line =~ /^1 NOTE(.*)/                 
 	          submode = :note  
 	          union.note += "\n" + 'Note: ' + Regexp.last_match(1)    + "\n"         
@@ -283,7 +279,7 @@ class Import
 	          elsif line =~ /^2 PLAC (.+)/
 	            union.update_marriage( location: Regexp.last_match(1) )
 	          elsif line =~ /^2 SOUR @(.+)@/
-	            union.note += "\n" + "Birth: @#{tree_name}#{Regexp.last_match(1)}@ "       + "\n"       
+	            union.note += "\n" + "Marriage: @#{tree_name}#{Regexp.last_match(1)}@ "       + "\n"       
 	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            union.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
@@ -310,7 +306,7 @@ class Import
 	        #   submode :note
 	        #
 	        elsif submode == :note
-	          if line =~ /^1 SOUR @(.+)@/
+	          if line =~ /^2 SOUR @(.+)@/
 	            union.note += " @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"     
 	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            union.note += ' ' + Regexp.last_match(1)  + "\n"
@@ -322,11 +318,7 @@ class Import
 	        #   submode :change
 	        #
 	        elsif submode == :changed
-	          if line =~ /^[1-5] \w\w\w\w+(.*)/   
-	            union.changed_ged += ' ' + Regexp.last_match(1)  
-	          else
-	            ignored += "Ignored #{mode} #{submode}: " + line            
-	          end
+              ignored += "Ignored #{mode} #{submode}: " + line            
 	
 	        #
 	        #   submode :source
@@ -349,11 +341,11 @@ class Import
 	      elsif mode == :source
                 
 	      else
-	        ignored += "\n" + "\n" + 'PROBLEMS in import.rb'
-	        exit
+	        ignored += "PROBLEMS in import.rb"
+	        return ignored
+	        
 	      end # line =~ /^[^\w\s\d]?0/ ....  :mode
 	           
-	      
 	    end # contents.each_line do |line|  
 	
 	    
