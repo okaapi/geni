@@ -17,30 +17,5 @@ module TreeHelper
   def delete_symbol
     '<i style="font-size:smaller" class="glyphicon glyphicon-remove-circle"></i>'.html_safe
   end
-  
-  def geni_text_field( field_name, field, size = nil  )
-    if !size
-      s = field ? ( field.length > 0 ? field.length : 3 ) : 3
-    else
-      s = size      
-    end    
-    '<div class="field">'.html_safe + 
-      label_tag( field_name ) + '<div style="clear:both"></div>'.html_safe + 
-              text_field_tag( field_name, field, size: s ) +
-    '</div>'.html_safe          
-  end
-  
-  def geni_event_field( field_name, event )
-    date = ( event and event.rawdate ) ? event.rawdate : ''
-    location = ( event and event.location ) ? event.location : ''
-    '<div class="field">'.html_safe + 
-      label_tag( field_name + ' date' ) + '<div style="clear:both"></div>'.html_safe +
-      text_field_tag( field_name+'date', date, size: 11 ) +
-    '</div>'.html_safe + 
-    '<div class="field">'.html_safe + 
-      label_tag( 'location' ) + '<div style="clear:both"></div>'.html_safe +
-      text_field_tag( field_name+'location', location, size: 13 ) +
-    '</div>'.html_safe    
-  end    
    
 end

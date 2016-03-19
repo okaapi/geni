@@ -133,3 +133,6 @@ DEPENDENCIES
   turbolinks
   tzinfo-data
   uglifier
+
+BUNDLED WITH
+   1.11.2
