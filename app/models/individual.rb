@@ -1,6 +1,17 @@
 require 'securerandom'
 
+class IndividualValidator < ActiveModel::Validator
+  def validate(record)
+    if ( !record.name or record.name == '' ) and 
+       ( !record.given or record.given == '' ) and 
+       ( !record.surname or record.surname == '' )
+      record.errors[:base] << "Need either name or given name or surname."
+    end
+  end
+end
+
 class Individual < ActiveRecord::Base
+  validates_with IndividualValidator
   belongs_to :birth, class_name: "Event", foreign_key: "birth_id"
   belongs_to :death, class_name: "Event", foreign_key: "death_id"
   belongs_to :user

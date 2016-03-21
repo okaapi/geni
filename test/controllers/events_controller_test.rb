@@ -24,11 +24,21 @@ class EventsControllerTest < ActionController::TestCase
 
   test "should create event" do
     assert_difference('Event.count') do
+      @event.location = 'Paris'
       post :create, event: { rawdate: @event.rawdate,  location: @event.location,  text: @event.text }
     end
-
+    assert_equal assigns(:event).errors.count, 0
     assert_redirected_to event_path(assigns(:event))
   end
+  
+  test "should not create event" do
+    assert_difference('Event.count', 0) do
+      @event.location = @event.rawdate = nil
+      post :create, event: { rawdate: @event.rawdate,  location: @event.location,  text: @event.text }
+    end
+    assert_equal assigns(:event).errors.count, 1    
+    assert_response :success
+  end  
 
   test "should show event" do
     get :show, id: @event
@@ -41,9 +51,17 @@ class EventsControllerTest < ActionController::TestCase
   end
 
   test "should update event" do
+    @event.rawdate = '2 oct 1959'
     patch :update, id: @event, event: { rawdate: @event.rawdate, location: @event.location, text: @event.text }
     assert_redirected_to event_path(assigns(:event))
   end
+  
+  test "should not update event" do
+    @event.location = @event.rawdate = nil
+    patch :update, id: @event, event: { rawdate: @event.rawdate, location: @event.location, text: @event.text }
+    assert_response :success
+    assert_equal assigns(:event).errors.count, 1
+  end  
 
   test "should destroy event" do
     assert_difference('Event.count', -1) do

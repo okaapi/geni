@@ -1,5 +1,16 @@
-class Event < ActiveRecord::Base
 
+class EventValidator < ActiveModel::Validator
+  def validate(record)
+    if ( !record.rawdate or record.rawdate == '' ) and 
+       ( !record.location or record.location == '' )
+      record.errors[:base] << "Need either Date (rawdate) or Location"
+    end
+  end
+end
+
+class Event < ActiveRecord::Base
+  validates_with EventValidator
+  
   def date
     d, y = Event.parse_date( self.rawdate )
     if d

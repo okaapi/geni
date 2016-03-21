@@ -31,6 +31,11 @@ class AuthenticationNotifierTest < ActionMailer::TestCase
     assert_match @path, mail.body.encoded
     assert_match 'john_token', mail.body.encoded
   end
+  test "test" do
+    @current_user = users( :john )
+    mail = AuthenticationNotifier.test( @current_user.email )
+    assert_equal mail.subject, 'Okaapi test'
+  end
 
 end
 

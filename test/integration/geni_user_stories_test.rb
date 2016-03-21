@@ -1,10 +1,6 @@
 require 'test_helper'
 
-
-  
 class GeniUserStoriesTest < ActionDispatch::IntegrationTest
-  
-
   
   setup do
 
@@ -22,12 +18,10 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
   	assert !Union.all.empty?
     Union.destroy_all
     assert Union.all.empty?			
-	Import.from_gedfile('test-tree', 'test/fixtures/test.ged','test.ged', false)
+	Import.from_gedfile('test-tree', 'test/fixtures/files/test.ged','test.ged', false)
 	assert_equal Individual.all.count, 18
 	assert_equal Union.all.count, 15
   end
-
-
   
   test "not logged in get surnames, first names and tree" do
 
@@ -37,13 +31,13 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	assert_select '.container a', 'Smith' 
 	assert_select '.container a', 'Viss' 	
 	assert_select '.container a', 'Walther' 		
-	assert_select '.container a', 12
+	assert_select '.container a', 10
 	
 	get "/names_for_surname", surname: 'Miller'
 	assert_response :success
 	assert_select '.container a', 'W. M.', 2
 	assert_select '.container a', 'Leon'
-	assert_select '.container a', 12
+	assert_select '.container a', 10
 	
 	i = Individual.where( given: 'Walther', surname: 'Miller').order( ver: :asc).last
 	get "/" + i.uid
@@ -64,14 +58,14 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 	assert_select '.container a', 'Smith' 
 	assert_select '.container a', 'Viss' 	
 	assert_select '.container a', 'Walther' 		
-	assert_select '.container a', 11
+	assert_select '.container a', 9
 	
 	get "/names_for_surname", surname: 'Miller'
 	assert_response :success
 	assert_select '.container a', 'Jack'
 	assert_select '.container a', 'walther'	
 	assert_select '.container a', 'Leon'
-	assert_select '.container a', 11
+	assert_select '.container a', 9
 	
 	i = Individual.where( given: 'Walther', surname: 'Miller').order( ver: :asc).last
 	get "/" + i.uid

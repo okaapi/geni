@@ -15,7 +15,6 @@ class ActiveSupport::TestCase
   fixtures :all
   
   (1..10).each {puts "."}
-  puts "[ javascript is " + ( Rails.configuration.use_javascript ? "on ]" : "off ]" )  
 
   def admin_login_4_test
 	@admin = users(:admin)

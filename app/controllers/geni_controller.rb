@@ -163,7 +163,7 @@ class GeniController < ApplicationController
   end  
   def remove_child
     @child = Individual.by_uid( params[:uid] )
-    @child.parents = nil
+    @child.parents_uid = nil
     @child.save 
     @parent = Individual.by_uid( params[:puid] )
     redirect_to tree_path( @parent.uid )
@@ -270,7 +270,7 @@ class GeniController < ApplicationController
     redirect_to tree_path( @individual.uid )    
   end  
   
-  def delete_parent
+  def remove_parent
     @individual = Individual.by_uid( params[:uid] )
     @parent = Individual.by_uid( params[:puid] )
     @parents = @individual.parents
@@ -361,16 +361,6 @@ class GeniController < ApplicationController
   #
   #  search
   #  
-  def search    
-	@surname = params["surnames-search-txt"]
-	@term = params[:term]
-	if @surname
-      is_user = ( @current_user and ( @current_user.role == 'user' or
-                                    @current_user.role == 'admin' ) )	
-	  @individuals = Individual.names_for_surname( @surname, @term, is_user )
-	end
-	render :search
-  end
   
   def search_results
     @individual = Individual.by_uid( params[:'names-search-uid'] )
@@ -386,27 +376,28 @@ class GeniController < ApplicationController
   #  file upload
   #
   def import
-    @default_tree = 'wido'       
+    @default_tree = 'new-tree'       
   end
   
   def file_upload
-    ignored = params[ :ignored ]
-    
-    stored_file = params[:stored_file]  
-    if ! stored_file || ! stored_file[:stored_file]      
+          
+    treename = params[ :tree ]
+    file = params[:file]  
+
+    if ! file   
       flash[:notice] = "Select file to upload first."
-      redirect_to :action => :surnames
+      redirect_to root_path
       return
     end
-        
-    treename = params[:tree]['name']
-	original_file = stored_file[:stored_file].original_filename
-    gedfile = stored_file[:stored_file].tempfile.path
+
+	original_file = file.original_filename
+    gedfile = file.tempfile.path
 
     ignored = Import.from_gedfile( treename, gedfile, original_file )
     
     flash[:notice] = ignored
-    redirect_to action: :surnames, params: { ignored: ignored }
+    
+    redirect_to root_path
   end  
   
   private

@@ -3,7 +3,7 @@ class ZiteActiveRecord < ActiveRecord::Base
     self.abstract_class = true
     @@site = nil
 
-    def self.site( s )
+    def self.site( s )      
       @@site = s
     end
     def self.site?

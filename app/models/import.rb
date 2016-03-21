@@ -7,7 +7,7 @@ class Import
 	  #
 	  mode = submode = nil
 	  individual = union = source = nil
-	  ignored = "Ignoring all _UID or REFN fields\nOther ignored lines follow:\n"
+	  ignored = "Ignoring all _UID, REFN or CHAN fields\nOther ignored lines follow:\n"
 	  
 	  #
 	  # initialize crossreferences
@@ -223,8 +223,8 @@ class Import
 	        #   submode :change
 	        #
 	        elsif submode == :changed
-              ignored += "Ignored #{mode} #{submode}: " + line            
-		
+              # ignore
+	          
 	        #
 	        #   submode :source
 	        #
@@ -318,7 +318,7 @@ class Import
 	        #   submode :change
 	        #
 	        elsif submode == :changed
-              ignored += "Ignored #{mode} #{submode}: " + line            
+              # ignore	                   
 	
 	        #
 	        #   submode :source

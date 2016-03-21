@@ -64,7 +64,7 @@ Rails.application.routes.draw do
   get 'new_person' => 'geni#new_person', as: 'new_person' 
   post 'create_person' => 'geni#create_person', as: 'create_person' 
   
-  get 'delete_parent/:uid/:puid' => 'geni#delete_parent', as: 'delete_parent'
+  get 'remove_parent/:uid/:puid' => 'geni#remove_parent', as: 'remove_parent'
   match 'new_parent/:uid/:sex/(:uuid)' => 'geni#new_parent', as: 'new_parent', via: [:get, :post]    
   match 'create_new_parent/:uid/(:uuid)' => 'geni#create_new_parent', as: 'create_new_parent', via: [:get, :post]  
   

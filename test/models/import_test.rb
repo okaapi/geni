@@ -3,15 +3,17 @@ require 'test_helper'
 class ImportTest < ActiveSupport::TestCase
 
   test "bad ged file" do
-    ign = Import.from_gedfile('test-tree', 'test/fixtures/badtest.ged','badtest.ged', false)
-    assert_equal ign, "Ignoring all _UID or REFN fields
+    ign = Import.from_gedfile('test-tree', 'test/fixtures/files/badtest.ged','badtest.ged', false)
+    assert_equal ign, "Ignoring all _UID, REFN or CHAN fields
 Other ignored lines follow:
 PROBLEMS in import.rb"
   end
   
   test "import normal" do
-    ign = Import.from_gedfile('test-tree', 'test/fixtures/test.ged','test.ged', false)
-    assert_equal ign[0..1677], "Ignoring all _UID or REFN fields
+
+    ign = Import.from_gedfile('test-tree', 'test/fixtures/files/test.ged','test.ged', false)
+
+    assert_equal ign[0..1237], "Ignoring all _UID, REFN or CHAN fields
 Other ignored lines follow:
 Header : 0 HEAD 
 Header : 1 SOUR PAF
@@ -42,19 +44,8 @@ Ignored individual child: 6 INVALID
 Ignored individual : 6 INVALID
 Ignored individual birth: 6 INVALID
 |Ignored individual death: 6 INVALID
-Ignored individual changed: 2 DATE 29 Jan 2006
-Ignored individual changed: 3 TIME 00:00:00
-Ignored individual changed: 3 WHAT ever
-Ignored individual changed: 2 DATE 25 Oct 2005
-Ignored individual changed: 3 TIME 01:00:00
-Ignored individual changed: 6 INVALID
 Ignored union marriage: 6 INVALID
 Ignored union divorce: 6 INVALID
-Ignored union changed: 2 DATE 29 Jan 2006
-Ignored union changed: 2 SOUR @S211@
-Ignored union changed: 4 SOMETHING
-Ignored union changed: 6 INVALID
-Ignored union changed: 3 TIME 00:00:00
 Ignored union marriage: 6 INVALID
 Ignored union source: 6 INVALID
 Ignored union note: 6 INVALID
@@ -64,6 +55,8 @@ Repo : 0 @REPO2@ REPO
 Repo : 0 @REPO3@ REPO
 Repo : 0 @REPO4@ REPO
 0 TRLR"
+
+
   end
   
 end

@@ -17,9 +17,10 @@
           
 <% if is_editor? %>
   <%= link_to 'New person', new_person_path, class: "btn btn-warning"%> 
+  <%= link_to 'To individuals', all_individuals_by_uid_path, class: "btn btn-warning" %> 
+  <%= link_to 'To marriages', all_unions_by_uid_path, class: "btn btn-warning" %>   
 <% end %>
- <%= link_to 'To individuals', all_individuals_by_uid_path, class: "btn btn-warning" %> 
- <%= link_to 'To marriages', all_unions_by_uid_path, class: "btn btn-warning" %> 
+
 <% if is_admin? %>
  <%= link_to 'Import', import_path, class: "btn btn-warning" %> 
  <%= link_to 'Users', users_path, class: "btn btn-warning" %>  

@@ -13,7 +13,7 @@
 			        <% if( is_editor? and 
 					       individual.uid == @individual.uid ) %>
 		              <%= link_to( delete_symbol, 
-		                  delete_parent_path( individual.uid, 
+		                  remove_parent_path( individual.uid, 
 						                      individual.father.uid ), 
 											  class: 'editlink',
 		                               data: { confirm: 'Are you sure?' } ) %>				            
@@ -54,7 +54,7 @@
 		          <% if individual.mother %>
  		            <% if( is_editor? and individual.uid == @individual.uid ) %>
 		              <%= link_to( delete_symbol, 
-		                     delete_parent_path( individual.uid, 
+		                     remove_parent_path( individual.uid, 
 						     individual.mother.uid ), class: 'editlink',
 		                     data: { confirm: 'Are you sure?' } ) %>				            
 		            <% end %>	 	          	                    

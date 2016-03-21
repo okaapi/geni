@@ -1,6 +1,15 @@
 require 'date'
 
+class UnionValidator < ActiveModel::Validator
+  def validate(record)
+    if ( record.husband_uid == record.wife_uid and record.husband_uid != nil )
+      record.errors[:base] << "can't have same person be husband and wife"
+    end
+  end
+end
+
 class Union < ActiveRecord::Base
+  validates_with UnionValidator
   belongs_to :marriage, class_name: "Event", foreign_key: "marriage_id"
   belongs_to :divorce, class_name: "Event", foreign_key: "divorce_id"
   belongs_to :user
