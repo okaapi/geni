@@ -23,21 +23,21 @@ class ApplicationController < ActionController::Base
       else 
         ZiteActiveRecord.site( request.host )
       end
-	  
+         	  
       #
       #  set the current user session
       #
 	  if !( @current_user_session = UserSession.recover( session[:user_session_id] ) )
 	    @current_user_session = UserSession.new_ip_and_client( nil, request.remote_ip(),
 	                                                               request.env['HTTP_USER_AGENT'])
-	    session[:user_session_id] = @current_user_session.id    
+	    session[:user_session_id] = @current_user_session.id 
 	  end 
   	  
   	  #
   	  #  in Rails 4 this cannot happen, but in Rails 5 it seemed to... so let's keep this in
   	  #  :force_incorrect_site is only used in testing
   	  #
-	  if @current_user_session.site != ZiteActiveRecord.site? or session[:force_incorrect_site]
+	  if @current_user_session.site != ZiteActiveRecord.site? 
 	    redirect_to '/', alert: "name mismatch #{@current_user_session.site} #{request.host}"
 		return
 	  end

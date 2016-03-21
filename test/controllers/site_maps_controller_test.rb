@@ -8,40 +8,35 @@ module Admin
 	    @site_map = site_maps(:one)
 	    @wido = users(:wido)
 	    admin_login_4_test    
-	    request.host = 'testhost45A67'	  
-	  end
-	  
-	  test "fake site name mismatch" do
-	    @controller.session[:force_incorrect_site] = true 
-	    get :index
-	    assert_equal flash[:alert], 'name mismatch testsite45A67 testhost45A67'     
+	    request.host = 'testhost45A67'	 
 	  end	
-	  	  
+ 	    	  	  
 	  test "wrong sitemap with no sitemap in db" do
-        SiteMap.delete_all   
-	    get :index
-	    assert_equal flash[:alert], nil #'name mismatch testsite45A67 testhost45A67'     
+        request.host = 'testhost45A67'	
+	    get :index        
+	    assert_not_equal flash[:alert], 'name mismatch testsite45A67 testhost45A67'     
 	  end	
-	  
-	  test "wrong sitemap" do
-	    request.host = 'wrongtesthost'
-	    get :index
-            assert_equal flash[:alert], nil #'name mismatch testsite45A67 wrongtesthost' 	    
-	  end
-
-	  test "no sitemap in db" do
-	    request.host = 'testsite45A67'	
-        SiteMap.delete_all
-	    get :index
-	    assert_response :success   
-	  end		  
+  
 
 	  test "should get index" do
 	    get :index
 	    assert_response :success
 	    assert_not_nil assigns(:site_maps)
 	  end
-	
+	    	  	
+	  test "no sitemap in db" do
+	    request.host = 'testsite45A67'	
+        SiteMap.delete_all
+	    get :index
+	    assert_response :success   
+	  end
+	  	  
+	  test "wrong sitemap" do
+	    request.host = 'wrongtesthost'
+	    get :index
+        assert_not_equal flash[:alert], 'name mismatch testsite45A67 wrongtesthost' 	    
+	  end
+  	
 	  test "should get new" do
 	    get :new
 	    assert_response :success
@@ -68,12 +63,12 @@ module Admin
 	    get :show, id: @site_map
 	    assert_response :success
 	  end
-	
+
 	  test "should get edit" do
 	    get :edit, id: @site_map
 	    assert_response :success
 	  end
-	
+
 	  test "should update site_map" do
 	    patch :update, id: @site_map, site_map: { aux: @site_map.aux, external: @site_map.external, internal: @site_map.internal }
 	    assert_redirected_to site_map_path(assigns(:site_map))
@@ -96,6 +91,5 @@ module Admin
 	  end
 
 	end
-
 
 end

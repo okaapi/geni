@@ -26,6 +26,5 @@ module Geni
       mail_config["server"].merge(mail_config["credentials"]).symbolize_keys
     config.action_mailer.raise_delivery_errors = true
 	
-	## config.assets.paths << "#{Rails}/vendor/assets/fonts"
   end
 end
