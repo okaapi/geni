@@ -1,0 +1,109 @@
+<% if individual and ( individual.father or individual.mother ) %>
+  <div class="parentscontainer" style="font-size: <%=font%>px;">
+    <table style="border: 0px solid blue">
+	  <tr>
+	    <td align=left >
+	      <table style="border: 0px solid green">
+	        <tr>
+		      <td>
+                <div class="namebox"
+				            style="min-width: <%= font*12%>px;
+	                        max-width: <%= font*12%>px;">
+	              <% if individual.father %>	
+			        <% if( is_editor? and 
+					       individual.uid == @individual.uid ) %>
+		              <%= link_to( delete_symbol, 
+		                  remove_parent_path( individual.uid, 
+						                      individual.father.uid ), 
+											  class: 'editlink',
+		                               data: { confirm: 'Are you sure?' } ) %>				            
+		            <% end %>	          
+	  	            <%= sex_symbol( individual.father.sex )  %> 
+		            <%= link_to( individual.father.pretty_name(is_user?), 
+		                           tree_path( individual.father.uid ) )   %>	
+		          <% elsif is_editor? and individual.uid == @individual.uid %>
+                    <%= link_to sex_symbol( 'm' )+ ' create father', 
+				                  new_parent_path( individual.uid, 'm',
+				                  individual.parents_uid ), 
+								  class: "editlink", remote: true %>                        
+		          <% else %> 
+				    &nbsp;					
+		          <% end %>  
+                </div>			  
+			    <% if individual.father and individual.father.parents_uid %>
+	              <div class='parentline'></div> 
+                <% end %>				
+              </td>
+			  <% if font > @minfont and individual.father %>
+	            <td >	          
+	              <%= render partial: "parents", locals: { individual: individual.father, font: font - 2 } %>
+                </td>
+			  <% end %> 	
+	        </tr>
+	      </table>             	                   
+	    </td>
+	  </tr>
+	  <tr> 	  
+	    <td align=left valign=top>
+	      <table style="border: 0px solid red">
+	        <tr>
+		      <td>
+                <div class="namebox"
+				            style="min-width: <%= font*12%>px;
+	                        max-width: <%= font*12%>px;">	
+		          <% if individual.mother %>
+ 		            <% if( is_editor? and individual.uid == @individual.uid ) %>
+		              <%= link_to( delete_symbol, 
+		                     remove_parent_path( individual.uid, 
+						     individual.mother.uid ), class: 'editlink',
+		                     data: { confirm: 'Are you sure?' } ) %>				            
+		            <% end %>	 	          	                    
+	                <%= sex_symbol( individual.mother.sex ) if individual.mother %> 
+		            <%= link_to( individual.mother.pretty_name(is_user?), 
+		                         tree_path( individual.mother.uid ) ) %>	
+		          <% elsif is_editor? and individual.uid == @individual.uid %>
+                    <%= link_to sex_symbol( 'f' )+ ' create mother', 
+				                     new_parent_path( individual.uid, 'f',
+				                     individual.parents_uid ), 
+									 class: "editlink", remote: true %>
+		          <% else %> 
+				    &nbsp;
+                  <% end %> 				  
+				</div>
+			    <% if individual.mother and individual.mother.parents_uid %>
+	              <div class='parentline'></div> 
+                <% end %>				
+		      </td>
+	          <% if font > @minfont  and individual.mother %>
+	            <td >	
+	              <%= render partial: "parents", 
+					           locals: { individual: individual.mother, 
+							   font: font - 2 } %>
+                </td>
+			  <% end %>
+	        </tr>
+	      </table>       
+	    </td>   
+	  </tr>
+    </table>
+  </div>
+<% elsif individual and is_editor? and individual.uid == @individual.uid %>
+  <div class="parentscontainer" style="font-size: <%=font%>px;">
+    <table >
+	  <tr>
+	    <td align=left >
+          <%= link_to sex_symbol( 'm' )+ ' create father', 
+			            new_parent_path( individual.uid, 'm',
+		                individual.parents_uid ), class: "editlink", remote: true %>                          
+        </td>
+      </tr>
+	  <tr>
+	    <td align=left >
+          <%= link_to sex_symbol( 'f' )+ ' create mother', 
+		                new_parent_path( individual.uid, 'f',
+		                individual.parents_uid ), class: "editlink", remote: true %>                        
+        </td>
+      </tr>
+    </table>    
+  </div>
+<% end %>	

@@ -1,0 +1,61 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+admin:
+  username: wido_admin
+  email: wido_admin@mmm.com
+  password_digest: <%= BCrypt::Password.create('secret') %>
+  role: admin
+  token: w1w2
+  active: confirmed
+  site: testsite45A67
+    
+editor:
+  username: wido_editor
+  email: wido_editor@mmm.com
+  password_digest: <%= BCrypt::Password.create('secret') %>
+  role: editor
+  token: w1w2
+  active: confirmed  
+  site: testsite45A67
+    
+user:
+  username: wido_user
+  email: wido_user@mmm.com
+  password_digest: <%= BCrypt::Password.create('secret') %>
+  role: user
+  token: w1w2
+  active: confirmed  
+  site: testsite45A67
+    
+wido:
+  username: wido
+  email: wido@mmm.com
+  alternate_email: wmenhardt@bbb.com
+  password_digest: <%= BCrypt::Password.create('secret') %>
+  role: admin
+  token: w1w2
+  active: confirmed
+  site: testsite45A67
+  
+john:
+  username: john
+  email: john@mmm.com
+  password_digest: <%= BCrypt::Password.create('secret') %>
+  role: user
+  active: not confirmed
+  token: john_token
+  site: testsite45A67
+  
+arnaud:
+  username: arnaud
+  email: arnaud@gmail.com
+  password_digest: <%= BCrypt::Password.create('secret') %>
+  active: confirmed
+  site: testsite45A67
+    
+francois:
+  username: francois
+  email: francois@gmail.com
+  password_digest: <%= BCrypt::Password.create('secret') %>
+  token: francois_token
+  site: testsite45A67

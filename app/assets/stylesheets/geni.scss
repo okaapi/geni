@@ -1,0 +1,118 @@
+
+/*
+ *  viewing the family tree...
+ */
+.treecontainer {
+
+  /*
+   *  general stuff
+   */
+  .namebox {  
+    padding: 0px 5px 0px 5px;
+    margin: 0px;
+    overflow:hidden;
+    white-space: nowrap; 
+    text-overflow: ellipsis;
+  }
+
+  .halfwidth {
+    width: 50%;
+  }
+
+  /*
+   *  the right side - parents 
+   */
+  .parentscontainer {
+    border-style: none none none solid; 
+    border-color: orange orange orange grey; 
+    border-width: 1px 1px 1px 2px;   
+	margin: 5px 0px 5px 0px;
+    .parentline {
+      width: 100%;
+      border-style: solid none none none; 
+      border-color: grey grey grey grey; 
+      border-width: 1px 1px 1px 2px; 
+    }  
+  }
+
+  /*
+   *  the left side - family
+   */
+  .familycontainer {
+    border:0px solid purple;
+  }
+  .childrenline {   
+    width: 100%;  
+    border-style: solid none none none; 
+    border-color: grey green lightgrey red; 
+    border-width: 1px 1px 1px 1px;  
+  }  
+
+  .childrencontainer {
+    border-style: none solid none none; 
+    border-color: grey grey grey grey; 
+    border-width: 1px 1px 1px 2px; 
+    padding: 0px 0px 0px 0px;
+  } 
+  .currentindividualcontainer {
+    background-color: #e5e4e2;
+	border-radius: 4px;
+	border: 1px solid grey; 
+	display: inline-block;
+    padding: 0px 5px 0px 20px;	
+  }
+  .individualcontainer {
+    padding: 0px 5px 0px 5px;
+  }
+ 
+  /*
+   *  editing union and individual
+   */
+ 
+  #editcontainer {
+    margin: 50px 20px 20px 20px;
+    z-index: 100;  
+  }
+  .editlink {
+    color: rgb(255,150,150);  
+    padding: 5px;
+    margin: 0px;
+    font-size: smaller;
+    &:hover {
+      color: red;
+    }    
+    &:visited {
+      color: red;
+    }  	  
+  }
+  .individualeditlink {
+    @extend .editlink;
+    font-size: inherit;
+  }
+}
+
+.search {
+  .results {
+    text-align: left;
+	.ui-widget-content {
+      padding: .5em 0;
+      overflow: hidden;
+      overflow-y: auto;
+    }
+    .ui-autocomplete {
+      list-style-type: none;
+    }
+    .ui-menu-item {
+	  margin: 0em 0em 0em 1em;
+      padding: .2em .6em .2em .5em;   
+      position: relative;
+      border: 0;
+      border-left: 5px solid transparent;
+    }
+    .ui-state-focus {
+      border-left-color: grey;
+    }
+  }
+}
+.ui-helper-hidden-accessible { color: red;  }
+

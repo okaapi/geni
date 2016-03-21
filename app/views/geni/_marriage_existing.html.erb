@@ -1,0 +1,23 @@
+
+<div class="panel panel-danger">
+  <div class="panel-heading">
+	<b>Add marriage for </b><%= individual.pretty_name(is_user?) %> <b>with existing person</b>
+  </div>
+  <div class="panel-body">
+
+  <%= form_tag save_marriage_existing_path do %>
+    <%= render partial: "search" %>
+	<br>
+
+    <%= render partial: "event_edit", 
+	        locals: { eventname: "Marriage", event: Event.new, autofocus: true } %>	
+	<br>
+	<%= submit_tag 'save', class: "btn btn-default" %>
+    <%= link_to 'cancel', tree_path( individual.uid ) %>	
+   <% end %>	
+   </div>
+</div>
+
+	
+	    
+</div>

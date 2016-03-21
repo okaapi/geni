@@ -1,0 +1,16 @@
+
+<% datesym = (eventname+'date').to_sym %> 
+<% locsym = (eventname+'location').to_sym %> 
+
+      <div class="row">
+        <div class="col-xs-4">
+          <%= label_tag datesym, eventname+" Date" %>
+          <%= text_field_tag datesym, (event.rawdate if event),
+                             class: "form-control input-sm", autofocus: autofocus %>
+        </div>
+        <div class="col-xs-6">
+          <%= label_tag locsym, "Location" %>
+          <%= text_field_tag locsym, (event.location if event),
+                             class: "form-control input-sm" %>
+        </div>
+      </div>	  

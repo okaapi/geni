@@ -1,0 +1,66 @@
+
+
+<table width=100%>
+  <tr valign='top'><td width=50%>
+  
+	<p id="notice"><%= notice %></p>
+
+	<p>
+	  <strong>Uid:</strong>
+	  <%= @union.uid %>
+	</p>
+	
+	<p>
+	  <strong>Husband:</strong>
+	  <%= link_to( @union.husband.pretty_name(is_user?), 
+	               individual_by_uid_path( @union.husband.uid ) ) if @union.husband %>   
+	</p>	               	
+	<p>
+	  <strong>Wife:</strong>
+	  <%= link_to( @union.wife.pretty_name(is_user?), 
+	               individual_by_uid_path( @union.wife.uid ) ) if @union.wife %>  
+	</p>
+	
+	<p>
+	  <strong>Children:</strong>
+	  <% @union.children.each do |child| %>
+	    <%= link_to( child.pretty_name(is_user?), 
+	               individual_by_uid_path( child.uid ) ) %>  
+	  <% end %>
+	</p>
+		  
+	<p>
+	  <strong>Marriage:</strong>
+	  <%= @union.marriage ? 
+	         link_to( ( @union.marriage.date ? @union.marriage.date : 'w/o date' ), @union.marriage )  : 'n/a'%>
+	</p>
+	
+	<p>
+	  <strong>Divorce:</strong>
+	  <%= @union.divorced %> &nbsp;
+	  <%= @union.divorce ? 
+	         link_to( ( @union.divorce.date ? @union.divorce.date : 'w/o date' ), @union.divorce )  : 'n/a'%>
+	</p>
+	
+	<p>
+	  <strong>Tree:</strong>
+	  <%= @union.tree %>
+	</p>
+	
+	<p>
+	  <strong>Gedfile:</strong>
+	  <%= @union.gedfile %>
+	</p>
+	
+	<p>
+	  <strong>Note:</strong>
+      <%= simple_format( @union.note ) %> 
+	</p>
+  </td><td>
+	  <pre style="white-space: pre-wrap">
+	  <%= @union.gedraw %>
+	  </pre>
+  </td></tr>
+</table>
+
+<%= render partial: "geni/footer" %>

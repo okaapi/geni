@@ -1,0 +1,45 @@
+<%= form_for(@union) do |f| %>
+  <% if @union.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@union.errors.count, "error") %> prohibited this union from being saved:</h2>
+
+      <ul>
+      <% @union.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :uid %><br>
+    <%= f.text_field :uid %>
+  </div>
+  <div class="field">
+    <%= f.label :husband_uid %><br>
+    <%= f.text_field :husband_uid %>
+  </div>
+  <div class="field">
+    <%= f.label :wife_uid %><br>
+    <%= f.text_field :wife_uid %>
+  </div>
+  <div class="field">
+    <%= f.label :marriage_id %><br>
+    <%= f.number_field :marriage_id %>
+  </div>
+  <div class="field">
+    <%= f.label :divorce_id %><br>
+    <%= f.number_field :divorce_id %>
+  </div>
+  <div class="field">
+    <%= f.label :tree %><br>
+    <%= f.text_field :tree %>
+  </div>
+  <div class="field">
+    <%= f.label :note %><br>
+    <%= f.text_area :note %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

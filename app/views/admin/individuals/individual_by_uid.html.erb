@@ -1,0 +1,110 @@
+<b> <%= link_to 'To tree view', tree_path( @individual.uid ) %> </b> <br>
+
+<table 'width=100%'>
+  <tr valign='top'><td width='50%'>
+    
+  	<p id="notice"><%= notice %></p>
+	
+	<p>
+	  <b>Name:</b>
+	  <%= @individual.pretty_name( is_user? ) %>
+	</p>
+	
+	
+	<p>
+	  <b>Parents:</b>
+	  <%= @individual.parents_uid ? 
+	     link_to( marriage_symbol, union_by_uid_path( @individual.parents_uid ) ) : '' %>
+	</p>
+	
+	<p>
+	  <b>Unions:</b>
+	  <br>
+	  <% @individual.unions.each do |union| %>
+	    <%= link_to( marriage_symbol, union_by_uid_path( union.uid ) ) %>  
+	    <%= link_to( union.spouse(@individual.uid).pretty_name(is_user?), 
+	               individual_by_uid_path( union.spouse(@individual.uid).uid ) ) if union.spouse(@individual.uid) %>  
+        <br>
+	  <% end %>
+	</p>
+		
+	<p>
+	  <b>Surname:</b>
+	  <%= @individual.surname %>
+	</p>
+	
+	<p>
+	  <b>Given:</b>
+	  <%= @individual.given %>
+	</p>
+	
+	<p>
+	  <b>Nickname:</b>
+	  <%= @individual.nickname %>
+	</p>
+	
+	<p>
+	  <b>Prefix:</b>
+	  <%= @individual.prefix %>
+	</p>
+	
+	<p>
+	  <b>Suffix:</b>
+	  <%= @individual.suffix %>
+	</p>
+	
+	<p>
+	  <b>Sex:</b>
+	  <%= sex_symbol( @individual.sex ) %>
+	</p>
+	
+	<p>
+	  <b>Birth:</b>
+	  <%= @individual.birth ? link_to( @individual.birth.date || 'date n/a', @individual.birth ) : ''%>
+	  <%= @individual.birth.location if @individual.birth %>
+	</p>
+	
+	<p>
+	  <b>Death:</b>
+	  <%= @individual.death ? link_to( @individual.death.date || 'date n/a', @individual.death ) : ''%>
+	  <%= @individual.death.location if @individual.death %>
+	</p>
+	
+	<p>
+	  <b>Uid:</b>
+	  <%= @individual.uid %>
+	</p>
+	
+	<p>
+	  <b>Changed ged:</b>
+	  <%= @individual.changed_ged %>
+	</p>
+	
+	<p>
+	  <b>Pedigree:</b>
+	  <%= @individual.pedigree %>
+	</p>
+	
+	<p>
+	  <b>Tree:</b>
+	  <%= @individual.tree %>
+	</p>
+	
+	<p>
+	  <b>Gedfile:</b>
+	  <%= @individual.gedfile %>
+	</p>
+	
+	<p>
+	  <b>Note:</b>
+	  <%= simple_format( @individual.note ) %>   
+	</p>
+  </td><td>
+	  <pre style="white-space: pre-wrap">
+	    <%= @individual.gedraw %>
+	  </pre>
+  </td></tr>
+</table>
+
+<%= render partial: "geni/footer" %>
+

@@ -1,0 +1,29 @@
+<h1>Listing unions</h1>
+
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Marriage</th>    
+      <th>Husband</th>
+      <th>Wife</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @unions.each do |union| %>
+      <tr>
+        <td><%= link_to (union.marriage ? union.marriage.date : 'unknown'), union %></td>
+        <td><%= union.husband.name if union.husband %></td>
+        <td><%= union.wife.name if union.wife %></td>
+        <td><%= link_to 'Edit', edit_union_path(union) %></td>
+        <td><%= link_to 'Destroy', union, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>&nbsp; &nbsp; <small> <%= union.id %> <%= union.uid %></small></td>
+      </tr> 
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Union', new_union_path %>

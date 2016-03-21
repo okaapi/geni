@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= @center ? @center.name.capitalize.gsub(/_/,' ') : "" %></title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <meta name="viewport" content="width=device-width, initial-scale=1">  
+  <meta name="robots" content="index,follow" />
+  <%= csrf_meta_tags %>
+  <%= favicon_link_tag 'favicon.ico' %>
+  <meta name="description" content="<%= @meta_desc %>" />
+</head>
+<body>
+
+  
+  <div class="container">
+  
+    <div class="row">
+      <div class="col-sm-12">
+		<% if flash[:alert] %>
+		  <div class="alert alert-danger" role="alert">
+		     <%= flash[:alert] %>
+		  </div>
+		<% end %>  
+		<% if flash[:notice] %>
+		  <div class="alert alert-success" role="alert">
+		    <%= simple_format( flash[:notice] ) %>
+		  </div>
+		<% end %>
+        <div id="spinner">
+			<div class="alert alert-warning" role="alert">
+               <%= image_tag "spinner.gif", width: 30 %>                   
+		      &nbsp; wait...     
+           </div>
+		</div>        
+      </div>    
+    </div>
+    <div class="row">   
+      <div class="col-sm-8">
+		<% if session[:reset_user_id] and @current_user = User.find_by_id( session[:reset_user_id] )%>  
+		  <div id="authentication_dialogue_js" style="display:block" >
+		    <%= render "authenticate/ur_secrets" %>
+		  </div>
+		<% else %>  
+		  <div id="authentication_dialogue_js"></div>
+		<% end %>     		 
+      </div>
+      <div class="col-sm-4 text-right">
+	    <% if session[:reset_user_id] and @current_user = User.find_by_id( session[:reset_user_id] )%>  
+	    <% else %>  
+	      <div id="authentication_launchpad">
+	        <%= render "authenticate/launchpad" %>
+	      </div>
+	    <% end %>
+      </div>      
+    </div>
+    
+ 
+    <%= yield %>
+    
+    
+  </div>
+
+
+</body>
+</html>

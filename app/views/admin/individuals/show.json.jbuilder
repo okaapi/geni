@@ -1,0 +1,1 @@
+json.extract! @individual, :id, :name, :surname, :given, :nickname, :prefix, :suffix, :sex, :birth_id, :death_id, :uid, :parents_uid, :changed_ged, :pedigree, :tree, :gedfile, :note, :gedraw, :created_at, :updated_at

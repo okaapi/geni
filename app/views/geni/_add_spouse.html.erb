@@ -1,0 +1,13 @@
+<div class="panel panel-danger">
+  <div class="panel-heading">
+    <b>Add marriage of</b> <%= individual.pretty_name(is_user?) %><b> with existing person</b>
+  </div>
+  <div class="panel-body">
+    <%= form_tag save_added_spouse_path do %>
+      <%= render partial: "search" %>
+	  <br>
+	  <%= submit_tag 'add', class: "btn btn-default" %>
+      <%= link_to 'cancel', tree_path( individual.uid ) %>	
+    <% end %>	
+  </div>	
+</div>
