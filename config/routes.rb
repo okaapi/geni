@@ -74,6 +74,6 @@ Rails.application.routes.draw do
   # this has to be the last one or else...
   get ':uid' => 'geni#tree', as: 'tree'  
 
-  root "geni#surnames", as: "root"
+  root "geni#search", as: "root"
     
 end

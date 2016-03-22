@@ -125,7 +125,7 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
     admin_login
     i = Individual.first
     get "/individual_by_uid/#{i.uid}" 
-    assert_select 'table tr td p b', 17   # labels
+    assert_select 'table tr td p b', 16   # labels
     assert_select 'table tr td p b', 'Name:'
     assert_select 'table tr td p', /Joe Miller/    
   end 
