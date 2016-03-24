@@ -25,7 +25,7 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
   
   test "not logged in get surnames, first names and tree" do
 
-    get  "/" 	
+    get  "/surnames" 	
     assert_response :success
     assert_select '.container a', 'Miller'   
 	assert_select '.container a', 'Smith' 
@@ -52,7 +52,8 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
 
     user_login
 	
-    get  "/" 	
+    get  "/surnames" 	
+
     assert_response :success
     assert_select '.container a', 'Miller'   
 	assert_select '.container a', 'Smith' 
@@ -125,7 +126,7 @@ class GeniUserStoriesTest < ActionDispatch::IntegrationTest
     admin_login
     i = Individual.first
     get "/individual_by_uid/#{i.uid}" 
-    assert_select 'table tr td p b', 17   # labels
+    assert_select 'table tr td p b', 16   # labels
     assert_select 'table tr td p b', 'Name:'
     assert_select 'table tr td p', /Joe Miller/    
   end 

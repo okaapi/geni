@@ -10,14 +10,15 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+/shared
 
 # Ignore yml files
-config/yml
-config/*.yml
+/config/yml
+/config/*.yml
 
 # ged files
-lib/*.ged
-db/*.ged
+/lib/*.ged
+/db/*.ged
 
 # coverage
 /coverage

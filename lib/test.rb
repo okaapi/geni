@@ -2,7 +2,6 @@
 require "../config/environment" unless defined?(::Rails.root)
 
 
-
 puts "aaa"
 ZiteActiveRecord.site( 'aaa' )
 UserSession.destroy_all
@@ -29,4 +28,6 @@ puts "---"
 p UserSession.where( id: id_aaa )
 puts "---"
 p UserSession.where( id: id_bbb )
+
 puts "---"
+
