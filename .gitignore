@@ -7,10 +7,16 @@
 # Ignore bundler config.
 /.bundle
 
+# Ignore the default SQLite database.
+/db/*.sqlite3
+/db/*.sql
+/db/*.sqlite3-journal
+
 # Ignore all logfiles and tempfiles.
-/log/*.log
+/log
 /tmp
 /shared
+/app/assets/stylesheets/.sass-cache
 
 # Ignore yml files
 /config/yml
@@ -22,3 +28,4 @@
 
 # coverage
 /coverage
+
