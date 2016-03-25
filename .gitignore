@@ -16,7 +16,6 @@
 /log
 /tmp
 /shared
-/app/assets/stylesheets/.sass-cache
 
 # Ignore yml files
 /config/yml
@@ -29,3 +28,5 @@
 # coverage
 /coverage
 
+# public
+/public/assets
