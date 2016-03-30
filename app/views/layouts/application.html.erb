@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= @center ? @center.name.capitalize.gsub(/_/,' ') : "" %></title>
+  <title>Stammbaum</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <meta name="viewport" content="width=device-width, initial-scale=1">  
@@ -10,9 +10,9 @@
   <%= favicon_link_tag 'favicon.ico' %>
   <meta name="description" content="<%= @meta_desc %>" />
 </head>
+
 <body>
 
-  
   <div class="container">
   
     <div class="row">
@@ -28,10 +28,10 @@
 		  </div>
 		<% end %>
         <div id="spinner">
-			<div class="alert alert-warning" role="alert">
+		  <div class="alert alert-warning" role="alert">
                <%= image_tag "spinner.gif", width: 30 %>                   
 		      &nbsp; wait...     
-           </div>
+          </div>  
 		</div>        
       </div>    
     </div>
@@ -55,13 +55,31 @@
       </div>      
     </div>
     
- 
-    <%= yield %>
+    <div class="row">    
+      <div id="application" class="col-sm-12">    
+        <%= yield %>
+      </div>     
+    </div>
     
+    <div class="row" >
+      <div class="col-sm-12" style="color: #0F0F0F; margin-top:20px">
+		  <% if ( @current_user and @current_user.admin? ) %>
+			  <div class="cleardiv" id="version"> <small>
+			    Application <%= controller.controller_name %> / <%= controller.action_name %> 
+			    Ruby <%= RUBY_VERSION%> Rails <%= Rails.version %> <%= Rails.env %> 
+			    Site <%= ZiteActiveRecord.site? %> 
+			    User <%= @current_user.username if @current_user %> 
+		 <br> <br>
+			  </small> </div>
+		  <% else %>
+			  <div class="cleardiv" id="version" style="color:white"	> <small>
+		      <%= RUBY_VERSION%> <%= Rails.version %> <%= Rails.env[0] %> <%= ZiteActiveRecord.site? %> <%= Time.now %>
+			  </small> </div>  	  
+		  <% end %>      
+      </div>
+    </div>
     
   </div>
-
-  <%= RUBY_VERSION%> <%= Rails.version %> <%= Rails.env %> <%= ZiteActiveRecord.site? %> <%= Time.now %>
 
 </body>
 </html>

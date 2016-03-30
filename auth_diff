@@ -1,0 +1,86 @@
+
+#!/bin/bash
+
+COMP=../$1
+echo "Comparing auth components in " $COMP
+
+diff ./app/assets/images/spinner.gif $COMP/app/assets/images/spinner.gif
+diff ./app/controllers/application_controller.rb $COMP/app/controllers/application_controller.rb
+diff ./app/controllers/admin/user_sessions_controller.rb $COMP/app/controllers/admin/user_sessions_controller.rb
+diff ./app/controllers/admin/user_actions_controller.rb $COMP/app/controllers/admin/user_actions_controller.rb
+diff ./app/controllers/admin/users_controller.rb $COMP/app/controllers/admin/users_controller.rb
+diff ./app/controllers/admin/site_maps_controller.rb $COMP/app/controllers/admin/site_maps_controller.rb
+
+diff -rq ./app/views/authentication_notifier $COMP/app/views/authentication_notifier
+diff -rq ./app/views/authenticate $COMP/app/views/authenticate
+diff -rq ./app/views/admin/user_actions $COMP/app/views/admin/user_actions
+diff -rq ./app/views/admin/users $COMP/app/views/admin/users
+diff -rq ./app/views/admin/user_sessions $COMP/app/views/admin/user_sessions
+
+diff ./app/models/user_session.rb $COMP/app/models/user_session.rb
+diff ./app/models/user_action.rb $COMP/app/models/user_action.rb
+diff ./app/models/user.rb $COMP/app/models/user.rb
+diff ./app/mailers/authentication_notifier.rb $COMP/app/mailers/authentication_notifier.rb
+
+diff ./app/validators/email_validator.rb $COMP/app/validators/email_validator.rb
+diff ./app/mailers/authentication_notifier.rb $COMP/app/mailers/authentication_notifier.rb
+diff ./app/helpers/application_helper.rb $COMP/app/helpers/application_helper.rb
+
+diff ./db/migrate/20141106192628_create_user_actions.rb $COMP/db/migrate/20141106192628_create_user_actions.rb
+diff ./db/migrate/20141106192627_create_user_sessions.rb $COMP/db/migrate/20141106192627_create_user_sessions.rb
+diff ./db/migrate/20141106192626_create_users.rb $COMP/db/migrate/20141106192626_create_users.rb
+diff ./db/migrate/20150715210233_add_site_to_users.rb $COMP/db/migrate/20150715210233_add_site_to_users.rb
+diff ./db/migrate/20150715210246_add_site_to_user_sessions.rb $COMP/db/migrate/20150715210246_add_site_to_user_sessions.rb
+diff ./db/migrate/20150715210318_add_site_to_user_actions.rb $COMP/db/migrate/20150715210318_add_site_to_user_actions.rb
+diff ./db/migrate/20150723195726_create_site_maps.rb $COMP/db/migrate/20150723195726_create_site_maps.rb
+
+diff ./config/auth_mail.yml $COMP/config/auth_mail.yml
+
+diff ./test/models/user_test.rb ./test/models/user_test.rb
+diff ./test/fixtures/users.yml $COMP/test/fixtures/users.yml
+diff ./test/fixtures/user_actions.yml $COMP/test/fixtures/user_actions.yml
+diff ./test/fixtures/user_sessions.yml $COMP/test/fixtures/user_sessions.yml
+
+diff ./test/controllers/users_controller_test.rb $COMP/test/controllers/users_controller_test.rb
+diff ./test/controllers/user_actions_controller_test.rb $COMP/test/controllers/user_actions_controller_test.rb
+diff ./test/controllers/authenticate_controller_test.rb $COMP/test/controllers/authenticate_controller_test.rb
+diff ./test/controllers/user_sessions_controller_test.rb $COMP/test/controllers/user_sessions_controller_test.rb
+
+diff ./test/mailers/authentication_notifier_test.rb $COMP/test/mailers/authentication_notifier_test.rb
+
+# these might have differences
+echo
+echo
+echo "diff ./app/assets/stylesheets/application.scss $COMP/app/assets/stylesheets/application.scss"
+diff ./app/assets/stylesheets/application.scss $COMP/app/assets/stylesheets/application.scss 
+
+echo
+echo
+echo "diff ./app/views/layouts/application.html.erb $COMP/app/views/layouts/application.html.erb"
+diff ./app/views/layouts/application.html.erb $COMP/app/views/layouts/application.html.erb 
+
+echo
+echo
+echo "diff ./app/controllers/authenticate_controller.rb $COMP/app/controllers/authenticate_controller.rb"
+diff ./app/controllers/authenticate_controller.rb $COMP/app/controllers/authenticate_controller.rb
+
+echo
+echo
+echo "diff -./test/test_helper.rb $COMP/test/test_helper.rb"
+diff ./test/test_helper.rb $COMP/test/test_helper.rb
+
+echo
+echo
+echo "diff ./test/integration/auth_user_stories_test.rb $COMP/test/integration/auth_user_stories_test.rb"
+diff ./test/integration/auth_user_stories_test.rb $COMP/test/integration/auth_user_stories_test.rb
+
+echo
+echo
+echo "diff ./config/application.rb $COMP/config/application.rb"
+diff ./config/application.rb $COMP/config/application.rb
+
+echo
+echo "diff ./config/routes.rb $COMP/config/routes.rb"
+diff -y ./config/routes.rb $COMP/config/routes.rb
+
+exit

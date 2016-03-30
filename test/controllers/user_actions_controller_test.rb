@@ -64,7 +64,7 @@ module Admin
 	    patch :update, id: @user_action, user_action: { action: @user_action.action, controller: @user_action.controller, user_session_id: 7 }
 	    assert_response :success
 	    assert_equal assigns(:user_action).errors.count, 1
-	  end	  
+	  end
 	
 	  test "should destroy user_action" do
 	    assert_no_difference('UserAction.count' ) do

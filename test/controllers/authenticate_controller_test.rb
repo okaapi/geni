@@ -62,9 +62,9 @@ class AuthenticateControllerTest < ActionController::TestCase
         @not_java = ! Rails.configuration.use_javascript    
 	    @controller.session[:password_retries] = 0
 	    if @not_java  
-	      post :prove_it, claim: "wido", xylophone: "secret"
+	      post :prove_it, claim: "wido", password: "secret"
 	    else
-	      xhr :post, :prove_it, claim: "wido", xylophone: "secret"
+	      xhr :post, :prove_it, claim: "wido", password: "secret"
 	    end
 	    assert_root_path_redirect    
 	    assert_equal flash[:notice], 'wido logged in'
@@ -79,12 +79,12 @@ class AuthenticateControllerTest < ActionController::TestCase
         @not_java = ! Rails.configuration.use_javascript    
 	    @controller.session[:password_retries] = 0
 	    if @not_java
-	      post :prove_it, claim: "wido", xylophone: "secret1"
+	      post :prove_it, claim: "wido", password: "secret1"
 	      assert_response :success   
 	      assert_select '.form-horizontal' 
 	      assert_select '.control-label', /password/   
 	    else 
-	      xhr :post, :prove_it, claim: "wido", xylophone: "secret1"
+	      xhr :post, :prove_it, claim: "wido", password: "secret1"
 	      assert_response :success 
 	      assert_select_jquery :html, '#authentication_dialogue_js' do
 	        assert_select '.form-horizontal' 
@@ -103,9 +103,9 @@ class AuthenticateControllerTest < ActionController::TestCase
         @not_java = ! Rails.configuration.use_javascript      
 	    @controller.session[:password_retries] = 3
 	    if @not_java
-	      post :prove_it, claim: "wido", xylophone: "secret1"
+	      post :prove_it, claim: "wido", password: "secret1"
 	    else 
-	      xhr :post, :prove_it, claim: "wido", xylophone: "secret1"
+	      xhr :post, :prove_it, claim: "wido", password: "secret1"
 	    end   
 	    assert_root_path_redirect    
 	    assert_equal flash[:alert], 'user suspended, check your email'      
@@ -120,9 +120,9 @@ class AuthenticateControllerTest < ActionController::TestCase
         @not_java = ! Rails.configuration.use_javascript     
 	    @controller.session[:password_retries] = 3
 	    if @not_java
-	      post :prove_it, claim: "wido", xylophone: "secret1", ab47hk: "ab47hk"
+	      post :prove_it, claim: "wido", password: "secret1", ab47hk: "ab47hk"
 	    else 
-	      xhr :post, :prove_it, claim: "wido", xylophone: "secret1", ab47hk: "ab47hk"
+	      xhr :post, :prove_it, claim: "wido", password: "secret1", ab47hk: "ab47hk"
 	    end   
 	    assert_root_path_redirect  
 	    assert flash[:alert] =~ /sending failed/
@@ -134,9 +134,9 @@ class AuthenticateControllerTest < ActionController::TestCase
         Rails.configuration.use_javascript = java
         @not_java = ! Rails.configuration.use_javascript     
 	    if @not_java
-	      post :prove_it, claim: "john", xylophone: "secret"    
+	      post :prove_it, claim: "john", password: "secret"    
 	    else 
-	      xhr :post, :prove_it, claim: "john", xylophone: "secret"
+	      xhr :post, :prove_it, claim: "john", password: "secret"
 	    end
 	    assert_root_path_redirect    
 	    assert_equal flash[:alert], 'user is not activated, check your email' 
@@ -148,9 +148,9 @@ class AuthenticateControllerTest < ActionController::TestCase
         Rails.configuration.use_javascript = java
         @not_java = ! Rails.configuration.use_javascript     
 	    if @not_java
-	      post :prove_it, claim: "john1", xylophone: "secret" 
+	      post :prove_it, claim: "john1", password: "secret" 
 	    else 
-	      xhr :post, :prove_it, claim: "john1", xylophone: "secret"
+	      xhr :post, :prove_it, claim: "john1", password: "secret"
 	    end
 	    assert_root_path_redirect    
 	    assert_equal flash[:alert], "username/password is incorrect!" 
@@ -390,13 +390,13 @@ class AuthenticateControllerTest < ActionController::TestCase
         Rails.configuration.use_javascript = java
         @not_java = ! Rails.configuration.use_javascript       
 	    if @not_java
-	      post :ur_secrets, user_id: @user_john.id, xylophone: 'secret', xylophone_confirmation: 'secret2' 
+	      post :ur_secrets, user_id: @user_john.id, password: 'secret', password_confirmation: 'secret2' 
 	      assert_response :success 
 	      assert_select '.form-horizontal'    
 	      assert_select '.control-label', /password/ 
 	      assert_select '.control-label', /confirmation/         
 	    else
-	      xhr :post, :ur_secrets, user_id: @user_john.id, xylophone: 'secret', xylophone_confirmation: 'secret2' 
+	      xhr :post, :ur_secrets, user_id: @user_john.id, password: 'secret', password_confirmation: 'secret2' 
 	      assert_response :success      
 	      assert_select_jquery :html, '#authentication_dialogue_js' do
 	        assert_select '.form-horizontal'
@@ -415,10 +415,10 @@ class AuthenticateControllerTest < ActionController::TestCase
         Rails.configuration.use_javascript = java
         @not_java = ! Rails.configuration.use_javascript       
 	    if @not_java
-	      post :ur_secrets, user_id: @user_john.id, xylophone: 'secret', xylophone_confirmation: 'secret' 
+	      post :ur_secrets, user_id: @user_john.id, password: 'secret', password_confirmation: 'secret' 
 	    else
 	      xhr :post, :ur_secrets, user_id: @user_john.id, 
-	                        xylophone: 'secret', xylophone_confirmation: 'secret'   
+	                        password: 'secret', password_confirmation: 'secret'   
 	    end
 	    assert_root_path_redirect
 	    assert_equal flash[:notice], "password set!"         

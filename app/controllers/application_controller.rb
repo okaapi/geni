@@ -8,8 +8,8 @@ class ApplicationController < ActionController::Base
     unless @current_user and @current_user.role == "admin"
       redirect_to '/', notice: "must be admin"
     end
-  end 
- 
+  end
+  
   private
   
   def set_current_user_session_and_create_action
@@ -33,9 +33,6 @@ class ApplicationController < ActionController::Base
 	    session[:user_session_id] = @current_user_session.id 
 	  end 
   	  
-  	  #
-  	  #  in Rails 4 this cannot happen, but in Rails 5 it seemed to... so let's keep this in
-  	  #  :force_incorrect_site is only used in testing
   	  #
 	  if @current_user_session.site != ZiteActiveRecord.site? 
 	    redirect_to '/', alert: "name mismatch #{@current_user_session.site} #{request.host}"

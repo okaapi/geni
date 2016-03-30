@@ -8,9 +8,9 @@ class AuthenticateController < ApplicationController
   end
   
   def prove_it
-    
+
     @claim = params[:claim]
-    @password = params[:xylophone]
+    @password = params[:password]
     # this is for testing email failure exception code    
     @eft = params[:ab47hk]
         
@@ -40,12 +40,7 @@ class AuthenticateController < ApplicationController
             @current_user.token = nil if @eft == 'ab47hk'
             begin
               # and send him an email
-              if Rails::VERSION::STRING == '4.1.6'
-                puts "[authenticate_controller.rb - 4.1.6]"
-                AuthenticationNotifier.reset(@current_user, request).deliver
-              else
-                AuthenticationNotifier.reset(@current_user, request).deliver_now
-              end                
+              AuthenticationNotifier.reset(@current_user, request).deliver_now           
               redirect_to_root_js_or_html alert: "user suspended, check your email"
             rescue Exception => e         
               redirect_to_root_js_or_html alert: "user suspended, but email sending failed 3 #{e}"
@@ -76,11 +71,7 @@ class AuthenticateController < ApplicationController
       @current_user.token = nil if @eft == 'ab47hk'
       if @current_user.save  
         begin  
-          if Rails::VERSION::STRING == '4.1.6'
-            AuthenticationNotifier.registration(@current_user,request).deliver
-          else
-            AuthenticationNotifier.registration(@current_user,request).deliver_now
-          end            
+          AuthenticationNotifier.registration(@current_user,request).deliver_now  
           create_new_user_session( @current_user )
           redirect_to_root_js_or_html notice: "you are logged in, we sent an activation email for the next time!"
         rescue Exception => e
@@ -96,6 +87,7 @@ class AuthenticateController < ApplicationController
     
     # this is the link from the email... set the reset_user_id, and immediately redirect
     # redirection will show the ur_secrets dialogue with form to ur_secrets
+
     @user_token = params[:user_token]
     if @current_user = User.find_by_token( @user_token )
       # REMEMBER this user _id for ur_secrets!
@@ -120,8 +112,8 @@ class AuthenticateController < ApplicationController
        
     # set the new password
     if @current_user = User.find_by_id( user_id )
-      @current_user.password = params[:xylophone]
-      @current_user.password_confirmation = params[:xylophone_confirmation] 
+      @current_user.password = params[:password]
+      @current_user.password_confirmation = params[:password_confirmation] 
       @current_user.active = 'confirmed'
       @current_user.token = nil
       if @current_user.save # succes!
@@ -141,11 +133,7 @@ class AuthenticateController < ApplicationController
     if user = User.find_by_email_or_username( params[:claim] ) 
       begin
         user.suspend_and_save
-        if Rails::VERSION::STRING == '4.1.6'
-          AuthenticationNotifier.reset(user, request).deliver    
-        else
-          AuthenticationNotifier.reset(user, request).deliver_now
-        end    
+        AuthenticationNotifier.reset(user, request).deliver_now
         redirect_to_root_html notice: "user #{user.username} suspended, check your email"
       rescue Exception => e           
         redirect_to_root_html alert: "user suspended, but email sending failed 2 #{e}"
@@ -161,6 +149,8 @@ class AuthenticateController < ApplicationController
     reset_session  
     redirect_to_root_html
   end
+  
+  
 
       
   private
@@ -186,6 +176,7 @@ class AuthenticateController < ApplicationController
     
     def create_new_user_session( user )   
       reset_session
+
       user_session = UserSession.new_ip_and_client( user, request.remote_ip(),
                                                    request.env['HTTP_USER_AGENT'])
       session[:user_session_id] = user_session.id     

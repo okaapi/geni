@@ -38,4 +38,3 @@ class AuthenticationNotifierTest < ActionMailer::TestCase
   end
 
 end
-

@@ -67,9 +67,9 @@ class AuthUserStoriesTest < ActionDispatch::IntegrationTest
 	      
 	    # enters correct password and gets logged in and session is created
 	    if @not_java  
-	      post "/_prove_it", claim: "arnaud", xylophone: "secret"
+	      post "/_prove_it", claim: "arnaud", password: "secret"
 	    else
-	      xhr :post, "/_prove_it", claim: "arnaud", xylophone: "secret"
+	      xhr :post, "/_prove_it", claim: "arnaud", password: "secret"
 	    end
 	    assert_root_path_redirect    
 	    assert_equal flash[:notice], 'arnaud logged in'
@@ -139,9 +139,9 @@ class AuthUserStoriesTest < ActionDispatch::IntegrationTest
 	      
 	    # enters correct password and gets logged in and session is created
 	    if @not_java  
-	      post "/_prove_it", claim: "arnaud", xylophone: "secret"
+	      post "/_prove_it", claim: "arnaud", password: "secret"
 	    else
-	      xhr :post, "/_prove_it", claim: "arnaud", xylophone: "secret"
+	      xhr :post, "/_prove_it", claim: "arnaud", password: "secret"
 	    end
 	    assert_root_path_redirect    
 	    assert_equal flash[:notice], 'arnaud logged in'
@@ -172,10 +172,11 @@ class AuthUserStoriesTest < ActionDispatch::IntegrationTest
   test "registering and getting logged in" do
   
     [true, false].each do |java|
-          
+                 
         #because we run this twice...
         jim = User.find_by_username('jim')
         jim.destroy if jim
+        ActionMailer::Base.deliveries = []        
 
         Rails.configuration.use_javascript = java
         @not_java = ! Rails.configuration.use_javascript
@@ -242,10 +243,10 @@ class AuthUserStoriesTest < ActionDispatch::IntegrationTest
 	    
 	    # sets the password and gets logged in
 	    if @not_java
-	      post "/_ur_secrets", user_id: @user_francois.id, xylophone: 'secret', xylophone_confirmation: 'secret' 
+	      post "/_ur_secrets", user_id: @user_francois.id, password: 'secret', password_confirmation: 'secret' 
 	    else
 	      xhr :post, "/_ur_secrets", user_id: @user_francois.id, 
-	                        xylophone: 'secret', xylophone_confirmation: 'secret'   
+	                        password: 'secret', password_confirmation: 'secret'   
 	    end
 	    
 	    assert_root_path_redirect
