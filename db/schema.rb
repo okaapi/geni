@@ -35,7 +35,6 @@ ActiveRecord::Schema.define(version: 20160507235101) do
     t.integer  "death_id",    limit: 4
     t.string   "uid",         limit: 255
     t.string   "parents_uid", limit: 255
-    t.text     "changed_ged", limit: 65535
     t.string   "tree",        limit: 255
     t.string   "gedfile",     limit: 255
     t.text     "note",        limit: 65535

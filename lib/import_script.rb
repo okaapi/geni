@@ -1,7 +1,7 @@
 
 require "../config/environment" unless defined?(::Rails.root)
 
-gedfile = 'sources.ged' # 'test.ged' # 
+gedfile = 'sources.ged' # 'stammbaum.ged' # 
 
 puts "importing from #{gedfile}..."
 

@@ -180,6 +180,13 @@ class Individual < ActiveRecord::Base
     
   end
  
+  def sources
+    srefs = SourceRef.where( individual_uid: self.uid ) 
+    srcs = []		
+    srefs.each { |sref| srcs << Source.where( id: sref.source_id ).first }
+    srcs
+  end
+   
   #
   #  these should be private, this is for testing
   #

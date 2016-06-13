@@ -32,6 +32,8 @@ class Import
 	  contents = File.open(gedfile,'r')
 	  
 	  Individual.transaction do
+	  Union.transaction do
+	  Source.transaction do
 	  
 	    i = 0
 	    contents.each_line do |line|    
@@ -40,7 +42,7 @@ class Import
 	      i += 1      
 	      if line =~ /[\d]* _UID/ or line =~ /[\d]* REFN/
 	        # ignore
-       
+            
 	      #
 	      #  new block starts
 	      #        
@@ -81,7 +83,7 @@ class Import
 			  source.content = ''
 			  source.gedraw = line
 	          source.gedfile = original_file	
-			  srcs[Regexp.last_match(1)] = source.sid	
+			  srcs[Regexp.last_match(1)] = source.id	
 
             else
               ignored += line			
@@ -194,8 +196,8 @@ class Import
 	            individual.update_death( rawdate: Regexp.last_match(1) )
 	          elsif line =~ /^2 PLAC (.+)/
 	            individual.update_death( location: Regexp.last_match(1) )  
-	          elsif line =~ /^2 SOUR @(.+)@/
-	            individual.note += "\n" + "Death: @#{tree_name}#{Regexp.last_match(1)}@ "     + "\n"         
+	          elsif line =~ /^2 SOUR @S(.+)@/
+	            ( indi_srcs[ individual.uid ] ||= [] ) << Regexp.last_match(1)         
 	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
@@ -210,8 +212,8 @@ class Import
 	            individual.update_birth( rawdate: Regexp.last_match(1) )
 	          elsif line =~ /^2 PLAC (.+)/ 
 	            individual.update_birth( location: Regexp.last_match(1) )
-	          elsif line =~ /^2 SOUR @(.+)@/
-	            individual.note += "\n" + "Birth: @#{tree_name}#{Regexp.last_match(1)}@ "       + "\n"       
+	          elsif line =~ /^2 SOUR @S(.+)@/
+	            ( indi_srcs[ individual.uid ] ||= [] ) << Regexp.last_match(1)  
 	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
@@ -222,8 +224,8 @@ class Import
 	        #   submode :note
 	        #
 	        elsif submode == :note
-	          if line =~ /^2 SOUR @(.+)@/
-	            individual.note += " @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"     
+	          if line =~ /^2 SOUR @S(.+)@/
+	            ( indi_srcs[ individual.uid ] ||= [] ) << Regexp.last_match(1)  
 	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
@@ -240,11 +242,11 @@ class Import
 	        #   submode :source
 	        #
 	        elsif submode == :source 
-	          #if line =~ /^[1-5] \w\w\w\w+(.*)/   
-	          #  individual.note += ' ' + Regexp.last_match(1)  + "\n"
-	          #else
+	          if line =~ /^[1-5] \w\w\w\w+(.*)/   
+	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
+	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
-	          #end
+	          end
 	               
 	        else                  
 	          ignored += "Ignored #{mode} #{submode}: " + line   
@@ -290,8 +292,8 @@ class Import
 	            union.update_marriage( rawdate: Regexp.last_match(1) )
 	          elsif line =~ /^2 PLAC (.+)/
 	            union.update_marriage( location: Regexp.last_match(1) )
-	          elsif line =~ /^2 SOUR @(.+)@/
-	            union.note += "\n" + "Marriage: @#{tree_name}#{Regexp.last_match(1)}@ "       + "\n"       
+	          elsif line =~ /^2 SOUR @S(.+)@/
+	            ( fam_srcs[ union.uid ] ||= [] ) << Regexp.last_match(1)      
 	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            union.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
@@ -306,8 +308,8 @@ class Import
 	            union.update_divorce( rawdate: Regexp.last_match(1) )
 	          elsif line =~ /^2 PLAC (.+)/
 	            union.update_divorce( location: Regexp.last_match(1) )
-	          elsif line =~ /^2 SOUR @(.+)@/
-	            union.note += "\n" + "Birth: @#{tree_name}#{Regexp.last_match(1)}@ "       + "\n"       
+	          elsif line =~ /^2 SOUR @S(.+)@/
+	            ( fam_srcs[ union.uid ] ||= [] ) << Regexp.last_match(1)
 	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            union.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
@@ -318,8 +320,8 @@ class Import
 	        #   submode :note
 	        #
 	        elsif submode == :note
-	          if line =~ /^2 SOUR @(.+)@/
-	            union.note += " @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"     
+	          if line =~ /^2 SOUR @S(.+)@/
+	            ( fam_srcs[ union.uid ] ||= [] ) << Regexp.last_match(1)    
 	          elsif line =~ /^[1-5] \w\w\w\w+(.*)/   
 	            union.note += ' ' + Regexp.last_match(1)  + "\n"
 	          else
@@ -336,11 +338,11 @@ class Import
 	        #   submode :source
 	        #
 	        elsif submode == :source 
-	          #if line =~ /^[1-5] \w\w\w\w+(.*)/   
-	          #  union.note += ' ' + Regexp.last_match(1)  + "\n"
-	          #else
+	          if line =~ /^[1-5] \w\w\w\w+(.*)/   
+	            union.note += ' ' + Regexp.last_match(1)  + "\n"
+	          else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
-	          #end
+	          end
 	               
 	        else                  
 	          ignored += "Ignored #{mode} #{submode}: " + line   
@@ -390,6 +392,8 @@ class Import
 	
 	    
 	  end # Individual.transaction do
+	  end # Union.transaction do
+	  end # Source.transaction do	  	  
       puts if log2tt 
 	  
 	  Union.transaction do
@@ -439,7 +443,7 @@ class Import
 	    indi_srcs.each do | uid, sids |
 	      sids.each do |sid|
 		    individual = Individual.by_uid( uid )
-		    source = Source.where( sid: srcs[sid] ).first
+		    source = Source.where( id: srcs[sid] ).first
             if source and source.content == ''
 			  individual.note += "Source: #{source.title} \n"
 			  individual.save!
@@ -464,13 +468,14 @@ class Import
 	      sids.each do |sid|
 
 		    union = Union.by_uid( uid )
-		    source = Source.where( sid: srcs[sid] ).first
+		    source = Source.where( id: srcs[sid] ).first
             if source and source.content == ''
 			  union.note += "Source: #{source.title} \n"
 			  union.save!
 			elsif source
 			  sref = SourceRef.create( union_uid: union.uid,
                             		   source_id: source.id )
+			  sref.save!                            		   
 			else 
 			  # ignore if no source found									   
 			end
@@ -483,7 +488,7 @@ class Import
 	    puts 'sources without content' if log2tt
 	  
 	    srcs.each do | i, sid |		 
-          source = Source.where( sid: sid ).first
+          source = Source.where( id: sid ).first
           if source and source.content == ''
             source.destroy!
 		  end

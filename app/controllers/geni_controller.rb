@@ -296,7 +296,7 @@ class GeniController < ApplicationController
       @parents.husband = nil
     elsif @parents.wife and @parents.wife.uid == @parent.uid
       @parents.wife = nil
-    end
+    end 
     @parents.save
 
     if @parents.husband == nil and @parents.wife == nil
@@ -443,7 +443,8 @@ class GeniController < ApplicationController
 
     ignored = Import.from_gedfile( treename, gedfile, original_file )
     
-    flash[:notice] = ignored
+    flash[:notice] = "ignored parameter should go here"
+    puts ignored
     
     redirect_to root_path
   end  

@@ -1,35 +1,41 @@
-<div class="individualcontainer" style="min-width: <%= font*12%>px;" >	
 
-  <div <%= 'class="currentindividualcontainer"'.html_safe if @individual == individual %> >		    
-
-	<%= sex_symbol( individual.sex ) %> 
-
-    <% if @individual == individual and is_editor? %>
-      <%= link_to( individual.pretty_name(is_user?), 
-	        edit_path( individual.uid ), 
-		    remote: true, class: "individualeditlink" ) if individual %>	               	               
-    <% else %>
+<div style="font-size: <%=font%>px;">
+  <% if @individual == individual %>
+    <div class="currentindividualcontainer <%= gender( individual )%>" style="width: <%= font*14%>px;">
+      <%= sex_symbol( individual.sex ) %>
 	  <%= link_to( individual.pretty_name(is_user?),
-	               tree_path( individual.uid ) ) if individual %>	
-    <% end %>	  
-	
-    <% if @individual == individual and is_admin? %>
-      <%= link_to( '<small><i>details</i></small>'.html_safe, 
-                 individual_by_uid_path( individual.uid ) ) if individual %>	
-    <% end %>	
-  
-    <% if is_editor? and @individual != individual and 
-                   ( @individual.is_my_child?( individual ) ) %>
-      <%= link_to delete_symbol, 
-	       remove_child_path( individual.uid, @individual.uid ), 
+	               tree_path( individual.uid ) ) if individual %>      
+      <% if is_editor? %>
+        <%= link_to( '<small><i>edit</i></small>'.html_safe, 
+	          edit_path( individual.uid ), 
+		      remote: true, class: "individualeditlink" ) if individual %>
+      <% end %>
+      <% if is_admin? %>
+        <%= link_to( '<small><i>details</i></small>'.html_safe, 
+                   individual_by_uid_path( individual.uid ) ) if individual %>
+      <% end %>                   			      
+      <%= "<br>*".html_safe if individual and individual.birth %>
+      <%= individual.birth.date if individual.birth %><% individual.birth.location if individual.birth %><%= "<br>&#10013;".html_safe if individual.death %>
+      <%= individual.death.date if individual.death %><% individual.death.location if individual.death %>	 		           
+    </div>
+  <% else %>
+    <div class="individualcontainer <%= gender( individual )%>" style="width: <%= font*12%>px;">
+      <%= sex_symbol( individual.sex ) %> 
+	  <%= link_to( individual.pretty_name(is_user?),
+	               tree_path( individual.uid ) ) if individual %>
+      <% if font > @minfont %>	               
+        <%= "<br>*".html_safe if individual and individual.birth %>
+        <%= individual.birth.date if individual.birth %><% individual.birth.location if individual.birth %><%= "<br>&#10013;".html_safe if individual.death %>
+        <%= individual.death.date if individual.death %><% individual.death.location if individual.death %>	 	                     
+        <% if is_editor? and @individual.is_my_child?( individual ) %>
+          <%= link_to delete_symbol, 
+	          remove_child_path( individual.uid, @individual.uid ), 
 		           class: 'editlink',
 		           data: { confirm: 'Are you sure?' } %>
-    <% end %>			    	      	  
-
-    <%= "<br>*".html_safe if individual and individual.birth %>
-    <%= individual.birth.date if individual.birth %><% individual.birth.location if individual.birth %><%= "<br>&#10013;".html_safe if individual.death %>
-    <%= individual.death.date if individual.death %><% individual.death.location if individual.death %>	           
-
-  </div>  
-</div>	           
+        <% end %>  
+      <% end %>   
+    </div>  
+  <% end %>
+</div>
+	           
          

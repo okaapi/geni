@@ -11,6 +11,28 @@ module TreeHelper
       '?'
     end
   end
+  def gender( s )
+    if !s
+      ''
+    elsif s.male?
+      "m".html_safe
+    elsif s.female?
+      "f".html_safe
+    else
+      ''
+    end
+  end
+  def oppgender( s )
+    if !s
+      ''
+    elsif s.male?
+      "f".html_safe
+    elsif s.female?
+      "m".html_safe
+    else
+      ''
+    end
+  end
   def marriage_symbol
     "<span style=''>&#8734;</span>".html_safe
   end
