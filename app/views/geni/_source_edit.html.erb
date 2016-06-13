@@ -1,0 +1,31 @@
+<div class="panel panel-danger">
+  <div class="panel-heading">
+
+	<b>Editing source</b> 
+  </div>
+  <div class="panel-body">
+	<%= form_tag source_save_path( source.id ) do  %>
+
+	  <div class="row">
+        <div class="col-xs-4">
+          <%= label_tag :title,"Title" %>
+          <%= text_field_tag :title, source.title,
+                             class: "form-control input-sm", autofocus: true %>
+        </div>
+      </div>	
+
+	  <div class="row">
+	    <div class="col-xs-12">
+		  <%= label_tag :content, "Content" %>
+          <%= text_area_tag :content,  source.content, cols: 32, class: "form-control" %>
+        </div>	  
+	  </div>
+	  <br>
+	  <div class="actions">
+	    <%= submit_tag 'save', class: "btn btn-default" %>
+	    <%= link_to 'cancel', root_path %>
+	  </div>
+	  
+	<% end %> 
+  </div> 
+</div>

@@ -5,7 +5,7 @@ require 'mail'
 
 pop = Net::POP3.new "pop.gmail.com"
 pop.enable_ssl
-pop.start 'camera@menhardt.com', 'fV2z6OE2gkJ'
+pop.start '', ''
 pop.each_mail do |message|
   p message
   p message.delete
@@ -18,8 +18,8 @@ require File.dirname(__FILE__) + "/../config/environment" unless defined?(RAILS_
 Mail.defaults do
   retriever_method :pop3, :address    => "pop.gmail.com",
                           :port       => 995,
-                          :user_name  => 'camera@menhardt.com',
-                          :password   => 'fV2z6OE2gkJ',
+                          :user_name  => '',
+                          :password   => '',
                           :enable_ssl => true
 end
 

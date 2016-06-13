@@ -1,0 +1,11 @@
+<div class="search">
+  <div class="row">
+    <div class="col-xs-6">
+      <% label_tag 'sources-search-txt',"Add source:" %>
+      <%= text_field_tag 'sources-search-txt', '', placeholder: 'add source - search by title', class: "form-control input-sm", autofocus: true %>
+    </div>	
+  </div>	
+  <%= hidden_field_tag 'sources-search-sid', 'default' %>
+  <div class="results" id="sources-search-results"></div>
+  <script> $(function() { new app.Sources; }); </script>
+</div>

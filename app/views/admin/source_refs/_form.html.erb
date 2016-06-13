@@ -1,0 +1,29 @@
+<%= form_for(@source_ref) do |f| %>
+  <% if @source_ref.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@source_ref.errors.count, "error") %> prohibited this source_ref from being saved:</h2>
+
+      <ul>
+      <% @source_ref.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :individual_uid %><br>
+    <%= f.number_field :individual_uid %>
+  </div>
+  <div class="field">
+    <%= f.label :union_uid %><br>
+    <%= f.number_field :union_uid %>
+  </div>
+  <div class="field">
+    <%= f.label :source_id %><br>
+    <%= f.number_field :source_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

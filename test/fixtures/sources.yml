@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  content: MyText
+  filename: MyString
+  sid: MyString
+  tree: MyString
+  gedfile: MyString
+  gedraw: MyText
+
+two:
+  title: MyString
+  content: MyText
+  filename: MyString
+  sid: MyString
+  tree: MyString
+  gedfile: MyString
+  gedraw: MyText

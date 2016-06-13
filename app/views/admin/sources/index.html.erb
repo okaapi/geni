@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Sources</h1>
+
+<table  class="admin-table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Sid</th>	  
+      <th>Content</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @sources.each do |source| %>
+      <tr>
+        <td><%= link_to source.title, source %></td>
+        <td><%= source.sid %></td>		
+        <td><%= source.content %></td>
+        <td><%= link_to 'Edit', edit_source_path(source) %></td>
+        <td><%= link_to 'Destroy', source, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Source', new_source_path %>
+
+<%= render partial: "geni/footer" %>

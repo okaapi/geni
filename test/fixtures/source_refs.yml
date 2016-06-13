@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  individual_uid: 1
+  union_uid: 1
+  source_id: 1
+
+two:
+  individual_uid: 1
+  union_uid: 1
+  source_id: 1

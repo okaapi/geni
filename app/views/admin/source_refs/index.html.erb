@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Source Refs</h1>
+
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Individual uid</th>
+      <th>Union uid</th>
+      <th>Source id</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @source_refs.each do |source_ref| %>
+      <tr>
+        <td><%= source_ref.individual_uid %></td>
+        <td><%= source_ref.union_uid %></td>
+        <td><%= source_ref.source_id %></td>
+        <td><%= link_to 'Show', source_ref %></td>
+        <td><%= link_to 'Edit', edit_source_ref_path(source_ref) %></td>
+        <td><%= link_to 'Destroy', source_ref, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Source ref', new_source_ref_path %>

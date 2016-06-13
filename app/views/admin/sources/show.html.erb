@@ -1,0 +1,73 @@
+<table width=100%>
+  <tr valign='top'><td width=50%>
+  
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @source.title %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+  <%= @source.content %>
+</p>
+
+<p>
+  <strong>Filename:</strong>
+  <%= @source.filename %>
+</p>
+
+<p>
+  <strong>Sid:</strong>
+  <%= @source.sid %>
+</p>
+
+<p>
+  <strong>Tree:</strong>
+  <%= @source.tree %>
+</p>
+
+<p>
+  <strong>Gedfile:</strong>
+  <%= @source.gedfile %>
+</p>
+
+  </td><td>
+	  <pre style="white-space: pre-wrap">
+	    <%= @source.gedraw %>
+	  </pre>
+
+  
+	<p>
+	  <% if @individuals and !@individuals.empty? %>
+	    <b>Individuals:</b>
+	    <br>
+	    <% @individuals.each do |individual| %>
+           <%= link_to( individual.pretty_name(is_user?), 
+	               individual_by_uid_path( individual.uid ) ) %>
+	      <br>
+	    <% end %>
+	  <% end %>
+	</p>
+	
+	<p>
+	  <% if @unions and !@unions.empty? %>
+	    <b>Unions:</b>
+	    <br>
+	    <% @unions.each do |union| %>
+           <%= link_to( marriage_symbol, 
+	               union_by_uid_path( union.uid ) ) %>
+	      <br>
+	    <% end %>
+	  <% end %>
+	</p>	
+	  
+  </td></tr>
+	  
+</table>
+
+<%= link_to 'Edit', edit_source_path(@source) %> |
+<%= link_to 'Back', sources_path %>
+
+<%= render partial: "geni/footer" %>

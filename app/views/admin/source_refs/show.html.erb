@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Individual uid:</strong>
+  <%= @source_ref.individual_uid %>
+</p>
+
+<p>
+  <strong>Union uid:</strong>
+  <%= @source_ref.union_uid %>
+</p>
+
+<p>
+  <strong>Source id:</strong>
+  <%= @source_ref.source_id %>
+</p>
+
+<%= link_to 'Edit', edit_source_ref_path(@source_ref) %> |
+<%= link_to 'Back', source_refs_path %>
