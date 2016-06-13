@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'pp'
 
 class GeniControllerTest < ActionController::TestCase
 
@@ -81,7 +82,7 @@ class GeniControllerTest < ActionController::TestCase
     assert_equal body[0]["birth"], '4 Oct 1858'    
     assert_equal body[1]["fullname"], 'John Smith'
   end  
-  
+
   test "depth_change with individual" do
     get :tree, uid: Individual.find_by_given( "John" ).uid
     get :depth_change, change: 2, uid: Individual.find_by_given( "John" ).uid
@@ -121,7 +122,7 @@ class GeniControllerTest < ActionController::TestCase
       assert_select 'label', 'Location'  	  	  
     end  	
   end
-  
+     
   test "edit - save" do
     @individual = Individual.find_by_given( "John" )
 	post :save, uid: @individual.uid, 
@@ -193,8 +194,7 @@ class GeniControllerTest < ActionController::TestCase
 	assert_equal union.divorce.location, 'Rome'
 	assert_equal union.note, 'some note'	
   end
-  
-    
+     
   #
   #  create marriage 
   #  
@@ -283,7 +283,9 @@ class GeniControllerTest < ActionController::TestCase
     xhr :post, :marriage_existing, uid: @individual.uid
 	assert_response :success
     assert_select_jquery :html, '#editcontainer' do
-      assert_select 'label', 'Given or surname'  	  	  
+      assert_select ".search" do
+		assert_select "input[placeholder=?]", 'search by given or surname'  	  	  
+	  end	  
     end  
   end
 
@@ -357,7 +359,7 @@ class GeniControllerTest < ActionController::TestCase
       assert_select 'label', 'Location'  	  	  
     end  
   end
-
+  
   test "create new wife for existing marriage - save" do
     @individual = Individual.find_by_given( "Jill" )
 	@union = @individual.unions[0]
@@ -387,7 +389,7 @@ class GeniControllerTest < ActionController::TestCase
 	assert_equal union.marriage.location, 'Rome'			
 
   end
-  
+
   test "create new husband for existing marriage - save" do
     @individual = Individual.find_by_given( "John" )
 	@union = Union.new
@@ -426,10 +428,10 @@ class GeniControllerTest < ActionController::TestCase
     xhr :post, :add_spouse, uid: @individual.uid, uuid: @union.uid
 	assert_response :success
     assert_select_jquery :html, '#editcontainer' do
-      assert_select 'label', 'Given or surname'   	  	  
-    end  
+      assert_select "input[placeholder=?]", 'search by given or surname'  	  	  
+    end 	
   end
-  
+    
   test "add existing spouse to existing marriage - save" do
 	individual = Individual.find_by_given( "Jill" )  
     marriage = individual.unions[0]
@@ -481,7 +483,7 @@ class GeniControllerTest < ActionController::TestCase
     new_marriage = new_jill.unions[0]
     assert_nil new_marriage.husband_uid    
   end  
-  
+ 
   test "remove other spouse" do
     marc = Individual.new( name: 'Marc')
     marc.save    
@@ -546,8 +548,10 @@ class GeniControllerTest < ActionController::TestCase
 	@union = @individual.unions[0]
     xhr :post, :add_child, uid: @individual.uid, uuid: @union.uid
     assert_select_jquery :html, '#editcontainer' do
-      assert_select 'label', 'Given or surname'   	  	  
-    end  
+      assert_select ".search" do
+		assert_select "input[placeholder=?]", 'search by given or surname'  	  	  
+	  end	 
+    end	  
   end
   
   test "should add new child - save" do
@@ -716,13 +720,13 @@ class GeniControllerTest < ActionController::TestCase
     get :search_results, 'names-search-uid' => 0
     assert_redirected_to search_path 
   end
-  
+
   test "import" do
     get :import
     assert_select 'form input[value=new-tree]'
   end
   
-  test "file upload error" do
+  test "ged file upload error" do
     Individual.destroy_all
     assert Individual.all.empty?
     Union.destroy_all
@@ -735,7 +739,7 @@ class GeniControllerTest < ActionController::TestCase
       
   end
     
-  test "file upload" do
+  test "ged file upload" do
     Individual.destroy_all
     assert Individual.all.empty?
     Union.destroy_all

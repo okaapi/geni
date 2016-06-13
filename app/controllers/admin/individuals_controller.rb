@@ -34,6 +34,9 @@ module Admin
 	  # GET /individual_by_uid
 	  def individual_by_uid
 	    @individual = Individual.by_uid( params[:uid] )
+		srefs = SourceRef.where( individual_uid: @individual.uid )
+        @sources = []		
+		srefs.each { |sref| @sources << Source.where( sref.source_id ).first }
 	  end
 	  
 	

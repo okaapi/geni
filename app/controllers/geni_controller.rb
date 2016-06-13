@@ -21,6 +21,13 @@ class GeniController < ApplicationController
       @names = Individual.names_for_term( @term, is_user ) 
 	end
   end  
+  def sources_for_term
+	@term = params[:term]    	
+	if @term.length > 1
+	  is_user = @current_user and @current_user.user? 
+      @sources = Source.titles_for_term( @term, is_user ) 
+	end
+  end  
     
   def tree
     #  tree-font is where we start with the fonts
@@ -58,10 +65,14 @@ class GeniController < ApplicationController
   #   
   def edit
     @individual = Individual.by_uid( params[:uid] )
+    srefs = SourceRef.where( individual_uid: @individual.uid )
+	@sources = []
+	srefs.each { |s| @sources << Source.where( id: s.source_id ).first }
   end 
   def new_person
     @individual = Individual.new( name: "New Person" )
     @individual.save
+	@sources = []
   end  
   def save
 
@@ -87,6 +98,13 @@ class GeniController < ApplicationController
     @individual.user_id = @current_user.id
     @individual.save
 
+	@source = Source.where( id: params[:'sources-search-sid'] ).first 
+	if @source
+      sref = SourceRef.create( individual_uid: @individual.uid,
+                               source_id: @source.id )
+	  sref.save
+	end
+	
     redirect_to tree_path( @individual.uid )
   end
 
@@ -356,6 +374,36 @@ class GeniController < ApplicationController
     Union.destroy_all( uid: params[:uuid] )    
     redirect_to tree_path( @individual.uid )
   end
+  
+  ###################################################################################
+  #
+  #  edit source
+  #   
+  def source_edit
+    if params[:sid]
+      @source = Source.where( id: params[:sid] ).first
+	else
+	  @source = Source.create
+	  @source.save
+	end
+  end   
+  def source_save
+    @source = Source.where( id: params[:sid] ).first
+
+	@source.title = params[:title]
+	@source.content = params[:content]
+	@source.save
+    redirect_to source_edit_path( @source.id )
+  end
+  def source_content
+    @source = Source.where( id: params[:sid] ).first
+  end
+  def source_delete
+    @source = Source.where( id: params[:sid] ).first
+    @individual = Individual.by_uid( params[:uid] )  
+	SourceRef.destroy_all( individual_uid: @individual.uid, source_id: @source.id )
+    redirect_to tree_path( @individual.uid )	
+  end	
   
   ###################################################################################
   #

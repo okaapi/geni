@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160226224239) do
+ActiveRecord::Schema.define(version: 20160507235101) do
 
   create_table "events", force: :cascade do |t|
     t.string   "rawdate",    limit: 255
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20160226224239) do
     t.integer  "death_id",    limit: 4
     t.string   "uid",         limit: 255
     t.string   "parents_uid", limit: 255
+    t.text     "changed_ged", limit: 65535
     t.string   "tree",        limit: 255
     t.string   "gedfile",     limit: 255
     t.text     "note",        limit: 65535
@@ -51,6 +52,26 @@ ActiveRecord::Schema.define(version: 20160226224239) do
     t.string   "aux",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "source_refs", force: :cascade do |t|
+    t.string   "individual_uid", limit: 255
+    t.string   "union_uid",      limit: 255
+    t.integer  "source_id",      limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  create_table "sources", force: :cascade do |t|
+    t.string   "title",      limit: 255
+    t.text     "content",    limit: 65535
+    t.string   "filename",   limit: 255
+    t.string   "sid",        limit: 255
+    t.string   "tree",       limit: 255
+    t.string   "gedfile",    limit: 255
+    t.text     "gedraw",     limit: 65535
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "unions", force: :cascade do |t|

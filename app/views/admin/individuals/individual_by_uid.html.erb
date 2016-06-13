@@ -1,7 +1,7 @@
 <b> <%= link_to 'To tree view', tree_path( @individual.uid ) %> </b> <br>
 
-<table 'width=100%'>
-  <tr valign='top'><td width='50%'>
+<table width=100%>
+  <tr valign='top'><td width=50%>
     
   	<p id="notice"><%= notice %></p>
 	
@@ -94,10 +94,24 @@
 	  <b>Note:</b>
 	  <%= simple_format( @individual.note ) %>   
 	</p>
-  </td><td>
-	  <pre style="white-space: pre-wrap">
-	    <%= @individual.gedraw %>
-	  </pre>
+	
+	
+  </td><td>  
+	<pre style="white-space: pre-wrap">
+	  <%= @individual.gedraw %>
+	</pre>
+	  
+	<p>
+	  <% if @sources %>
+	    <b>Sources:</b>
+	    <br>
+	    <% @sources.each do |source| %>
+	      <%= link_to( source.title, source ) %>  
+	      <br>
+	    <% end %>
+	  <% end %>
+	</p>
+	
   </td></tr>
 </table>
 

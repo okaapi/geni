@@ -1,4 +1,4 @@
-<%= debug individual %>
+
 <div class="panel panel-danger">
   <div class="panel-heading">
 
@@ -55,6 +55,22 @@
         </div>	  
 	  </div>
 	  <br>
+	  
+	  <div class="row">
+	    <div class="col-xs-12">
+		  <%= label_tag :sources, "Sources" %><br>
+	      <% @sources.each do |source| %>
+		    <%= link_to( delete_symbol, source_delete_path( source.id, individual.uid ),
+					             class: 'editlink',
+		                         data: { confirm: 'Are you sure?' } )  %>		  
+	        <%= link_to( source.title, source_content_path( source.id ), :target => '_blank' ) %>  
+	        <br>
+	      <% end %>
+        </div>		
+	  </div>
+      <%= render partial: "search_sources" %>	  
+	  <br>
+	  
 	  <div class="actions">
 	    <small> Last edit by <%= individual.user.username if individual.user %> 
 		   at <%= individual.updated_at.strftime("%H:%M on %-d %b %Y") if individual.updated_at %> 

@@ -17,7 +17,10 @@ class Import
 	  famc = {}
 	  husb = Hash.new []
 	  wife = Hash.new []
-	
+	  srcs = {}
+	  indi_srcs = {}
+	  fam_srcs = {}
+	  
 	  #not required? 
 	  #chil = Hash.new []
 	  #fams = Hash.new []
@@ -72,7 +75,14 @@ class Import
 	          union.gedraw = line
 	          union.gedfile = original_file
 	        elsif line =~ /0 @S(\d+)@ SOUR/          
-	          mode = :source    
+	          mode = :source  
+	          source = Source.create( tree: tree_name )
+	          source.title = ''
+			  source.content = ''
+			  source.gedraw = line
+	          source.gedfile = original_file	
+			  srcs[Regexp.last_match(1)] = source.sid	
+
             else
               ignored += line			
 	        end
@@ -132,13 +142,14 @@ class Import
 	          #fams[ individual.uid ] += [Regexp.last_match(1)]             
 	        elsif line =~ /^1 CHAN/                   
 	          submode = :changed    
-	          individual.note += "\n" + 'Ged changed: ' 
+	          #individual.note += "\n" + 'Ged changed: ' 
 	        elsif line =~ /^1 NOTE(.*)/                 
 	          submode = :note  
-	          individual.note += "\n" + 'Note: ' + Regexp.last_match(1)    + "\n"         
+	          individual.note += Regexp.last_match(1)    + "\n"         
 	        elsif line =~ /^1 SOUR @S(\d+)@/                 
-	          submode = :source     
-	          individual.note += "\n" + "Source: @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"
+	          submode = :source    
+			  ( indi_srcs[ individual.uid ] ||= [] ) << Regexp.last_match(1)
+	          #individual.note += "\n" + "Source: @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"
 	
 	        #
 	        #   submode :name
@@ -229,11 +240,11 @@ class Import
 	        #   submode :source
 	        #
 	        elsif submode == :source 
-	          if line =~ /^[1-5] \w\w\w\w+(.*)/   
-	            individual.note += ' ' + Regexp.last_match(1)  + "\n"
-	          else
+	          #if line =~ /^[1-5] \w\w\w\w+(.*)/   
+	          #  individual.note += ' ' + Regexp.last_match(1)  + "\n"
+	          #else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
-	          end
+	          #end
 	               
 	        else                  
 	          ignored += "Ignored #{mode} #{submode}: " + line   
@@ -262,13 +273,14 @@ class Import
 	          #chil[ union.uid ] += ["@I#{Regexp.last_match(1)}@"]             
 	        elsif line =~ /^1 CHAN/                   
 	          submode = :changed    
-	          union.note += "\n" + 'Ged changed: ' 
+	          #union.note += "\n" + 'Ged changed: ' 
 	        elsif line =~ /^1 NOTE(.*)/                 
 	          submode = :note  
-	          union.note += "\n" + 'Note: ' + Regexp.last_match(1)    + "\n"         
+	          union.note += Regexp.last_match(1)    + "\n"         
 	        elsif line =~ /^1 SOUR @S(\d+)@/                 
 	          submode = :source     
-	          union.note += "\n" + "Source: @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"
+	          ( fam_srcs[ union.uid ] ||= [] ) << Regexp.last_match(1)
+			  #union.note += "\n" + "Source: @#{tree_name}#{Regexp.last_match(1)}@ "         + "\n"
 	
 	        #
 	        #   submode :marriage
@@ -324,11 +336,11 @@ class Import
 	        #   submode :source
 	        #
 	        elsif submode == :source 
-	          if line =~ /^[1-5] \w\w\w\w+(.*)/   
-	            union.note += ' ' + Regexp.last_match(1)  + "\n"
-	          else
+	          #if line =~ /^[1-5] \w\w\w\w+(.*)/   
+	          #  union.note += ' ' + Regexp.last_match(1)  + "\n"
+	          #else
 	            ignored += "Ignored #{mode} #{submode}: " + line            
-	          end
+	          #end
 	               
 	        else                  
 	          ignored += "Ignored #{mode} #{submode}: " + line   
@@ -340,6 +352,34 @@ class Import
 	      #
 	      elsif mode == :source
                 
+            source.gedraw += line
+	        if line =~ /1 TITL (.+)/  
+			  submode = :title
+	          source.title = Regexp.last_match(1)
+	          print '.' if log2tt and i.modulo(10) == 0
+	        elsif line =~ /1 REPO (.+)/  
+              #ignore	
+	        elsif line =~ /1 AUTH (.+)/  
+			  submode = :content	
+              source.content += "Author: " + Regexp.last_match(1)  + "\n"			  
+	        elsif line =~ /2 CONT(.+)/  
+			  submode = :content	
+              source.content += Regexp.last_match(1)  + "\n"
+	        elsif line =~ /1 NOTE (.+)/  
+			  submode = :content	
+              source.content += Regexp.last_match(1)  + "\n"			  
+	        elsif line =~ /2 CONC (.+)/  
+			  if submode == :title
+			    source.title += Regexp.last_match(1)
+		      elsif submode == :content
+			    source.content += Regexp.last_match(1)  + "\n"
+		      else
+			   ignored += "Ignored #{mode} #{submode}: " + line
+			  end			   
+	        else
+	          ignored += "Ignored #{mode} #{submode}: " + line          
+	        end # elsif mode == :source
+				
 	      else
 	        ignored += "PROBLEMS in import.rb"
 	        return ignored
@@ -350,9 +390,10 @@ class Import
 	
 	    
 	  end # Individual.transaction do
-		
+      puts if log2tt 
+	  
 	  Union.transaction do
-		print 'wives' if log2tt 
+		puts 'wives' if log2tt 
 		j = 0
 		wife.each do | uid, i |
 		  j += 1
@@ -365,7 +406,7 @@ class Import
 	  end
 	
 	  Union.transaction do
-		print 'husbands' if log2tt
+		puts 'husbands' if log2tt
 		j = 0
 		husb.each do | uid, i |
 		  j += 1
@@ -378,7 +419,7 @@ class Import
 	  end
 	
 	  Individual.transaction do
-		print 'children' if log2tt
+		puts 'children' if log2tt
 		j = 0
 		famc.each do | uid, f |
 		  j += 1
@@ -392,6 +433,63 @@ class Import
 		end
 	  end
 
+	  Individual.transaction do
+	  SourceRef.transaction do	  
+	    puts 'sources for individuals' if log2tt
+	    indi_srcs.each do | uid, sids |
+	      sids.each do |sid|
+		    individual = Individual.by_uid( uid )
+		    source = Source.where( sid: srcs[sid] ).first
+            if source and source.content == ''
+			  individual.note += "Source: #{source.title} \n"
+			  individual.save!
+			elsif source
+			  sref = SourceRef.create( individual_uid: individual.uid,
+                            		   source_id: source.id )
+			  sref.save!
+			else 
+			  # ignore if no source found
+			end
+		  end
+	    end
+	  end
+	  end	  
+	  
+
+	  Union.transaction do
+	  SourceRef.transaction do	  
+	    puts 'sources for unions' if log2tt
+	  
+	    fam_srcs.each do | uid, sids |
+	      sids.each do |sid|
+
+		    union = Union.by_uid( uid )
+		    source = Source.where( sid: srcs[sid] ).first
+            if source and source.content == ''
+			  union.note += "Source: #{source.title} \n"
+			  union.save!
+			elsif source
+			  sref = SourceRef.create( union_uid: union.uid,
+                            		   source_id: source.id )
+			else 
+			  # ignore if no source found									   
+			end
+		  end
+	    end
+	  end
+	  end	  
+
+	  Source.transaction do
+	    puts 'sources without content' if log2tt
+	  
+	    srcs.each do | i, sid |		 
+          source = Source.where( sid: sid ).first
+          if source and source.content == ''
+            source.destroy!
+		  end
+	    end
+	  end	  
+	  
       return ignored
       
   end

@@ -25,6 +25,8 @@ module Admin
 	  # GET /union_by_uid
 	  def union_by_uid
 	    @union = Union.by_uid( params[:uid] )
+		srefs = SourceRef.where( union_uid: @union.uid ) 
+		srefs.each { |sref| ( @sources ||= [] ) << Source.where( sref.source_id ).first }		
 	  end  
 	  
 	  # GET /unions/1

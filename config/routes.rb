@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  
+
+
   # these are the actions related to authentication
   get "_who_are_u" => "authenticate#who_are_u", as: 'who_are_u'
   post "_prove_it" => "authenticate#prove_it", as: 'prove_it'
@@ -21,6 +22,8 @@ Rails.application.routes.draw do
     
     # for administration
     resources :events
+	resources :sources
+	resources :source_refs
     resources :individuals
     get 'all_individuals_by_uid' => 'individuals#all_individuals_by_uid', as: 'all_individuals_by_uid'
     get 'individual_by_uid/:uid' => 'individuals#individual_by_uid', as: 'individual_by_uid'
@@ -34,6 +37,7 @@ Rails.application.routes.draw do
   get 'surnames' => 'geni#surnames', as: 'surnames'  
   get 'names_for_surname' => 'geni#names_for_surname', as: 'names_for_surname'     
   get 'names_for_term' => 'geni#names_for_term', as: 'names_for_term' 
+  get 'sources_for_term' => 'geni#sources_for_term', as: 'sources_for_term'   
   get 'depth_change/:change/(:uid)' => 'geni#depth_change', as: 'depth_change' 
   get 'import' => 'geni#import', as: 'import'
   post 'file_upload' => 'geni#file_upload', as: 'file_upload'
@@ -41,7 +45,11 @@ Rails.application.routes.draw do
   get 'edit/:uid' => 'geni#edit', as: 'edit'
   get 'union_edit/:uuid/:uid' => 'geni#union_edit', as: 'union_edit'
   post 'save/:uid' => 'geni#save', as: 'save'  
-  post 'union_save/:uid/:uuid' => 'geni#union_save', as: 'union_save'   
+  post 'union_save/:uid/:uuid' => 'geni#union_save', as: 'union_save'  
+  get 'source_edit/(:sid)' => 'geni#source_edit', as: 'source_edit'
+  get 'source_delete/:sid/:uid' => 'geni#source_delete', as: 'source_delete'  
+  get 'source_content/:sid' => 'geni#source_content', as: 'source_content'  
+  post 'source_save/:sid' => 'geni#source_save', as: 'source_save'    
   
   match 'marriage_new/:uid' => 'geni#marriage_new', as: 'marriage_new', via: [:get, :post]
   post 'save_marriage_new/:uid' => 'geni#save_marriage_new', as: 'save_marriage_new'  

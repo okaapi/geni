@@ -1,5 +1,7 @@
 //http://www.lugolabs.com/articles/20-jquery-ui-autocomplete-with-ruby-on-rails
-var app = window.app = {};
+if ( !app ) {
+  var app = window.app = {};
+}
 
 app.Names = function() {
   this._input = $('#names-search-txt');

@@ -56,10 +56,23 @@
 	  <strong>Note:</strong>
       <%= simple_format( @union.note ) %> 
 	</p>
-  </td><td>
-	  <pre style="white-space: pre-wrap">
+
+  </td><td>  
+  
+	<pre style="white-space: pre-wrap">
 	  <%= @union.gedraw %>
-	  </pre>
+	</pre>
+	<p>
+	  <% if @sources %>
+	    <b>Sources:</b>
+	    <br>
+	    <% @sources.each do |source| %>
+	      <%= link_to( source.title, source ) %>  
+	      <br>
+        <% end %>		  
+	  <% end %>
+	</p>	
+	  	  
   </td></tr>
 </table>
 
