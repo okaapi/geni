@@ -28,29 +28,33 @@ class GeniController < ApplicationController
       @sources = Source.titles_for_term( @term, is_user ) 
 	end
   end  
-    
+
   def tree
     #  tree-font is where we start with the fonts
     #  min-tree-font is how far we go down... translates into
     #    tree-depth, one depth increment corresponds to 2 font increments
     #  absolute-min-tree-font is what you think it is
     init_session
+	@level = 1
+    @maxlevel = session[:'max-level']	
     @font = session[:'tree-font']
-    @minfont = session[:'min-tree-font']
-    session[:'absolute-min-tree-font']
     @individual = Individual.by_uid( params[:uid] )
 	if !@individual
 	  redirect_to root_path
 	end
   end  
+  def detail
+    @individual = Individual.by_uid( params[:uid] )
+	@sources = @individual.sources  
+  end
   def depth_change
     init_session
-    session[:'min-tree-font'] += params[:change].to_i
-    if session[:'min-tree-font'] < session[:'absolute-min-tree-font']
-      session[:'min-tree-font'] = session[:'absolute-min-tree-font']
-    elsif session[:'min-tree-font'] > session[:'tree-font']
-      session[:'min-tree-font'] = session[:'tree-font']
-    end
+    session[:'max-level'] -= (params[:change].to_i / 2)
+    if session[:'max-level'] > session[:'absolute-max-level']
+      session[:'max-level'] = session[:'absolute-max-level']
+    elsif session[:'max-level'] < 1
+      session[:'max-level'] = 1
+    end	
     @individual = Individual.by_uid( params[:uid] )
     if @individual 
       redirect_to tree_path( @individual.uid )
@@ -65,9 +69,7 @@ class GeniController < ApplicationController
   #   
   def edit
     @individual = Individual.by_uid( params[:uid] )
-    srefs = SourceRef.where( individual_uid: @individual.uid )
-	@sources = []
-	srefs.each { |s| @sources << Source.where( id: s.source_id ).first }
+	@sources = @individual.sources
   end 
   def new_person
     @individual = Individual.new( name: "New Person" )
@@ -443,8 +445,7 @@ class GeniController < ApplicationController
 
     ignored = Import.from_gedfile( treename, gedfile, original_file )
     
-    flash[:notice] = "ignored parameter should go here"
-    puts ignored
+    flash[:notice] = ignored
     
     redirect_to root_path
   end  
@@ -453,8 +454,8 @@ class GeniController < ApplicationController
   
   def init_session
     session[:'tree-font'] ||= 15
-    session[:'min-tree-font'] ||= 13
-    session[:'absolute-min-tree-font'] ||= 11
+	session[:'max-level'] ||= 2
+	session[:'absolute-max-level'] = 6
   end
     
 end

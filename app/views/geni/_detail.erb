@@ -1,0 +1,56 @@
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+
+	<b>Details on</b> <%= individual.pretty_name( is_user? ) %> 
+  </div>
+  <div class="panel-body">
+	<%= form_tag save_path( individual.uid ) do  %>
+
+	  <div class="row">
+        <div class="col-xs-12">
+		  <%= individual.prefix%><%= individual.given %><%= individual.surname %><%= individual.suffix%>
+          <%= individual.pedigree%>
+        </div>			
+      </div>
+	  <br>
+      <%= render partial: "event_edit", 
+		         locals: { eventname: "Birth", event: individual.birth, autofocus: false } %>
+      <%= render partial: "event_edit", 
+		         locals: { eventname: "Death", event: individual.death, autofocus: false } %>				 
+	  <br>
+	  
+	  <div class="row">
+	    <div class="col-xs-12">
+		  <%= label_tag :note, "Notes" %>
+          <%= text_area_tag :note,  individual.note, cols: 32, class: "form-control" %>
+        </div>	  
+	  </div>
+	  <br>
+	  
+	  <div class="row">
+	    <div class="col-xs-12">
+		  <%= label_tag :sources, "Sources" %><br>
+	      <% @sources.each do |source| %>
+		    <%= link_to( delete_symbol, source_delete_path( source.id, individual.uid ),
+					             class: 'editlink',
+		                         data: { confirm: 'Are you sure?' } )  %>		  
+	        <%= link_to( source.title, source_content_path( source.id ), :target => '_blank' ) %>  
+	        <br>
+	      <% end %>
+        </div>		
+	  </div>
+      <%= render partial: "search_sources" %>	  
+	  <br>
+	  
+	  <div class="actions">
+	    <small> Last edit by <%= individual.user.username if individual.user %> 
+		   at <%= individual.updated_at.strftime("%H:%M on %-d %b %Y") if individual.updated_at %> 
+	       &nbsp; &nbsp; &nbsp;</small><br>
+	    <%= submit_tag 'save', class: "btn btn-default" %>
+	    <%= link_to 'cancel', tree_path( individual.uid ) %>
+	  </div>
+	  
+	<% end %> 
+  </div> 
+</div>

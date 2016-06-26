@@ -1,5 +1,5 @@
 <% if individual and ( individual.father or individual.mother ) %>
-  <div class="parentscontainer" style="font-size: <%=font%>px;">
+  <div class="parentscontainer" style="font-size: <%=font_level(@font,level)%>px;">
     <table style="border: 0px solid blue">
 	  <tr>
 	    <td align=left >
@@ -7,8 +7,8 @@
 	        <tr>
 		      <td>
                 <div class="namebox"
-				            style="min-width: <%= font*12%>px;
-	                        max-width: <%= font*12%>px;">
+				            style="min-width: <%= 180-20*@level %>px;
+	                        max-width: <%= 180-20*@level %>px;">
 	              <% if individual.father %>	
 			        <% if( is_editor? and 
 					       individual.uid == @individual.uid ) %>
@@ -34,9 +34,9 @@
 	              <div class='parentline'></div> 
                 <% end %>				
               </td>
-			  <% if font > @minfont and individual.father %>
+			  <% if level < @maxlevel and individual.father %>
 	            <td >	          
-	              <%= render partial: "parents", locals: { individual: individual.father, font: font - 2 } %>
+	              <%= render partial: "parents", locals: { individual: individual.father, level: level + 1  } %>
                 </td>
 			  <% end %> 	
 	        </tr>
@@ -49,8 +49,8 @@
 	        <tr>
 		      <td>
                 <div class="namebox"
-				            style="min-width: <%= font*12%>px;
-	                        max-width: <%= font*12%>px;">	
+				            style="min-width: <%= 180-20*@level %>px;
+	                        max-width: <%= 180-20*@level %>px;">	
 		          <% if individual.mother %>
  		            <% if( is_editor? and individual.uid == @individual.uid ) %>
 		              <%= link_to( delete_symbol, 
@@ -74,11 +74,11 @@
 	              <div class='parentline'></div> 
                 <% end %>				
 		      </td>
-	          <% if font > @minfont  and individual.mother %>
+	          <% if level < @maxlevel  and individual.mother %>
 	            <td >	
 	              <%= render partial: "parents", 
 					           locals: { individual: individual.mother, 
-							   font: font - 2 } %>
+							   level: level + 1 } %>
                 </td>
 			  <% end %>
 	        </tr>
@@ -88,7 +88,7 @@
     </table>
   </div>
 <% elsif individual and is_editor? and individual.uid == @individual.uid %>
-  <div class="parentscontainer" style="font-size: <%=font%>px;">
+  <div class="parentscontainer" style="font-size: <%=font_level(@font,level)%>px;">
     <table >
 	  <tr>
 	    <td align=left >

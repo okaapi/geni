@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   post 'file_upload' => 'geni#file_upload', as: 'file_upload'
   
   get 'edit/:uid' => 'geni#edit', as: 'edit'
+  get 'detail/:uid' => 'geni#detail', as: 'detail'
   get 'union_edit/:uuid/:uid' => 'geni#union_edit', as: 'union_edit'
   post 'save/:uid' => 'geni#save', as: 'save'  
   post 'union_save/:uid/:uuid' => 'geni#union_save', as: 'union_save'  

@@ -444,10 +444,11 @@ class Import
 	      sids.each do |sid|
 		    individual = Individual.by_uid( uid )
 		    source = Source.where( id: srcs[sid] ).first
-            if source and source.content == ''
-			  individual.note += "Source: #{source.title} \n"
-			  individual.save!
-			elsif source
+            #if source and source.content == ''
+			#  individual.note += "Source: #{source.title} \n"
+			#  individual.save!
+			#els
+		    if source
 			  sref = SourceRef.create( individual_uid: individual.uid,
                             		   source_id: source.id )
 			  sref.save!
@@ -469,10 +470,11 @@ class Import
 
 		    union = Union.by_uid( uid )
 		    source = Source.where( id: srcs[sid] ).first
-            if source and source.content == ''
-			  union.note += "Source: #{source.title} \n"
-			  union.save!
-			elsif source
+            #if source and source.content == ''
+			#  union.note += "Source: #{source.title} \n"
+			#  union.save!
+			#els
+			if source
 			  sref = SourceRef.create( union_uid: union.uid,
                             		   source_id: source.id )
 			  sref.save!                            		   
@@ -489,9 +491,9 @@ class Import
 	  
 	    srcs.each do | i, sid |		 
           source = Source.where( id: sid ).first
-          if source and source.content == ''
-            source.destroy!
-		  end
+          #if source and source.content == ''
+          #  source.destroy!
+		  #end
 	    end
 	  end	  
 	  

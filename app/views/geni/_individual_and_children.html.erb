@@ -1,142 +1,87 @@
-<div class="familycontainer" style="font-size: <%=font%>px;" >
+<div class="familycontainer" style="font-size: <%=font_level(@font,level)%>px;" >
   <% if individual %>  
-    <table border=0>	
-
-	  <tr align=right>
-	    <td width=50%>
-		  <div class="halfwidth"></div>
-		</td>
-	    <td colspan=2>
-	      <%= render partial: 'individual', 
-			           locals: { individual: individual, font: font } %> 
-	    </td>  
-	  </tr>
-  
-	  <tr >
-	    <td align=right colspan=2 >	
-
- 	             
-          <% individual.unions.each do |union| %>
-	        <table border=0 >
-			  
-	          <tr>
-	            <td></td>
-	            <td><div style="width:<%=font*2%>px"></td>
-	            <td><div style="width:<%=font*2%>px"></div></td>
-	            <td><div style="width:<%=font*1%>px"></div></td>
-	          </tr>	          
-	
-	          <tr>
-	            <td></td>
-	            <td ></td>
-	            <td colspan=2 align=right class="vertical">  	
-	              <div class="weddingcontainer " style="width: <%= font*10%>px;">
-				    <div class="namebox" >									
-			          <%= marriage_symbol %>
-			          <% if @individual == individual  %>		
-			            
-                        <%= link_to(  (( union.marriage and union.marriage.date) ? 
-						                                  union.marriage.date : 'date n/a'), 
-		                                 union_edit_path( union.uid, individual.uid ), 
-										 class: "editlink",
-										 remote: true )  %>
-		                <%= link_to( delete_symbol, 
-		                       delete_marriage_path( individual.uid, union.uid ), 
-					           class: 'editlink',
-		                       data: { confirm: 'Are you sure?' } ) if is_editor? %>												                	               
-		              <% else %>
-                        <%= union.marriage ? union.marriage.date : 'date n/a'  %>
-                      <% end %>
-                    </div>	
-				  </div>
-				  <div style="clear:both"></div>
-				  <div class="spousecontainer <%= oppgender( individual ) %>" style="width: <%= font*15%>px;">
-				    <div class="namebox" >
-                      <%= sex_symbol( individual.sex ) %> 
-					  <% if union.spouse(individual.uid)  %>					
-					    <%= link_to( union.spouse(individual.uid).pretty_name(is_user?), 
-		                     tree_path( union.spouse(individual.uid).uid ) ) %>
-		                <% if @individual == individual and is_editor? %>
-		                  <%= link_to( delete_symbol, 
-		                           remove_spouse_path( individual.uid, union.uid ), 
-					               class: 'editlink',
-		                           data: { confirm: 'Are you sure?' } )  %>
-		                <% end %>		                   
-				      <% elsif @individual == individual and is_editor? %>                   							
-					    <%= link_to 'add spouse - existing /', 
-						              add_spouse_path( individual.uid, union.uid ), 
-                                      class: 'editlink', remote: true %><%= link_to 'new person', 
-                                      new_spouse_path( individual.uid, union.uid ), 
-								  	class: 'editlink', remote: true %>                       								   
-					  <% end %>	
-				    </div>
-
-	              </div>  
-	            </td>	                       
-	          </tr>
-			
-            
-   
-
-	          <% union.children.each do |child| %>
-	            <tr >	     
-                  <td></td>
-	              <td colspan=2 align=right class= "vertical" >	              
-                    <div class="childrencontainer namebox" >  	                
-	                  <% if font > @minfont %>
-	                    <%= render partial: "individual_and_children", 
-	                        locals: { individual: child, font: font-2 } %>
-	                  <% else %>         
-	                    <%= render partial: 'individual', 
-			                locals: { individual: child, font: font-2 } %> 				      
-		              <% end %>                        
-					</div>
-	              </td>	 
-	              <td class="vertical"></td>  
-	            </tr>           
-	          <% end %>
-			  
-	          <% if is_editor? and @individual == individual  %>
-	            <tr>
-	              <td colspan=3 align=right class="vertical">
-	                <div class="individualcontainer " style="width: <%= font*12%>px;">
-                      <%= link_to 'add child - existing /', 
-						       add_child_path( individual.uid, union.uid ), 
-                               class: 'editlink', remote: true %><%= link_to 'new person', 
-                               new_child_path( individual.uid, union.uid ), 
-									   class: 'editlink', remote: true %>
-					</div>
-	              </td> 
-	              <td class="vertical"></td>
-                </tr>
-	          <% end %>				  
-
-	        </table>
-       
-	      <% end %>   
- 
-	    </td> 
-	  </tr>
-
-	  <% if @individual == individual and is_editor? %>
-	    <tr>
-	      <td colspan=2 align=right class="vertical">
-	        <div class="weddingcontainer " style="width: <%= font*14%>px;">
-              <%= link_to 'add marriage with existing', 
-			       marriage_existing_path( @individual.uid ), 
-				   class: 'editlink', remote: true %><%= link_to '/ new person', 
-			       marriage_new_path( @individual.uid ), 
-				   class: 'editlink', remote: true %>
-		    </div>
-	      </td> 
-	    </tr>
-	  <% end %>	  
-
-	</table>    
+    <%= render partial: 'individual', 
+               locals: { individual: individual, level: level } %> 
+    <div style="clear:both"></div>
+    <% individual.unions.each do |union| %>
+	  <div class="weddingcontainer " 
+	       style="max-width: <%= 150-20*@level %>px; ">
+		<div class="namebox" >									
+		  <%= marriage_symbol %>
+		  <% if @individual == individual  %>		
+		    <%= link_to(  (( union.marriage and union.marriage.date) ? 
+		                     union.marriage.date : 'date n/a'), 
+		                     union_edit_path( union.uid, individual.uid ), 
+		                     class: "editlink", remote: true )  %>
+		    <%= link_to( delete_symbol, 
+		                 delete_marriage_path( individual.uid, union.uid ), 
+			             class: 'editlink',
+		                 data: { confirm: 'Are you sure?' } ) if is_editor? %>												                	               
+		  <% else %>
+            <%= union.marriage ? union.marriage.date : 'date n/a'  %>
+          <% end %>
+        </div>	
+      </div>
+	  <div style="clear:both"></div>
+      <div class="spousecontainer <%= oppgender( individual ) %>" 
+	       style="max-width: <%= 200-20*@level %>px; height: <%= 32-2*@level %>px">
+		<div class="namebox" >
+          <%= sex_symbol( individual.sex ) %> 
+		  <% if union.spouse(individual.uid)  %>					
+		    <%= link_to( union.spouse(individual.uid).pretty_name(is_user?), 
+		                 tree_path( union.spouse(individual.uid).uid ) ) %>
+		    <% if @individual == individual and is_editor? %>
+		      <%= link_to( delete_symbol, 
+		                   remove_spouse_path( individual.uid, union.uid ), 
+			               class: 'editlink',
+		                   data: { confirm: 'Are you sure?' } )  %>
+		    <% end %>		                   
+	      <% elsif @individual == individual and is_editor? %>                   							
+			<%= link_to 'add spouse - existing /', 
+			            add_spouse_path( individual.uid, union.uid ), 
+                        class: 'editlink', remote: true %><%= link_to 'new person', 
+                        new_spouse_path( individual.uid, union.uid ), 
+				        class: 'editlink', remote: true %>                       								  
+		  <% end %>	
+	    </div>
+      </div>  
+      <div style="clear:both"></div>
+	  <% union.children.each do |child| %>
+        <div class="childrencontainer namebox" >  	                
+	      <% if level < @maxlevel %>
+	        <%= render partial: "individual_and_children", 
+	                   locals: { individual: child, level: level+1 } %>
+	      <% else %>         
+	        <%= render partial: 'individual', 
+		               locals: { individual: child, level: level+1 } %> 				      
+		  <% end %>                        
+		</div>       
+	  <% end %>
+	  <div style="clear:both"></div>	  
+	  <% if is_editor? and @individual == individual  %>
+        <div class="individualcontainer " 
+		     style="width: <%= 180-20*@level %>px; height: <%= 36-2*@level %>px;">
+          <%= link_to 'add child - existing /', 
+                      add_child_path( individual.uid, union.uid ), 
+                      class: 'editlink', remote: true %><%= link_to 'new person', 
+                                                            new_child_path( individual.uid, union.uid ), 
+									                        class: 'editlink', remote: true %>
+	    </div>
+      <% end %>				  
+    <% end %> 
+    <div style="clear:both"></div>		
+    <% if @individual == individual and is_editor? %>
+      <div class="weddingcontainer " 
+	       style="width: <%= 220-20*@level %>px; height: <%= 22-2*@level %>px">
+        <%= link_to 'add marriage with existing', 
+                    marriage_existing_path( @individual.uid ), 
+				    class: 'editlink', remote: true %><%= link_to '/ new person', 
+			                                                 marriage_new_path( @individual.uid ), 
+				                                             class: 'editlink', remote: true %>
+	  </div>
+    <% end %>	  
   <% else %>
-
     <h1>You broke it! Not good.</h1>
     <img src="/Bg_404Image.png" alt="" /> 
-
   <% end %>
 </div>

@@ -111,7 +111,7 @@ class Union < ActiveRecord::Base
     srefs = SourceRef.where( union_uid: self.uid ) 
     srcs = []		
     srefs.each { |sref| srcs << Source.where( id: sref.source_id ).first }
-    srcs
+    srcs.uniq
   end		
     
   private

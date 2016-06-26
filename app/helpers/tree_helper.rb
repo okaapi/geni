@@ -39,5 +39,9 @@ module TreeHelper
   def delete_symbol
     '<i style="font-size:smaller" class="glyphicon glyphicon-remove-circle"></i>'.html_safe
   end
+  def font_level( font, level )
+    font - 2*level
+  end
+
    
 end

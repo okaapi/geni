@@ -1,10 +1,11 @@
 
-<div style="font-size: <%=font%>px;">
+<div style="font-size: <%= font_level(@font,level) %>px;">
   <% if @individual == individual %>
-    <div class="currentindividualcontainer <%= gender( individual )%>" style="width: <%= font*14%>px;">
+    <div class="currentindividualcontainer <%= gender( individual )%>" 
+	     style="max-width: <%= 220-20*@level %>px; ">
       <%= sex_symbol( individual.sex ) %>
 	  <%= link_to( individual.pretty_name(is_user?),
-	               tree_path( individual.uid ) ) if individual %>      
+	               detail_path( individual.uid ), remote: true ) if individual %>      
       <% if is_editor? %>
         <%= link_to( '<small><i>edit</i></small>'.html_safe, 
 	          edit_path( individual.uid ), 
@@ -19,11 +20,12 @@
       <%= individual.death.date if individual.death %><% individual.death.location if individual.death %>	 		           
     </div>
   <% else %>
-    <div class="individualcontainer <%= gender( individual )%>" style="width: <%= font*12%>px;">
+    <div class="individualcontainer <%= gender( individual )%>" 
+	     style="max-width: <%= 180-20*@level %>px; height: <%= 36-2*@level %>px;">
       <%= sex_symbol( individual.sex ) %> 
 	  <%= link_to( individual.pretty_name(is_user?),
 	               tree_path( individual.uid ) ) if individual %>
-      <% if font > @minfont %>	               
+      <% if true %>	               
         <%= "<br>*".html_safe if individual and individual.birth %>
         <%= individual.birth.date if individual.birth %><% individual.birth.location if individual.birth %><%= "<br>&#10013;".html_safe if individual.death %>
         <%= individual.death.date if individual.death %><% individual.death.location if individual.death %>	 	                     
