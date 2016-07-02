@@ -1,43 +1,112 @@
+                     
+<div class="geni-row"> 
 
-<div style="font-size: <%= font_level(@font,level) %>px;">
-  <% if @individual == individual %>
-    <div class="currentindividualcontainer <%= gender( individual )%>" 
-	     style="max-width: <%= 220-20*@level %>px; ">
-      <%= sex_symbol( individual.sex ) %>
-	  <%= link_to( individual.pretty_name(is_user?),
-	               detail_path( individual.uid ), remote: true ) if individual %>      
-      <% if is_editor? %>
-        <%= link_to( '<small><i>edit</i></small>'.html_safe, 
-	          edit_path( individual.uid ), 
-		      remote: true, class: "individualeditlink" ) if individual %>
-      <% end %>
-      <% if is_admin? %>
-        <%= link_to( '<small><i>details</i></small>'.html_safe, 
-                   individual_by_uid_path( individual.uid ) ) if individual %>
-      <% end %>                   			      
-      <%= "<br>*".html_safe if individual and individual.birth %>
-      <%= individual.birth.date if individual.birth %><% individual.birth.location if individual.birth %><%= "<br>&#10013;".html_safe if individual.death %>
-      <%= individual.death.date if individual.death %><% individual.death.location if individual.death %>	 		           
-    </div>
-  <% else %>
-    <div class="individualcontainer <%= gender( individual )%>" 
-	     style="max-width: <%= 180-20*@level %>px; height: <%= 36-2*@level %>px;">
-      <%= sex_symbol( individual.sex ) %> 
-	  <%= link_to( individual.pretty_name(is_user?),
-	               tree_path( individual.uid ) ) if individual %>
-      <% if true %>	               
-        <%= "<br>*".html_safe if individual and individual.birth %>
-        <%= individual.birth.date if individual.birth %><% individual.birth.location if individual.birth %><%= "<br>&#10013;".html_safe if individual.death %>
-        <%= individual.death.date if individual.death %><% individual.death.location if individual.death %>	 	                     
-        <% if is_editor? and @individual.is_my_child?( individual ) %>
-          <%= link_to delete_symbol, 
-	          remove_child_path( individual.uid, @individual.uid ), 
-		           class: 'editlink',
-		           data: { confirm: 'Are you sure?' } %>
-        <% end %>  
-      <% end %>   
-    </div>  
-  <% end %>
+  <% 
+     #   space BEFORE individual
+     #
+  %>  
+  <%= render partial: 'spacers', locals: { spacers: spacers, height: ( level <= 3 ? :tall : :low ) } %> 
+    
+  <% 
+     #   top and bottom of individual
+     #   flags: is_editor?
+     #          is_admin?
+     #
+  %>      
+  <div class="geni-combo">
+    
+	  <div class="geni-box <%= geni_gender( individual ) %> 
+	              <%= ( level <= 3 ) ? 'geni-top' : 'geni-both' %> <%= geni_level( level, 'top' ) %>">
+	    <div class="geni-inner">
+	    
+	      <% if is_editor? and @individual.is_my_child?( individual ) %>
+	        <%= link_to delete_symbol, 
+		          remove_child_path( individual.uid, @individual.uid ), 
+			           class: 'editlink',
+			           data: { confirm: 'Are you sure?' } %>
+	      <% end %>     
+	      <% if defined? union %>
+            <% if is_editor? and union and ( union.husband.uid == @individual.uid or union.wife.uid == @individual.uid )  %>
+		      <%= link_to( delete_symbol, 
+		                   remove_spouse_path( individual.uid, union.uid ), 
+			               class: 'editlink',
+		                   data: { confirm: 'Are you sure?' } )  %>
+		    <% end %>
+	      <% end %>
+	      <%= sex_symbol( individual.sex ) if individual %>  
+	      <% if level == 1 %>
+		    <%= link_to( individual.pretty_name(is_user?),
+		                   edit_path( individual.uid, editable: false ), remote: true ) if individual %>
+		  <% elsif individual %>
+		    <%= link_to( individual.pretty_name(is_user?),
+		                   tree_path( individual.uid ) ) if individual %>
+		  <% else %>
+		    unknown		  
+		  <% end %> 	                     
+	      <% if is_editor? and level == 1 %>
+	        <br>      
+	        <%= link_to( '<small><i>edit</i></small>'.html_safe, 
+		                          edit_path( individual.uid, editable: true ), 
+		                          class: "editlink",
+			                      remote: true ) if individual %>
+	      <% end %>   
+	      <% if is_admin? and level == 1 %>
+	        <%= link_to( '<small><i>gedinfo</i></small>'.html_safe, 
+	                     individual_by_uid_path( individual.uid ),
+	                     class: "editlink" ) if individual %>
+	      <% end %>  
+	       
+	    </div>
+	  </div>
+	  
+	  <% if individual and level <= 3 %>
+	    <div class="geni-box <%= geni_gender( individual ) %> geni-bottom <%= geni_level( level, 'bottom' ) %>">
+	      <div class="geni-inner">   
+	         
+	        <%= "*".html_safe if individual.birth %>
+	        <span title="<%= individual.birth.location if individual.birth %>" >
+	          <%= individual.birth.date if individual.birth %>
+	        </span>
+	        <br>
+	        <%= "&#10013;".html_safe if individual.death %>
+	        <span title="<%= individual.death.location if individual.death %>" >
+	          <%= individual.death.date if individual.death %>&nbsp;
+	        </span>    
+	            
+	      </div>
+	    </div>
+	  <% end %>
+  </div>
+  
+  <div class="geni-combo">   
+    <% if @individual == individual and is_editor? %>
+      <br> <br> <br> 
+      <div class="geni-add">
+        <%= link_to '<span style="font-size: 150%">&nbsp;</span>'.html_safe, 
+                      marriage_existing_path( @individual.uid ), 
+                      class: 'editlink', remote: true %>
+        <%= link_to '<span style="font-size: 200%">&#8734; </span>&nbsp;'.html_safe, 
+		              marriage_new_path( @individual.uid ), 
+			          class: 'editlink', remote: true %>  
+      </div>
+    <% end %>
+    <% if defined? union %>
+      <% if is_editor? and union and ( union.husband.uid == @individual.uid or union.wife.uid == @individual.uid )  %>
+        <br> 
+        <div class="geni-add">
+          <%= link_to '<span style="font-size: 100%">&nbsp;</span>'.html_safe, 
+                      add_child_path( individual.uid, union.uid ), 
+                      class: 'editlink', remote: true %>
+          <%= link_to '<span style="font-size: 200%">&#9794;</span>'.html_safe, 
+                      new_child_path( individual.uid, union.uid, gender: 'M' ), 
+                     class: 'editlink', remote: true %><%= link_to '<span style="font-size: 200%">&#9792;</span>&nbsp;'.html_safe, 
+                      new_child_path( individual.uid, union.uid, gender: 'F' ), 
+                     class: 'editlink', remote: true, gender: 'F' %>                    
+        </div>
+      <% end %>	                                                       
+    <% end %>	 
+  </div>
+    
 </div>
-	           
-         
+
+

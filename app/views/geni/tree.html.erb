@@ -1,25 +1,26 @@
-<h1> level = <%= @level %> maxlevel = <%= @maxlevel %> session <%= session[:'max-level'] %></h1>
+
 
 <!--
 <center class="panel panel-success"> 
   <div class="panel-heading">Family tree for <%= @individual.pretty_name(is_user?) %></div>
 </center>  
 -->
-<center class="treecontainer">
+<center class="geni-tree">
   <br>
   <table border=0 class="panel-body">
     <tr>
-	  <td width=50% height=20px >&nbsp;</td>
+	  <td width=50% height=0px >&nbsp;</td>
       <td rowspan=2 valign=top >	
         <%= render partial: "parents", 
 		           locals: { individual: @individual, level: @level } %>
-        <div  id="editcontainer"></div>				
+        <div  id="geni-editcontainer"></div>				
       </td>
     </tr>
     <tr>
-      <td style="padding:0px" valign=top align=right>
+      <td style="padding:0px" valign=top align=right>    
+        
 	    <%= render partial: "individual_and_children", 
-	             locals: { individual: @individual, level: @level } %>
+	             locals: { individual: @individual, spacers: [], level: @level } %>
 
       </td>
     </tr>
@@ -29,7 +30,7 @@
   <br>.
 </center>
 
+<div id="geni-editcontainer"></div>
 
 
-
-<script> $(function() { $( "#editcontainer" ).draggable(); }); </script>
+<script> $(function() { $( "#geni-editcontainer" ).draggable(); }); </script>

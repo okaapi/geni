@@ -49,7 +49,7 @@ class GeniController < ApplicationController
   end
   def depth_change
     init_session
-    session[:'max-level'] -= (params[:change].to_i / 2)
+    session[:'max-level'] -= (params[:change].to_i )
     if session[:'max-level'] > session[:'absolute-max-level']
       session[:'max-level'] = session[:'absolute-max-level']
     elsif session[:'max-level'] < 1
@@ -69,6 +69,7 @@ class GeniController < ApplicationController
   #   
   def edit
     @individual = Individual.by_uid( params[:uid] )
+    @editable = ( params[:editable] == 'true' )
 	@sources = @individual.sources
   end 
   def new_person
@@ -164,6 +165,7 @@ class GeniController < ApplicationController
   def new_child
     @individual = Individual.by_uid( params[:uid] )
     @union = Union.by_uid( params[:uuid] )  
+    @gender = params[ :gender ]
   end    
   def create_new_child
     @individual = Individual.by_uid( params[:uid] )
@@ -192,7 +194,8 @@ class GeniController < ApplicationController
   ###################################################################################
   #
   #  add spouse
-  #   
+  #  
+
   def add_spouse
     @union = Union.by_uid( params[:uuid] )
     @individual = Individual.by_uid( params[:uid] )    
@@ -251,6 +254,7 @@ class GeniController < ApplicationController
 	@union.save
     redirect_to tree_path( @individual.uid )
   end  
+
   
   ###################################################################################
   #
@@ -455,7 +459,7 @@ class GeniController < ApplicationController
   def init_session
     session[:'tree-font'] ||= 15
 	session[:'max-level'] ||= 2
-	session[:'absolute-max-level'] = 6
+	session[:'absolute-max-level'] = 4
   end
     
 end

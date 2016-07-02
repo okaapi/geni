@@ -1,12 +1,18 @@
 
-<div class="panel panel-danger">
+<% #
+   #   this allows editing of @editable == true, else only viewing 
+   #
+%>
+	  
+<div class="panel <%= ( @editable ? 'panel-danger' : 'panel-info' ) %> ">
   <div class="panel-heading">
 
-	<b>Editing</b> <%= individual.pretty_name( is_user? ) %> 
+	<b><%= @editable ? 'Editing' : 'Details for' %></b> <%= individual.pretty_name( is_user? ) %> 
   </div>
   <div class="panel-body">
-	<%= form_tag save_path( individual.uid ) do  %>
-
+	
+	<%= form_tag save_path( individual.uid ) do %>
+    
 	  <div class="row">
         <div class="col-xs-4">
           <%= label_tag :given,"Given" %>
@@ -62,20 +68,25 @@
 	      <% @sources.each do |source| %>
 		    <%= link_to( delete_symbol, source_delete_path( source.id, individual.uid ),
 					             class: 'editlink',
-		                         data: { confirm: 'Are you sure?' } )  %>		  
+		                         data: { confirm: 'Are you sure?' } ) if @editable %>		  
 	        <%= link_to( source.title, source_content_path( source.id ), :target => '_blank' ) %>  
 	        <br>
 	      <% end %>
         </div>		
 	  </div>
-      <%= render partial: "search_sources" %>	  
+	  
+      <%= render partial: "search_sources" if @editable%>	  
 	  <br>
 	  
+	  <% #
+	     #   submit_tag is turned off for @editable == false,	  
+	     #   so no risk of saving anything
+	  %>
 	  <div class="actions">
 	    <small> Last edit by <%= individual.user.username if individual.user %> 
 		   at <%= individual.updated_at.strftime("%H:%M on %-d %b %Y") if individual.updated_at %> 
 	       &nbsp; &nbsp; &nbsp;</small><br>
-	    <%= submit_tag 'save', class: "btn btn-default" %>
+	    <%= submit_tag 'save', class: "btn btn-default" if @editable %>
 	    <%= link_to 'cancel', tree_path( individual.uid ) %>
 	  </div>
 	  

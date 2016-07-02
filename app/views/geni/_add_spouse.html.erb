@@ -1,6 +1,11 @@
 <div class="panel panel-danger">
   <div class="panel-heading">
-    <b>Add marriage of</b> <%= individual.pretty_name(is_user?) %><b> with existing person</b>
+    <b>Add existing 
+    (<%= link_to 'new', new_spouse_path( individual.uid, union.uid ), 
+				        class: 'editlink', remote: true %>) 
+    person as spouse for</b> <%= individual.pretty_name(is_user?) %>
+    <b> married on </b>
+		 <%= (union.marriage and union.marriage.date) ? union.marriage.date : "date n/a"  %>    
   </div>
   <div class="panel-body">
     <%= form_tag save_added_spouse_path do %>

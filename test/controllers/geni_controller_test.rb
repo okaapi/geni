@@ -109,7 +109,7 @@ class GeniControllerTest < ActionController::TestCase
     @individual = Individual.find_by_given( "John" )
     xhr :post, :edit, uid: @individual.uid
 	assert_response :success
-    assert_select_jquery :html, '#editcontainer' do
+    assert_select_jquery :html, '#geni-editcontainer' do
       assert_select 'label', 'Given'  
       assert_select 'label', 'Surname'  
       assert_select 'label', 'M/F'  
@@ -172,7 +172,7 @@ class GeniControllerTest < ActionController::TestCase
     jill = Individual.find_by_given( "Jill" )
     xhr :post, :union_edit, uid: jill.uid, uuid: jill.parents_uid
 	assert_response :success
-    assert_select_jquery :html, '#editcontainer' do
+    assert_select_jquery :html, '#geni-editcontainer' do
       assert_select 'label', 'Divorce Date'  
       assert_select 'label', 'Location'  
       assert_select 'label', 'Notes'  	      	  	  
@@ -203,7 +203,7 @@ class GeniControllerTest < ActionController::TestCase
 	assert_equal @individual.unions.count, 0
     xhr :post, :marriage_new, uid: @individual.uid
 	assert_response :success
-    assert_select_jquery :html, '#editcontainer' do
+    assert_select_jquery :html, '#geni-editcontainer' do
       assert_select 'label', 'Given'  
       assert_select 'label', 'Surname'  
       assert_select 'label', 'M/F'  
@@ -282,7 +282,7 @@ class GeniControllerTest < ActionController::TestCase
 	assert_equal @individual.unions.count, 0
     xhr :post, :marriage_existing, uid: @individual.uid
 	assert_response :success
-    assert_select_jquery :html, '#editcontainer' do
+    assert_select_jquery :html, '#geni-editcontainer' do
       assert_select ".search" do
 		assert_select "input[placeholder=?]", 'search by given or surname'  	  	  
 	  end	  
@@ -346,7 +346,7 @@ class GeniControllerTest < ActionController::TestCase
 	assert_not_nil @union
     xhr :post, :new_spouse, uid: @individual.uid, uuid: @union.uid
     assert_response :success	
-    assert_select_jquery :html, '#editcontainer' do
+    assert_select_jquery :html, '#geni-editcontainer' do
       assert_select 'label', 'Given'  
       assert_select 'label', 'Surname'  
       assert_select 'label', 'M/F'  
@@ -427,7 +427,7 @@ class GeniControllerTest < ActionController::TestCase
 	@union = @individual.unions[0]
     xhr :post, :add_spouse, uid: @individual.uid, uuid: @union.uid
 	assert_response :success
-    assert_select_jquery :html, '#editcontainer' do
+    assert_select_jquery :html, '#geni-editcontainer' do
       assert_select "input[placeholder=?]", 'search by given or surname'  	  	  
     end 	
   end
@@ -507,7 +507,7 @@ class GeniControllerTest < ActionController::TestCase
     @individual = Individual.find_by_given( "Jill" )
 	@union = @individual.unions[0]
     xhr :post, :new_child, uid: @individual.uid, uuid: @union.uid
-    assert_select_jquery :html, '#editcontainer' do
+    assert_select_jquery :html, '#geni-editcontainer' do
       assert_select 'label', 'Given'  
       assert_select 'label', 'Surname'  
       assert_select 'label', 'M/F'  
@@ -547,7 +547,7 @@ class GeniControllerTest < ActionController::TestCase
     @individual = Individual.find_by_given( "Jill" )
 	@union = @individual.unions[0]
     xhr :post, :add_child, uid: @individual.uid, uuid: @union.uid
-    assert_select_jquery :html, '#editcontainer' do
+    assert_select_jquery :html, '#geni-editcontainer' do
       assert_select ".search" do
 		assert_select "input[placeholder=?]", 'search by given or surname'  	  	  
 	  end	 
@@ -587,7 +587,7 @@ class GeniControllerTest < ActionController::TestCase
 	assert_nil @individual.parents_uid
 	
     xhr :post, :new_parent, uid: @individual.uid, sex: 'm'
-    assert_select_jquery :html, '#editcontainer' do
+    assert_select_jquery :html, '#geni-editcontainer' do
       assert_select 'label', 'Given'  
       assert_select 'label', 'Surname'  
       assert_select 'label', 'M/F'  
@@ -637,7 +637,7 @@ class GeniControllerTest < ActionController::TestCase
 	assert_nil @individual.parents_uid
 	
     xhr :post, :new_parent, uid: @individual.uid, sex: 'f'
-    assert_select_jquery :html, '#editcontainer' do
+    assert_select_jquery :html, '#geni-editcontainer' do
       assert_select 'label', 'Given'  
       assert_select 'label', 'Surname'  
       assert_select 'label', 'M/F'  

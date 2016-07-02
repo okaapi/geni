@@ -1,15 +1,16 @@
 <% if individual and ( individual.father or individual.mother ) %>
-  <div class="parentscontainer" style="font-size: <%=font_level(@font,level)%>px;">
+  <div class="geni-parents" style="font-size: <%=font_level(@font,level)%>px;">
     <table style="border: 0px solid blue">
 	  <tr>
 	    <td align=left >
 	      <table style="border: 0px solid green">
 	        <tr>
-		      <td>
-                <div class="namebox"
+		      <td >
+                <div class="geni-inner"
 				            style="min-width: <%= 180-20*@level %>px;
-	                        max-width: <%= 180-20*@level %>px;">
-	              <% if individual.father %>	
+	                               max-width: <%= 180-20*@level %>px;">
+	              <% if individual.father %>
+	                &nbsp;	
 			        <% if( is_editor? and 
 					       individual.uid == @individual.uid ) %>
 		              <%= link_to( delete_symbol, 
@@ -22,6 +23,7 @@
 		            <%= link_to( individual.father.pretty_name(is_user?), 
 		                           tree_path( individual.father.uid ) )   %>	
 		          <% elsif is_editor? and individual.uid == @individual.uid %>
+                    &nbsp;
                     <%= link_to sex_symbol( 'm' )+ ' create father', 
 				                  new_parent_path( individual.uid, 'm',
 				                  individual.parents_uid ), 
@@ -48,10 +50,11 @@
 	      <table style="border: 0px solid red">
 	        <tr>
 		      <td>
-                <div class="namebox"
+                <div class="geni-inner"
 				            style="min-width: <%= 180-20*@level %>px;
 	                        max-width: <%= 180-20*@level %>px;">	
 		          <% if individual.mother %>
+		            &nbsp;	
  		            <% if( is_editor? and individual.uid == @individual.uid ) %>
 		              <%= link_to( delete_symbol, 
 		                     remove_parent_path( individual.uid, 
@@ -62,6 +65,7 @@
 		            <%= link_to( individual.mother.pretty_name(is_user?), 
 		                         tree_path( individual.mother.uid ) ) %>	
 		          <% elsif is_editor? and individual.uid == @individual.uid %>
+                    &nbsp;
                     <%= link_to sex_symbol( 'f' )+ ' create mother', 
 				                     new_parent_path( individual.uid, 'f',
 				                     individual.parents_uid ), 

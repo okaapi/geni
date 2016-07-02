@@ -1,7 +1,9 @@
 
 <div class="panel panel-danger">
   <div class="panel-heading">
-    <b>Create new person as child of </b><%= individual.pretty_name(is_user?) %> <b>and </b>
+    <b>Create new 
+    (<%= link_to 'existing', add_child_path( individual.uid, union.uid ), class: 'editlink', remote: true %>)
+    person as child of </b><%= individual.pretty_name(is_user?) %> <b>and </b>
         <%= ( union.spouse( individual.uid ) ? 
 		        union.spouse( individual.uid ).pretty_name(is_user?) : '?' ) %>
   </div>
@@ -21,7 +23,7 @@
         </div>
         <div class="col-xs-2">
           <%= label_tag :sex,"M/F" %>
-          <%= text_field_tag :sex, '', class: "form-control input-sm" %>
+          <%= text_field_tag :sex, @gender, class: "form-control input-sm" %>
         </div>			
       </div>
 	  <div class="row">

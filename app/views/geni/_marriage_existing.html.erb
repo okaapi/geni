@@ -1,7 +1,9 @@
 
 <div class="panel panel-danger">
   <div class="panel-heading">
-	<b>Add marriage for </b><%= individual.pretty_name(is_user?) %> <b>with existing person</b>
+	<b>Add marriage for </b><%= individual.pretty_name(is_user?) %> <b>with existing 
+	      (<%= link_to 'new', marriage_new_path( individual.uid ), class: 'editlink', remote: true %>)
+				                                      person</b>
   </div>
   <div class="panel-body">
 

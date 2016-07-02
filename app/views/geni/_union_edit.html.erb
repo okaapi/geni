@@ -7,10 +7,10 @@
 	  <% else %>
 	   <%= sex_symbol( 'f' )  %> 
 	  <% end %> 
-	<b>to</b>
+	<br><b>to</b>
 	<% if union.husband %>
 	  <%= union.husband.pretty_name(is_user?) %>&nbsp;
-	      <%= '('+union.husband.birth.date+')' if union.husband.birth %>
+	      <%= '(' + union.husband.birth.date + ')' if ( union.husband.birth and union.husband.birth.date ) %>
 	<% else %>
 	   <%= sex_symbol( 'm' )  %> 
     <% end %>	

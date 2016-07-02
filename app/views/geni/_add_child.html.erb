@@ -1,6 +1,8 @@
 <div class="panel panel-danger">
   <div class="panel-heading">
-     <b>Add existing person as child of </b><%= individual.pretty_name(is_user?) %> 
+     <b>Add existing 
+       (<%= link_to 'new', new_child_path( individual.uid, union.uid ), class: 'editlink', remote: true %>)
+       person as child of </b><%= individual.pretty_name(is_user?) %> 
 	    <%= ( "<b>and </b>".html_safe + 
 		         union.spouse( individual.uid ).pretty_name(is_user?) ) if 
 		                 union.spouse( individual.uid ) %>

@@ -1,87 +1,140 @@
-<div class="familycontainer" style="font-size: <%=font_level(@font,level)%>px;" >
-  <% if individual %>  
-    <%= render partial: 'individual', 
-               locals: { individual: individual, level: level } %> 
-    <div style="clear:both"></div>
-    <% individual.unions.each do |union| %>
-	  <div class="weddingcontainer " 
-	       style="max-width: <%= 150-20*@level %>px; ">
-		<div class="namebox" >									
-		  <%= marriage_symbol %>
-		  <% if @individual == individual  %>		
-		    <%= link_to(  (( union.marriage and union.marriage.date) ? 
-		                     union.marriage.date : 'date n/a'), 
-		                     union_edit_path( union.uid, individual.uid ), 
-		                     class: "editlink", remote: true )  %>
-		    <%= link_to( delete_symbol, 
-		                 delete_marriage_path( individual.uid, union.uid ), 
-			             class: 'editlink',
-		                 data: { confirm: 'Are you sure?' } ) if is_editor? %>												                	               
-		  <% else %>
-            <%= union.marriage ? union.marriage.date : 'date n/a'  %>
-          <% end %>
-        </div>	
-      </div>
-	  <div style="clear:both"></div>
-      <div class="spousecontainer <%= oppgender( individual ) %>" 
-	       style="max-width: <%= 200-20*@level %>px; height: <%= 32-2*@level %>px">
-		<div class="namebox" >
-          <%= sex_symbol( individual.sex ) %> 
-		  <% if union.spouse(individual.uid)  %>					
-		    <%= link_to( union.spouse(individual.uid).pretty_name(is_user?), 
-		                 tree_path( union.spouse(individual.uid).uid ) ) %>
-		    <% if @individual == individual and is_editor? %>
+
+	
+
+<%= render partial: 'individual', 
+           locals: { individual: individual, spacers: spacers, level: level } %> 
+
+<div class="geni-clear"></div>
+
+<% individual.unions.each do |union| %>
+
+  <% spacers << { width: :union, 
+                  directive: ( ( individual.unions.last.uid == union.uid ) ? '>' : '*' ) } %>
+      
+  <div class="geni-row">
+    <%= render partial: 'spacers', locals: { spacers: spacers, height: :yspace } %>  
+  </div>
+  
+  <div class="geni-clear"></div>
+                      
+  <div class="geni-row">
+  
+    <%= render partial: 'spacers', locals: { spacers: spacers, height: ( level == 1 ? :medium : :low ) } %> 
+  
+    <div class="geni-combo">
+  
+	    <div class="geni-box geni-both geni-union <%= geni_level( level, 'union' ) %>" >
+	      <div class="geni-inner">
+	
+	        <% if @individual == individual  %>		
 		      <%= link_to( delete_symbol, 
-		                   remove_spouse_path( individual.uid, union.uid ), 
-			               class: 'editlink',
-		                   data: { confirm: 'Are you sure?' } )  %>
-		    <% end %>		                   
-	      <% elsif @individual == individual and is_editor? %>                   							
-			<%= link_to 'add spouse - existing /', 
+			                 delete_marriage_path( individual.uid, union.uid ), 
+				             class: 'editlink',
+			                 data: { confirm: 'Are you sure?' } ) if is_editor? %>												                	               
+	        <% end %>        						
+		    <%= marriage_symbol %>
+		    <% if @individual == individual  %>		
+		      <%= link_to(  (( union.marriage and union.marriage.date) ? 
+		                       union.marriage.date : 'date n/a'), 
+		                       union_edit_path( union.uid, individual.uid ), 
+		                       class: "editlink", remote: true )  %>											                	               
+		    <% else %>
+	          <%= union.marriage ? union.marriage.date : 'date n/a'  %>
+	        <% end %>
+	      
+	      </div>	
+	    </div>
+    </div>
+    
+  </div>
+    
+  <div class="geni-clear"></div>
+             
+  <% spacers << { width: :spouse, directive: '' } %>
+  <% spacers << { width: :child, directive: '|' } %>
+  
+  <div class="geni-row">
+    <%= render partial: 'spacers', locals: { spacers: spacers, height: :yspace } %>  
+  </div>
+  
+  <% spacers.pop %>
+  
+  <div class="geni-clear"></div>
+                             
+  <% if union.spouse(individual.uid)  %>  
+    <%= render partial: "individual", 
+                   locals: { individual: union.spouse(individual.uid), 
+                             union: union, 
+                             spacers: spacers, level: level+1 } %>
+  <% elsif @individual == individual and is_editor? %>                   							
+			<%= link_to 'add', 
 			            add_spouse_path( individual.uid, union.uid ), 
-                        class: 'editlink', remote: true %><%= link_to 'new person', 
+                        class: 'editlink', remote: true %><%= link_to ' spouse', 
                         new_spouse_path( individual.uid, union.uid ), 
-				        class: 'editlink', remote: true %>                       								  
-		  <% end %>	
-	    </div>
-      </div>  
-      <div style="clear:both"></div>
-	  <% union.children.each do |child| %>
-        <div class="childrencontainer namebox" >  	                
-	      <% if level < @maxlevel %>
-	        <%= render partial: "individual_and_children", 
-	                   locals: { individual: child, level: level+1 } %>
-	      <% else %>         
-	        <%= render partial: 'individual', 
-		               locals: { individual: child, level: level+1 } %> 				      
-		  <% end %>                        
-		</div>       
-	  <% end %>
-	  <div style="clear:both"></div>	  
-	  <% if is_editor? and @individual == individual  %>
-        <div class="individualcontainer " 
-		     style="width: <%= 180-20*@level %>px; height: <%= 36-2*@level %>px;">
-          <%= link_to 'add child - existing /', 
-                      add_child_path( individual.uid, union.uid ), 
-                      class: 'editlink', remote: true %><%= link_to 'new person', 
-                                                            new_child_path( individual.uid, union.uid ), 
-									                        class: 'editlink', remote: true %>
-	    </div>
-      <% end %>				  
-    <% end %> 
-    <div style="clear:both"></div>		
-    <% if @individual == individual and is_editor? %>
-      <div class="weddingcontainer " 
-	       style="width: <%= 220-20*@level %>px; height: <%= 22-2*@level %>px">
-        <%= link_to 'add marriage with existing', 
-                    marriage_existing_path( @individual.uid ), 
-				    class: 'editlink', remote: true %><%= link_to '/ new person', 
-			                                                 marriage_new_path( @individual.uid ), 
-				                                             class: 'editlink', remote: true %>
-	  </div>
-    <% end %>	  
+				        class: 'editlink', remote: true %>    
   <% else %>
-    <h1>You broke it! Not good.</h1>
-    <img src="/Bg_404Image.png" alt="" /> 
-  <% end %>
-</div>
+      <%= render partial: "individual", 
+                   locals: { individual: nil, 
+                             union: nil, 
+                             spacers: spacers, level: level+1 } %>
+  <% end %>     
+      
+  <div class="geni-clear"></div>
+  	
+  <% union.children.each do |child| %>                
+	<% if level < @maxlevel %>
+	
+	  <% spacers << { width: :child, 
+	                  directive: ( ( union.children.last.uid == child.uid ) ? '>' : '*' ) } %> 
+	  
+      <div class="geni-row">
+        <%= render partial: 'spacers', locals: { spacers: spacers, height: :yspace } %>  
+      </div>
+  
+      <div class="geni-clear"></div>
+      	  
+	  <div>  
+
+        <%= render partial: "individual_and_children", 
+                   locals: { individual: child, spacers: spacers, 
+                             level: level+2 } %>
+      </div>
+
+      
+    <% else %>   
+   
+	  <% spacers << { width: :child, 
+	                  directive: ( ( union.children.last.uid == child.uid ) ? '>' : '*' ) } %> 
+      
+      <div class="geni-row">
+        <%= render partial: 'spacers', locals: { spacers: spacers, height: :yspace } %>  
+      </div>
+  
+      <div class="geni-clear"></div>
+  
+      <%= render partial: 'individual', 
+               locals: { individual: child, spacers: spacers, 
+                         level: level+2 } %>
+
+    <% end %>                        
+
+	<div style="clear:both"></div>     
+    
+    <% spacers.pop %>
+    
+  <% end %>       	  
+  
+
+    
+  <div style="clear:both"></div>			  
+  
+  <% spacers.pop %>
+  <% spacers.pop %>
+  
+<% end %> 
+         
+<div style="clear:both"></div>		
+
+  
+
+  

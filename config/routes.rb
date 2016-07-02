@@ -81,7 +81,7 @@ Rails.application.routes.draw do
   post 'search_results' => 'geni#search_results', as: 'search_results'  
   
   # this has to be the last one or else...
-  get ':uid' => 'geni#tree', as: 'tree'  
+  get ':uid' => 'geni#tree', as: 'tree'
 
   root "geni#search", as: "root"
     
