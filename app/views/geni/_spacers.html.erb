@@ -1,0 +1,95 @@
+
+<% spacers %><% height %>
+
+<div class="geni-clear"></div>
+
+<% spacers.each do |s| %>
+    
+  <% if height == :low %>
+    <% h = 20 %>
+  <% elsif height == :medium %>
+    <% h = 24 %>
+  <% elsif height == :tall %>
+    <% h = 60 %>
+  <% elsif height == :yspace %>
+    <% h = 10 %>    
+  <% end %>
+  
+  <% if s[:width] == :union %>
+    <% w = 20 %>
+  <% elsif s[:width] == :spouse %>
+    <% w = 10 %>
+  <% elsif s[:width] == :child %>
+    <% w = 20 %>
+  <% end %>
+  
+  <% if s[:width] == :union or s[:width] == :child %>
+     
+    <% bstyle = s[:width] == :union ? 'double' : 'solid' %>
+    
+    <div style="border-width: 3px;
+                border-color: grey;
+                <% if s[:directive] == '+' or s[:directive] == '|' or s[:directive] == '>' or s[:directive] == '*' %>
+                  border-style: none none none <%= bstyle %>;                  
+                  width: <%= w/2 %>px;
+                <% elsif s[:directive] == ')'  %>
+                  border-style: none none none none;
+                  width: <%= w/2 - 3 %>px;
+                <% else %>
+                  border-style: none none none none;
+                  width: <%= w/2 %>px;
+                <% end %>                            
+                height: <%= h %>px;
+                float: right;">      
+    </div>
+    
+  
+    <div style="border-width: 3px;
+                border-color: grey; 
+                <% if s[:directive] == ')' %>
+                  border-style: none <%= bstyle %> <%= bstyle %> none;                
+                  width: <%= w/2 + 3 %>px;
+                <% elsif s[:directive] == '+' %>
+                  border-style: none none <%= bstyle %> none;
+                  width: <%= w/2 %>px;                
+                <% else %>
+                  border-style: none none none none;
+                  width: <%= w/2 %>px;                
+                <% end %>
+                height: <%= h/2  %>px; 
+                float: right;"> 
+    </div>  
+ 
+    <% if s[:directive] == ')' %> 
+      <% s[:directive] = '' %>  
+    <% elsif s[:directive] == '>' %>
+      <% s[:directive] = ')' %>  
+    <% elsif s[:directive] == '*' %>       
+      <% s[:directive] = '+' %>
+    <% elsif s[:directive] == '+' %>       
+      <% s[:directive] = '|' %>
+    <% end %>      
+    
+  <% else %>
+      
+    <div style="border-width: 1px;
+                border-style: none;
+                border-color: green;
+                width: <%= w %>px;
+                height: <%= h %>px;
+                float: right;"> 
+    </div>
+
+  <% end %>  
+
+  
+<% end %>
+
+
+
+
+
+
+
+
+
