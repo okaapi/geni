@@ -63,6 +63,9 @@ class GeniController < ApplicationController
     end
   end
   
+  def vis
+  end
+  
   ###################################################################################
   #
   #  edit individual

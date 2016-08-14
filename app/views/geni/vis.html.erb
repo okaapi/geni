@@ -1,0 +1,172 @@
+
+
+
+  <style>
+    #mynetworkFA {
+      height: 700px;
+      width: 900px;
+      border:1px solid lightgrey;
+    }
+
+  </style>
+ 
+  <script language="JavaScript">
+
+
+    function draw() {
+
+      var optionsFA = {
+        nodes: {
+          labelHighlightBold: false //not working
+        },
+        edges: {
+          labelHighlightBold: false //not working
+        },
+        interaction: {
+          navigationButtons: true,
+          keyboard: true,
+          hover: true
+        },
+        layout: {
+                    hierarchical: {
+          levelSeparation: 100
+                        
+                    }
+                },
+                edges: {
+                    smooth: {
+                        type: 'cubicBezier',
+                        roundness: 0.8
+                    }
+                },
+        groups: {
+          unions: {
+            shape: 'icon',
+            icon: {
+              background: 'blue',
+              face: 'FontAwesome',
+              code: '\uf228',
+              size: 25,
+              color: '#777777'
+            }
+          },
+          guys: {
+            shape: 'icon',
+            icon: {
+              face: 'FontAwesome',
+              code: '\uf007',
+              size: 50,
+              color: '#00bfff'
+            }
+          },
+          gals: {
+            shape: 'icon',
+            icon: {
+              face: 'FontAwesome',
+              code: '\uf007',
+              size: 50,
+              color: '#ff1493'
+            }
+          }
+        }
+      };
+ 
+      // create an array with nodes
+      var nodesFA = [{
+        id: 1,
+        label: 'Paul-1',
+        font: {background: 'white'},
+        group: 'guys',
+        level: 0,
+      }, {
+        id: 2,
+        label: "Mary-2",
+        font: {background: 'white'},
+        group: 'gals',
+        level: 0
+      }, {
+        id: 3,
+        label: 'John-3',
+        font: {background: 'white'},
+        group: 'guys',
+        level: 2
+      }, {
+        id: 4,
+        label: 'Jane-4',
+        font: {background: 'white'},
+        group: 'gals',
+        level: 2                
+      }, {
+        id: 5,
+        label: 'Paul-5',
+        font: {background: 'white'},
+        group: 'guys',
+        level: 2               
+      }, {     
+        id: 6,
+        label: 'Marriage-1-2',
+        font: {background: 'white'},
+        group: 'unions',
+        level: 1
+      }, {
+        id: 7,
+        label: 'Marriage-4-5',
+        font: {background: 'white'},
+        group: 'unions',
+        level: 3
+      }];
+ 
+      // create an array with edges
+      var edges = [{
+        from: 1,
+        to: 6
+      }, {
+        from: 2,
+        to: 6
+      }, {
+        from: 6,
+        to: 3
+      }, {
+        from: 6,
+        to: 4
+      }, {
+        from: 4,
+        to: 7              
+      }, {
+        from: 5,
+        to: 7                              
+      }];
+ 
+      // create a network
+      var containerFA = document.getElementById('mynetworkFA');
+      var dataFA = {
+        nodes: nodesFA,
+        edges: edges
+      };
+ 
+
+      var networkFA = new vis.Network(containerFA, dataFA, optionsFA);
+ 
+      networkFA.on("click", function (params) {
+        alert( JSON.stringify(params, null, 4) );
+        if( params.nodes > 0 && params.nodes < 6 ) {
+          window.open("http://menhardt.com","_self");
+        }
+      });
+
+      //networkFA.on("hoverNode", function (params) {
+      //  alert( JSON.stringify(params, null, 4) );
+      //});
+
+    }
+  </script>
+
+
+<center>
+<div id="mynetworkFA" ></div>
+  <br>
+  <%= render partial: "footer" %>
+  <br>
+</center>
+<script>draw();</script>
+ 
