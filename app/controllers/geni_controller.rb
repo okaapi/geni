@@ -64,6 +64,18 @@ class GeniController < ApplicationController
   end
   
   def vis
+    init_session
+	@level = 1
+    @maxlevel = 10 #session[:'max-level']	
+    @individual = Individual.by_uid( params[:uid] )
+	if !@individual
+	  redirect_to root_path
+	else
+	  is_user = @current_user and @current_user.user?
+	  node = { id: @individual.uid, group: (@individual.male? ? "guys" : "gals"), level: 0,
+	           label: @individual.pretty_name( is_user ) }
+	  @nodes, @edges = @individual.graph_up( 0, @maxlevel, [node], [], is_user )
+	end
   end
   
   ###################################################################################

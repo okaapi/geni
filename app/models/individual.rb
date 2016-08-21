@@ -51,6 +51,17 @@ class Individual < ActiveRecord::Base
      
   end
   
+  def pretty_name_multiline( is_user = false )
+
+    if is_user or !self.living?
+      self.name.gsub( /\//, '').gsub(/  /,' ').gsub(/ /,'\n')
+    else
+      n = self.name.gsub( /\//, '').upcase
+      n.split(' ').collect { |s| s[0] }.join('. ') + '.'
+    end
+	
+  end
+  
   def pretty_first_name( is_user = false )
      
     if is_user or !self.living?
@@ -306,6 +317,37 @@ class Individual < ActiveRecord::Base
     arr  
   end
 =end
+
+  def graph_up ( level, maxlevel, nodes, edges, is_user )
+  
+    if level < maxlevel
+
+      par = self.parents
+
+	  if par
+	    nodes << { id: par.uid, group: "unions", level: level + 1, label: (par.marriage.date if par.marriage) }
+	    edges << [self.uid, par.uid]
+	
+	    if ( fath = par.husband )
+		  nodes, edges = fath.graph_up( level + 2, maxlevel, nodes, edges, is_user )
+	      nodes << { id: fath.uid, group: "guys", level: level + 2, label: fath.pretty_name_multiline( is_user ) }
+	      edges << [par.uid, fath.uid]
+	      
+	    end
+	
+	    if ( moth = par.wife )
+		  nodes, edges = moth.graph_up( level + 2, maxlevel, nodes, edges, is_user )
+	      nodes << { id: moth.uid, group: "gals", level: level + 2, label: moth.pretty_name_multiline( is_user ) }
+	      edges << [par.uid, moth.uid]
+	      
+	    end	
+		
+	  end
+	end
+
+	return nodes, edges
+  
+  end
       
 end
 

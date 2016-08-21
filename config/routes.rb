@@ -80,7 +80,7 @@ Rails.application.routes.draw do
   match 'search' => 'geni#search', as: 'search', via: [:get, :post]
   post 'search_results' => 'geni#search_results', as: 'search_results'  
   
-  get 'vis' => 'geni#vis', as: 'vis'
+  get 'vis/:uid' => 'geni#vis', as: 'vis'
   
   # this has to be the last one or else...
   get ':uid' => 'geni#tree', as: 'tree'

@@ -3,7 +3,7 @@
 
   <style>
     #mynetworkFA {
-      height: 700px;
+      height: 500px;
       width: 900px;
       border:1px solid lightgrey;
     }
@@ -16,11 +16,25 @@
     function draw() {
 
       var optionsFA = {
-        nodes: {
-          labelHighlightBold: false //not working
-        },
+		physics:{
+			hierarchicalRepulsion: {
+				centralGravity: 0.2,
+				springLength: 100,
+				springConstant: 0.01,
+				nodeDistance: 120,
+				damping: 0.1
+			},
+			maxVelocity: 50,
+			minVelocity: 0.1,
+			solver: 'hierarchicalRepulsion',	  
+		},
         edges: {
-          labelHighlightBold: false //not working
+          labelHighlightBold: false,
+                    smooth: {
+                        type: 'cubicBezier',  
+						forceDirection: 'vertical',
+                        roundness: 0.8 
+                    }
         },
         interaction: {
           navigationButtons: true,
@@ -28,17 +42,14 @@
           hover: true
         },
         layout: {
-                    hierarchical: {
-          levelSeparation: 100
-                        
-                    }
-                },
-                edges: {
-                    smooth: {
-                        type: 'cubicBezier',
-                        roundness: 0.8
-                    }
-                },
+          hierarchical: {
+			direction: 'DU',
+            levelSeparation: 100,
+		    blockShifting: false,
+            edgeMinimization: false,
+            parentCentralization: true
+		  }
+        },
         groups: {
           unions: {
             shape: 'icon',
@@ -48,7 +59,8 @@
               code: '\uf228',
               size: 25,
               color: '#777777'
-            }
+            },
+			font: {background: 'white'}
           },
           guys: {
             shape: 'icon',
@@ -57,7 +69,11 @@
               code: '\uf007',
               size: 50,
               color: '#00bfff'
-            }
+            },
+			font: {
+				background: 'white'
+			},
+			labelHighlightBold: false
           },
           gals: {
             shape: 'icon',
@@ -66,81 +82,32 @@
               code: '\uf007',
               size: 50,
               color: '#ff1493'
-            }
+            },
+			font: {background: 'white'}
           }
         }
       };
  
       // create an array with nodes
-      var nodesFA = [{
-        id: 1,
-        label: 'Paul-1',
-        font: {background: 'white'},
-        group: 'guys',
-        level: 0,
-      }, {
-        id: 2,
-        label: "Mary-2",
-        font: {background: 'white'},
-        group: 'gals',
-        level: 0
-      }, {
-        id: 3,
-        label: 'John-3',
-        font: {background: 'white'},
-        group: 'guys',
-        level: 2
-      }, {
-        id: 4,
-        label: 'Jane-4',
-        font: {background: 'white'},
-        group: 'gals',
-        level: 2                
-      }, {
-        id: 5,
-        label: 'Paul-5',
-        font: {background: 'white'},
-        group: 'guys',
-        level: 2               
-      }, {     
-        id: 6,
-        label: 'Marriage-1-2',
-        font: {background: 'white'},
-        group: 'unions',
-        level: 1
-      }, {
-        id: 7,
-        label: 'Marriage-4-5',
-        font: {background: 'white'},
-        group: 'unions',
-        level: 3
-      }];
+      var nodes = [
+	  <% @nodes.each do |node| %>
+	    { id: '<%= node[:id] %>',
+		  label: '<%= node[:label] %>',
+		  group: '<%= node[:group] %>',
+		  level: <%= node[:level] %>
+		  },
+	  <% end %> ];
  
       // create an array with edges
-      var edges = [{
-        from: 1,
-        to: 6
-      }, {
-        from: 2,
-        to: 6
-      }, {
-        from: 6,
-        to: 3
-      }, {
-        from: 6,
-        to: 4
-      }, {
-        from: 4,
-        to: 7              
-      }, {
-        from: 5,
-        to: 7                              
-      }];
+      var edges = [
+	  <% @edges.each do |edge| %>
+	    { from: '<%= edge[1] %>', to: '<%= edge[0] %>' },
+      <% end %> ];
  
       // create a network
       var containerFA = document.getElementById('mynetworkFA');
       var dataFA = {
-        nodes: nodesFA,
+        nodes: nodes,
         edges: edges
       };
  
@@ -161,7 +128,8 @@
     }
   </script>
 
-
+<% debug @nodes %>
+<% debug @edges %>
 <center>
 <div id="mynetworkFA" ></div>
   <br>
