@@ -22,6 +22,17 @@ class Event < ActiveRecord::Base
     end
   end
   
+  def year
+    d, y = Event.parse_date( self.rawdate )
+    if d
+      d.strftime("%Y")
+    elsif y
+      y.to_s
+    else
+      nil
+    end
+  end  
+  
   def date_as_datetime
     d, y = Event.parse_date( self.rawdate )
     if d

@@ -44,19 +44,21 @@ Rails.application.routes.draw do
   
   get 'edit/:uid' => 'geni#edit', as: 'edit'
   get 'detail/:uid' => 'geni#detail', as: 'detail'
+  get 'clear' => 'geni#clear', as: 'clear'  
   get 'union_edit/:uuid/:uid' => 'geni#union_edit', as: 'union_edit'
   post 'save/:uid' => 'geni#save', as: 'save'  
   post 'union_save/:uid/:uuid' => 'geni#union_save', as: 'union_save'  
+  
   get 'source_edit/(:sid)' => 'geni#source_edit', as: 'source_edit'
   get 'source_delete/:sid/:uid' => 'geni#source_delete', as: 'source_delete'  
   get 'source_content/:sid' => 'geni#source_content', as: 'source_content'  
   post 'source_save/:sid' => 'geni#source_save', as: 'source_save'    
   
-  match 'marriage_new/:uid' => 'geni#marriage_new', as: 'marriage_new', via: [:get, :post]
-  post 'save_marriage_new/:uid' => 'geni#save_marriage_new', as: 'save_marriage_new'  
-  match 'marriage_existing/:uid' => 'geni#marriage_existing', as: 'marriage_existing', via: [:get, :post]
-  post 'save_marriage_existing/:uid' => 'geni#save_marriage_existing', as: 'save_marriage_existing'    
-  get 'delete_marriage/:uid/:uuid' => 'geni#delete_marriage', as: 'delete_marriage' 
+  #match 'marriage_new/:uid' => 'geni#marriage_new', as: 'marriage_new', via: [:get, :post]
+  #post 'save_marriage_new/:uid' => 'geni#save_marriage_new', as: 'save_marriage_new'  
+  #match 'marriage_existing/:uid' => 'geni#marriage_existing', as: 'marriage_existing', via: [:get, :post]
+  #post 'save_marriage_existing/:uid' => 'geni#save_marriage_existing', as: 'save_marriage_existing'    
+  #get 'delete_marriage/:uid/:uuid' => 'geni#delete_marriage', as: 'delete_marriage' 
 
   match 'add_spouse/:uid/(:uuid)' => 'geni#add_spouse', as: 'add_spouse', via: [:get, :post]  
   match 'new_spouse/:uid/:uuid' => 'geni#new_spouse', as: 'new_spouse', via: [:get, :post]    
@@ -80,10 +82,10 @@ Rails.application.routes.draw do
   match 'search' => 'geni#search', as: 'search', via: [:get, :post]
   post 'search_results' => 'geni#search_results', as: 'search_results'  
   
-  get 'vis/:uid' => 'geni#vis', as: 'vis'
+  get 'vis_change/(:uid)' => 'geni#vis_change', as: 'vis_change'
   
   # this has to be the last one or else...
-  get ':uid' => 'geni#tree', as: 'tree'
+  get ':uid' => 'geni#display', as: 'display'
 
   root "geni#search", as: "root"
     

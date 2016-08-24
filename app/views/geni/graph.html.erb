@@ -1,0 +1,50 @@
+	
+		                   
+<div class="geni-tree" >
+  <div id="geni-graphcontainer" >
+  </div>
+  <div id="geni-editcontainer"></div>
+  <br>
+  <%= render partial: "footer" %>
+  <br>
+</div>
+
+
+<script> $(function() { $( "#geni-editcontainer" ).draggable(); }); </script>
+
+<script>
+      // create an array with nodes
+      var nodesFA = [
+	  <% @nodes.each_with_index do |node,i| %>
+	    { id: '<%= node[:id] %>',
+		  label: '<%= node[:label] %>',
+		  group: '<%= node[:group] %>',		  
+		  <% if node[:current] && node[:group] != "unions" %>
+		      icon: { size: 70 },
+		      font: { size: 20, background: 'yellow' },
+		  <% end %>
+	      <% if node[:title] %>
+	        title: '<%= node[:title] %>',
+	      <% end %>		  
+		  <% if node[:level].abs <= (@maxlevel+1) %>
+		    fixed: { x:false, y:true },
+		    y: <%= node[:level] * -100 %>,
+		    x: <%= i*100 %> 
+		  <% end %>
+		  },
+	  <% end %> ];
+ 
+      // create an array with edges
+      var edgesFA = [
+	  <% @edges.each_with_index do |edge,i| %>
+	    { from: '<%= edge[:from] %>', 
+	      to: '<%= edge[:to] %>', 
+	      <% if edge[:title] %>
+	        title: '<%= edge[:title] %>',
+	      <% end %>
+	      id: '<%= edge[:id] %>' },
+      <% end %> ];
+      
+      draw_vis( '<%= @individual.uid %>', nodesFA, edgesFA, <%= is_editor? %> );
+</script>
+ 

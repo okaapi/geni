@@ -53,7 +53,7 @@
 	  <br>
 	  <div class="actions">
 	    <%= submit_tag 'create', class: "btn btn-default" %>
-	    <%= link_to 'cancel', tree_path( individual.uid ) %>
+	    <%= link_to 'cancel', clear_path, remote:true %>
 	  </div>        		
     <% end %>	 
   </div>  	

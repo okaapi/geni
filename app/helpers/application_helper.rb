@@ -10,12 +10,12 @@ module ApplicationHelper
     end
   end
   def is_editor?
-    @current_user and @current_user.editor? 
+    ( @current_user and @current_user.editor? ) == true
   end  
   def is_user?
-    @current_user and @current_user.user? 
+    ( @current_user and @current_user.user? ) == true 
   end
   def is_admin?
-    @current_user and @current_user.admin?   
+    ( @current_user and @current_user.admin? ) == true   
   end  
 end

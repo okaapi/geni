@@ -21,7 +21,7 @@
 		            <% end %>	          
 	  	            <%= sex_symbol( individual.father.sex )  %> 
 		            <%= link_to( individual.father.pretty_name(is_user?), 
-		                           tree_path( individual.father.uid ) )   %>	
+		                           display_path( individual.father.uid ) )   %>	
 		          <% elsif is_editor? and individual.uid == @individual.uid %>
                     &nbsp;
                     <%= link_to sex_symbol( 'm' )+ ' create father', 
@@ -63,7 +63,7 @@
 		            <% end %>	 	          	                    
 	                <%= sex_symbol( individual.mother.sex ) if individual.mother %> 
 		            <%= link_to( individual.mother.pretty_name(is_user?), 
-		                         tree_path( individual.mother.uid ) ) %>	
+		                         display_path( individual.mother.uid ) ) %>	
 		          <% elsif is_editor? and individual.uid == @individual.uid %>
                     &nbsp;
                     <%= link_to sex_symbol( 'f' )+ ' create mother', 

@@ -86,8 +86,12 @@
 	    <small> Last edit by <%= individual.user.username if individual.user %> 
 		   at <%= individual.updated_at.strftime("%H:%M on %-d %b %Y") if individual.updated_at %> 
 	       &nbsp; &nbsp; &nbsp;</small><br>
-	    <%= submit_tag 'save', class: "btn btn-default" if @editable %>
-	    <%= link_to 'cancel', tree_path( individual.uid ) %>
+        <% if @editable %>
+	      <%= submit_tag 'save', class: "btn btn-default" %>
+	      <%= link_to 'cancel', clear_path, remote:true %>
+	    <% else %>
+	      <%= link_to 'cancel', clear_path, class: 'btn btn-default btn-md', remote:true %>
+        <% end %>
 	  </div>
 	  
 	<% end %> 

@@ -3,7 +3,7 @@
 <% @names.each_with_index do |name, index| %>
   
   <%= link_to name[:given], 
-      tree_path( name[:uid] ) %>
+      display_path( name[:uid] ) %>
   <%= '|' if index < @names.count-1 %> 
   
 <% end %>

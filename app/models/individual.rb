@@ -54,7 +54,9 @@ class Individual < ActiveRecord::Base
   def pretty_name_multiline( is_user = false )
 
     if is_user or !self.living?
-      self.name.gsub( /\//, '').gsub(/  /,' ').gsub(/ /,'\n')
+      p = self.given ? (self.given.split(' ')[0] +'\n') : ''
+      p = p + ( self.surname ? (self.surname+'\n') : '' ) 
+      p = p + ( (self.birth and self.birth.year) ? self.birth.year : '' ) 
     else
       n = self.name.gsub( /\//, '').upcase
       n.split(' ').collect { |s| s[0] }.join('. ') + '.'
@@ -225,7 +227,11 @@ class Individual < ActiveRecord::Base
     uid_groups = Union.where( "husband_uid = ? OR wife_uid = ?", self.uid, self.uid ).group( :uid )
     union_arr = []
     uid_groups.each do |u|
-      union_arr << Union.by_uid( u.uid )
+      union = Union.by_uid( u.uid )
+      if ( union.husband and union.husband.uid == self.uid ) or 
+         ( union.wife and union.wife.uid == self.uid )
+        union_arr << union
+      end
     end
     union_arr
   end
@@ -318,36 +324,182 @@ class Individual < ActiveRecord::Base
   end
 =end
 
-  def graph_up ( level, maxlevel, nodes, edges, is_user )
+
+  #
+  #
+  #  graphing code... recursive...  for the "tree" display, recursion is in the html itself
+  #
+  #
+  #
+  def graph_focus_node( is_user, is_editor )
+	if is_editor
+	  node = { id: self.uid, group: (self.male? ? "guys" : "gals"), level: 0,
+	         label: self.pretty_name_multiline( is_user ), 
+	         title: 'double click to edit',
+	         current: true }
+	else
+	  node = { id: self.uid, group: (self.male? ? "guys" : "gals"), level: 0,
+	         label: self.pretty_name_multiline( is_user ), 
+	         title: 'double click for details',
+	         current: true }
+	end  
+	node
+  end
+  
+  def graph_up( level, maxlevel, nodes, edges, is_user, is_editor )
   
     if level < maxlevel
-
-      par = self.parents
-
+    
+	  if ( par = self.parents )		  
+	    par_id = 'NIL/' + par.uid	
+        nodes << { id: par_id, group: "unions", level: level + 1, 
+                   label: (par.marriage.date if par.marriage) }
+	    edges << { from: par_id, to: self.uid, id: 'NIL/' + self.uid  }
+	  elsif level == 0 and is_editor
+	    par = Union.new
+	    par_id = 'NIL/' + par.uid		    
+        nodes << { id: par_id, group: "unions", level: level + 1, 
+                   label: (par.marriage.date if par.marriage) }
+	    edges << { from: par_id, to: self.uid, id: 'NIL/' + self.uid  }	    
+	  end
+	  
 	  if par
-	    nodes << { id: par.uid, group: "unions", level: level + 1, label: (par.marriage.date if par.marriage) }
-	    edges << [self.uid, par.uid]
-	
+	    
 	    if ( fath = par.husband )
-		  nodes, edges = fath.graph_up( level + 2, maxlevel, nodes, edges, is_user )
-	      nodes << { id: fath.uid, group: "guys", level: level + 2, label: fath.pretty_name_multiline( is_user ) }
-	      edges << [par.uid, fath.uid]
-	      
+		  nodes, edges = fath.graph_up( level + 2, maxlevel, nodes, edges, is_user, is_editor )
+	      nodes << { id: fath.uid, group: "guys", level: level + 2, 
+	                 label: fath.pretty_name_multiline( is_user ) }
+	      if level == 0 and is_editor
+            edges << { from: fath.uid, to: par_id, id: 'CONF/remove_parent/' + self.uid + '/' + fath.uid,
+	                   title: 'double click to remove parent' }
+	      else
+            edges << { from: fath.uid, to: par_id, id: 'NIL/' + self.uid + '/' + fath.uid }	      
+	      end
+	    elsif level == 0 and is_editor
+	      ident = 'XHR/new_parent/' + self.uid + '/m' 
+	      nodes << { id: ident,     
+	                 group: 'newperson', level: +2,
+	                 label: 'add father',
+	                 title: 'double click to add father' }	                 
+	      edges << { from: ident, to: par_id, id: ident, title: 'double click to add father' }	
 	    end
-	
+        	
 	    if ( moth = par.wife )
-		  nodes, edges = moth.graph_up( level + 2, maxlevel, nodes, edges, is_user )
-	      nodes << { id: moth.uid, group: "gals", level: level + 2, label: moth.pretty_name_multiline( is_user ) }
-	      edges << [par.uid, moth.uid]
+		  nodes, edges = moth.graph_up( level + 2, maxlevel, nodes, edges, is_user, is_editor )
+	      nodes << { id: moth.uid, group: "gals", level: level + 2, 
+	                 label: moth.pretty_name_multiline( is_user ) }
+	      if level == 0 and is_editor             
+	        edges << { from: moth.uid, to: par_id, id: 'CONF/remove_parent/' + self.uid + '/' + moth.uid,
+	                   title: 'double click to remove parent' }
+	      else
+	        edges << { from: moth.uid, to: par_id, id: 'NIL/' + self.uid + '/' + moth.uid }
+	      end
 	      
+	    elsif level == 0 and is_editor
+	      ident = 'XHR/new_parent/' + self.uid + '/f' 
+	      nodes << { id: ident,     
+	                 group: 'newperson', level: +2,
+	                 label: 'add mother',
+	                 title: 'double click to add mother' }	                 
+	      edges << { from: ident, to: par_id, id: ident, title: 'double click to add mother' }		      	      
 	    end	
+		
+	  end
+	end
+ 
+	return nodes, edges
+  
+  end
+  
+  def graph_down( level, maxlevel, nodes, edges, is_user, is_editor )
+  
+    if level > - maxlevel
+
+      unions = self.unions
+      if level == 0 and is_editor
+        newunion = Union.new
+        newunion_uid = newunion.uid
+        unions << newunion
+      end  
+      
+      unions.each do |unio|
+        
+        if level == 0 and is_editor
+          if unio.uid != newunion_uid
+            unio_id = 'XHR/union_edit/' +  unio.uid + '/' + self.uid
+	        nodes << { id: unio_id, group: "unions", level: level -1, 
+	                   label: (unio.marriage.year if unio.marriage), 
+	                   title: 'double click to edit marriage data' }
+	      else
+            unio_id = 'XHR/union_edit/' +  unio.uid + '/' + self.uid
+	        nodes << { id: unio_id, group: "newunion", level: level -1 }	      
+	      end	       
+	      if unio.husband_uid == self.uid or unio.wife_uid == self.uid	
+	        edges << { from: self.uid, to: unio_id, id: 'CONF/remove_spouse/' + self.uid + '/' + unio.uid,
+	                   title: 'double click to remove' }
+	      else
+	        edges << { from: self.uid, to: unio_id, id: 'NIL/' + self.uid + '/' + unio.uid }
+	      end    	                                        
+        else
+          unio_id = 'NIL/' + unio.uid
+	      nodes << { id: unio_id, group: "unions", level: level -1, 
+	                 label: (unio.marriage.year if unio.marriage) }   
+	      edges << { from: self.uid, to: unio_id, id: 'NIL/' + self.uid + '/' + unio.uid }    	                        
+        end
+
+	    
+	    if (spou = unio.spouse( self.uid ) )
+	      gen = ( spou.male? ? "guys" : "gals")	   
+	      nodes << { id: spou.uid, group: gen, level: level , 
+	                 label: spou.pretty_name_multiline( is_user ) }
+	      if level == 0 and is_editor
+	        edges << { from: spou.uid, to: unio_id, id: 'CONF/remove_spouse/' + spou.uid + '/' + unio.uid,
+	                   title: 'double click to remove from marriage' }
+	      else
+	        edges << { from: spou.uid, to: unio_id, id: 'NIL/' + spou.uid + '/' + unio.uid }	      
+	      end
+	    elsif level == 0 and is_editor
+	      node_ident = 'XHR/new_spouse/' + self.uid + '/' + unio.uid 
+	      edge_ident = 'XHR/new_spouse/' + self.uid + '/' + unio.uid 
+	      nodes << { id: node_ident,     
+	                 group: 'newperson', level: 0,
+	                 label: 'add spouse',
+	                 title: 'double click to add spouse' }	                 
+	      edges << { from: unio_id, to: node_ident, id: edge_ident, title: 'double click to add spouse' }	      	      	    
+	    end	  
+	    	    
+	    unio.children.each do |chil|
+	    	      
+	      gen = ( chil.male? ? "guys" : "gals")	      
+	      nodes << { id: chil.uid, group: gen, 
+	                 level: level -2, 
+	                 label: chil.pretty_name_multiline( is_user ) }
+	      if level == 0 and is_editor
+	        edges << { from: unio_id, to: chil.uid, id: 'CONF/remove_child/' + chil.uid + '/' + self.uid,
+	                   title: 'double click to remove child' }
+	      else
+	        edges << { from: unio_id, to: chil.uid, id: 'NIL/' + chil.uid + '/' + self.uid }
+	      end	                   
+	      nodes, edges = chil.graph_down( level - 2, maxlevel, nodes, edges, is_user, is_editor )
+	      	      	      
+	    end	 
+	    
+	    if level == 0 and is_editor
+	      node_ident = 'XHR/new_child/' + self.uid + '/' + unio.uid + '?gender=F'
+	      edge_ident = 'XHR/new_child/' + self.uid + '/' + unio.uid + '?gender=M'
+	      nodes << { id: node_ident,     
+	                 group: 'newperson', level: -2,
+	                 label: 'add',
+	                 title: 'double click to add new child' }	                 
+	      edges << { from: unio_id, to: node_ident, id: edge_ident, title: 'double click to add new child' }
+	    end 
 		
 	  end
 	end
 
 	return nodes, edges
   
-  end
+  end  
       
 end
 

@@ -39,7 +39,7 @@
 		                   edit_path( individual.uid, editable: false ), remote: true ) if individual %>
 		  <% elsif individual %>
 		    <%= link_to( individual.pretty_name(is_user?),
-		                   tree_path( individual.uid ) ) if individual %>
+		                   display_path( individual.uid ) ) if individual %>
 		  <% else %>
 		    unknown		  
 		  <% end %> 	                     

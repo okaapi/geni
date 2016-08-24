@@ -3,12 +3,11 @@ class GeniController < ApplicationController
   
   ###################################################################################
   #
-  # browse
+  # browse & search
   #    
   def surnames
     @surnames = Individual.surnames(params[:term])
-  end
-  
+  end  
   def names_for_surname
     @surname = params[:surname]
     is_user = @current_user and @current_user.user? 
@@ -29,7 +28,11 @@ class GeniController < ApplicationController
 	end
   end  
 
-  def tree
+  ###################################################################################
+  #
+  # display the tree (as HTML tree or javascript graphics)
+  #   
+  def display
     #  tree-font is where we start with the fonts
     #  min-tree-font is how far we go down... translates into
     #    tree-depth, one depth increment corresponds to 2 font increments
@@ -38,15 +41,28 @@ class GeniController < ApplicationController
 	@level = 1
     @maxlevel = session[:'max-level']	
     @font = session[:'tree-font']
-    @individual = Individual.by_uid( params[:uid] )
+    @individual = Individual.by_uid( params[:uid] )     
 	if !@individual
 	  redirect_to root_path
+	elsif session[:display] == "graph"
+	  is_user = @current_user and @current_user.user?
+	  is_editor = @current_user and @current_user.user?	  
+	  @nodes = [] 
+	  @edges = []  
+	  @nodes << @individual.graph_focus_node( is_user, is_editor )		  
+	  @nodes, @edges = @individual.graph_up( 0, @maxlevel, @nodes, @edges, is_user, is_editor )		           
+	  @nodes, @edges = @individual.graph_down( 0, @maxlevel, @nodes, @edges, is_user, is_editor )	         
+	  render :graph	
+	else
+	  render
 	end
   end  
+  
   def detail
     @individual = Individual.by_uid( params[:uid] )
 	@sources = @individual.sources  
   end
+  
   def depth_change
     init_session
     session[:'max-level'] -= (params[:change].to_i )
@@ -57,25 +73,24 @@ class GeniController < ApplicationController
     end	
     @individual = Individual.by_uid( params[:uid] )
     if @individual 
-      redirect_to tree_path( @individual.uid )
+      redirect_to display_path( @individual.uid )
     else
       redirect_to root_path
     end
   end
   
-  def vis
-    init_session
-	@level = 1
-    @maxlevel = 10 #session[:'max-level']	
+  def vis_change
     @individual = Individual.by_uid( params[:uid] )
-	if !@individual
-	  redirect_to root_path
-	else
-	  is_user = @current_user and @current_user.user?
-	  node = { id: @individual.uid, group: (@individual.male? ? "guys" : "gals"), level: 0,
-	           label: @individual.pretty_name( is_user ) }
-	  @nodes, @edges = @individual.graph_up( 0, @maxlevel, [node], [], is_user )
-	end
+    if session[:display] == "graph"
+      session[:display] = "tree"
+    else
+      session[:display] = "graph"
+    end
+    if @individual 
+      redirect_to display_path( @individual.uid )
+    else
+      redirect_to root_path
+    end
   end
   
   ###################################################################################
@@ -123,14 +138,14 @@ class GeniController < ApplicationController
 	  sref.save
 	end
 	
-    redirect_to tree_path( @individual.uid )
+    redirect_to display_path( @individual.uid )
   end
 
   ###################################################################################
   #
   #  edit union
   #   
-  def union_edit
+  def union_edit	  
     @individual = Individual.by_uid( params[:uid] )
 	@union = Union.by_uid( params[:uuid] )
   end
@@ -152,10 +167,8 @@ class GeniController < ApplicationController
     @union.user_id = @current_user.id
     @union.save
 
-    redirect_to tree_path( @individual.uid )
+    redirect_to display_path( @individual.uid )
   end
-  
-
       
   ###################################################################################
   #
@@ -163,7 +176,16 @@ class GeniController < ApplicationController
   #   
   def add_child
     @union = Union.by_uid( params[:uuid] )
-    @individual = Individual.by_uid( params[:uid] )    
+    @individual = Individual.by_uid( params[:uid] )   
+    if !@union
+      @union = Union.new
+      if @individual.female?
+        @union.wife_uid = @individual.uid
+      else
+	    @union.husband_uid = @individual.uid
+	  end  
+	  @union.save
+    end 
   end
   def save_added_child
     @individual = Individual.by_uid( params[:uid] )
@@ -174,17 +196,27 @@ class GeniController < ApplicationController
       @child.user_id = @current_user.id    
       @child.save
     end
-    redirect_to tree_path( @individual.uid )    
+    redirect_to display_path( @individual.uid )    
   end
   
   def new_child
     @individual = Individual.by_uid( params[:uid] )
     @union = Union.by_uid( params[:uuid] )  
     @gender = params[ :gender ]
+    if !@union
+      @union = Union.new
+      if @individual.female?
+        @union.wife_uid = @individual.uid
+      else
+	    @union.husband_uid = @individual.uid
+	  end  
+	  @union.save
+	end
   end    
+  
   def create_new_child
     @individual = Individual.by_uid( params[:uid] )
-    @union = Union.by_uid( params[:uuid] )
+    @union = Union.by_uid( params[:n_uuid] )
     @child = Individual.new( given: params[:given], surname: params[:surname], 
                sex: params[:sex], nickname: params[:nickname],
                prefix: params[:prefix], suffix: params[:suffix], 
@@ -196,14 +228,15 @@ class GeniController < ApplicationController
     @child.parents = @union
     @child.user_id = @current_user.id
     @child.save
-    redirect_to tree_path( @individual.uid )    
-  end  
+    redirect_to display_path( @individual.uid )    
+  end
+    
   def remove_child
     @child = Individual.by_uid( params[:uid] )
     @child.parents_uid = nil
     @child.save 
     @parent = Individual.by_uid( params[:puid] )
-    redirect_to tree_path( @parent.uid )
+    redirect_to display_path( @parent.uid )
   end  
   
   ###################################################################################
@@ -229,12 +262,21 @@ class GeniController < ApplicationController
 	  end
       @union.save
     end
-    redirect_to tree_path( @individual.uid )    
+    redirect_to display_path( @individual.uid )    
   end
   
   def new_spouse
     @individual = Individual.by_uid( params[:uid] )
-    @union = Union.by_uid( params[:uuid] )  
+    @union = Union.by_uid( params[:uuid] )     
+    if !@union
+      @union = Union.new
+      if @individual.female?
+        @union.wife_uid = @individual.uid
+      else
+	    @union.husband_uid = @individual.uid
+	  end      	  
+      @union.save      
+    end 
   end    
   def create_new_spouse
     @individual = Individual.by_uid( params[:uid] )
@@ -256,18 +298,23 @@ class GeniController < ApplicationController
     @union.update_marriage( location: params[:Marriagelocation] ) 	  
     @union.save
 
-    redirect_to tree_path( @individual.uid )    
+    redirect_to display_path( @individual.uid )    
   end  
   def remove_spouse
     @individual = Individual.by_uid( params[:uid] )
-    @union = Union.by_uid( params[:uuid] )
+    @union = Union.by_uid( params[:uuid] )	
     if @union.husband_uid == @individual.uid
-      @union.wife_uid = nil
+      @union.husband_uid = nil
+	  @union.save
+      redirect_to display_path( @union.wife_uid ? @union.wife_uid : @individual.uid )
     elsif @union.wife_uid == @individual.uid
-	  @union.husband_uid = nil
+      @union.wife_uid = nil
+	  @union.save
+      redirect_to display_path( @union.husband_uid ? @union.husband_uid : @individual.uid )
+    else
+      redirect_to display_path( @individual.uid )
 	end	
-	@union.save
-    redirect_to tree_path( @individual.uid )
+
   end  
 
   
@@ -306,7 +353,7 @@ class GeniController < ApplicationController
 	@individual.parents_uid = @union.uid
 	@individual.save
 
-    redirect_to tree_path( @individual.uid )    
+    redirect_to display_path( @individual.uid )    
   end  
   
   def remove_parent
@@ -325,19 +372,20 @@ class GeniController < ApplicationController
       @individual.save
     end
     
-    redirect_to tree_path( @individual.uid )
+    redirect_to display_path( @individual.uid )
   end  
   
   ###################################################################################
   #
   #  add marriage
-  #   
+  #
+=begin     
   def marriage_existing
     @individual = Individual.by_uid( params[:uid] )
   end
     
   def save_marriage_existing
-
+  
     @individual = Individual.by_uid( params[:uid] )
     @spouse = Individual.by_uid( params[:'names-search-uid'] )
     
@@ -355,7 +403,7 @@ class GeniController < ApplicationController
     @union.update_marriage( location: params[:Marriagelocation] )     
     @union.save
     
-    redirect_to tree_path( @individual.uid )
+    redirect_to display_path( @individual.uid )
   end
   
   def marriage_new
@@ -388,13 +436,15 @@ class GeniController < ApplicationController
     @union.update_marriage( location: params[:Marriagelocation] )     
     @union.save
     
-    redirect_to tree_path( @individual.uid )
+    redirect_to display_path( @individual.uid )
   end  
+
   def delete_marriage
     @individual = Individual.by_uid( params[:uid] )
     Union.destroy_all( uid: params[:uuid] )    
-    redirect_to tree_path( @individual.uid )
+    redirect_to display_path( @individual.uid )
   end
+=end  
   
   ###################################################################################
   #
@@ -423,7 +473,7 @@ class GeniController < ApplicationController
     @source = Source.where( id: params[:sid] ).first
     @individual = Individual.by_uid( params[:uid] )  
 	SourceRef.destroy_all( individual_uid: @individual.uid, source_id: @source.id )
-    redirect_to tree_path( @individual.uid )	
+    redirect_to display_path( @individual.uid )	
   end	
   
   ###################################################################################
@@ -434,7 +484,7 @@ class GeniController < ApplicationController
   def search_results
     @individual = Individual.by_uid( params[:'names-search-uid'] )
     if @individual
-      redirect_to tree_path( @individual.uid )
+      redirect_to display_path( @individual.uid )
     else
       redirect_to :search
     end
@@ -471,10 +521,15 @@ class GeniController < ApplicationController
   
   private
   
+  ###################################################################################
+  #
+  #  initialize session with defaults
+  #  
   def init_session
     session[:'tree-font'] ||= 15
 	session[:'max-level'] ||= 2
 	session[:'absolute-max-level'] = 4
+	session[:display] ||= "graph"
   end
     
 end

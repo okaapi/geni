@@ -37,7 +37,7 @@
 		   at <%= union.updated_at.strftime("%H:%M on %-d %b %Y") if union.updated_at %> 
 	       &nbsp; &nbsp; &nbsp;</small><br>
 	    <%= submit_tag 'save', class: "btn btn-default" %>
-	    <%= link_to 'cancel', tree_path( individual.uid ) %>
+	    <%= link_to 'cancel', clear_path, remote:true %>
 	  </div>	
 	  
 	<% end %>  

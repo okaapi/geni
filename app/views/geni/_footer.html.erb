@@ -13,8 +13,13 @@
             depth_change_path(-2,uid), class: "btn btn-default"  %>
   <%= link_to '<span class="badge">down</span>'.html_safe, 
             depth_change_path(2,uid), class: "btn btn-default"  %>
+  <%= link_to 'graph/tree'.html_safe, 
+            vis_change_path( uid ), class: "btn btn-default"  %>            
 </div>
-          
+         
+<br> 
+<br> 
+
 <% if is_editor? %>
   <%= link_to 'New person', new_person_path, class: "btn btn-warning"%> 
   <%= link_to 'New source', source_edit_path, class: "btn btn-warning"%>   
