@@ -55,8 +55,9 @@ class Individual < ActiveRecord::Base
 
     if is_user or !self.living?
       p = self.given ? (self.given.split(' ')[0] +'\n') : ''
-      p = p + ( self.surname ? (self.surname+'\n') : '' ) 
+      p = p + self.surname + '\n' if self.surname and self.surname.length > 0
       p = p + ( (self.birth and self.birth.year) ? self.birth.year : '' ) 
+      p = p + ( (self.death and self.death.year) ? '-' + self.death.year : '' )       
     else
       n = self.name.gsub( /\//, '').upcase
       n.split(' ').collect { |s| s[0] }.join('. ') + '.'
@@ -358,7 +359,7 @@ class Individual < ActiveRecord::Base
 	  elsif level == 0 and is_editor
 	    par = Union.new
 	    par_id = 'NIL/' + par.uid		    
-        nodes << { id: par_id, group: "unions", level: level + 1, 
+        nodes << { id: par_id, group: "newunion", level: level + 1, 
                    label: (par.marriage.date if par.marriage) }
 	    edges << { from: par_id, to: self.uid, id: 'NIL/' + self.uid  }	    
 	  end
@@ -376,7 +377,7 @@ class Individual < ActiveRecord::Base
             edges << { from: fath.uid, to: par_id, id: 'NIL/' + self.uid + '/' + fath.uid }	      
 	      end
 	    elsif level == 0 and is_editor
-	      ident = 'XHR/new_parent/' + self.uid + '/m' 
+	      ident = 'XHR/new_parent/' + self.uid + '/m/' + par.uid
 	      nodes << { id: ident,     
 	                 group: 'newperson', level: +2,
 	                 label: 'add father',
@@ -396,7 +397,7 @@ class Individual < ActiveRecord::Base
 	      end
 	      
 	    elsif level == 0 and is_editor
-	      ident = 'XHR/new_parent/' + self.uid + '/f' 
+	      ident = 'XHR/new_parent/' + self.uid + '/f/' + par.uid
 	      nodes << { id: ident,     
 	                 group: 'newperson', level: +2,
 	                 label: 'add mother',

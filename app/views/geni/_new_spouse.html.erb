@@ -52,6 +52,7 @@
 	            locals: { eventname: "Marriage", event: union.marriage, autofocus: true } %>					 
 	  <br>
 	  <div class="actions">
+	    <%= hidden_field_tag 'n_uuid', union.uid if union %>
 	    <%= submit_tag 'create', class: "btn btn-default" %>
 	    <%= link_to 'cancel', clear_path, remote:true %>
 	  </div>        		

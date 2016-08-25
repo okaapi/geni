@@ -10,6 +10,9 @@
   <div class="panel-body">
     <%= form_tag save_added_spouse_path do %>
       <%= render partial: "search" %>
+      <br>
+      <%= render partial: "event_edit", 
+	            locals: { eventname: "Marriage", event: union.marriage, autofocus: true } %>					       
 	  <br>
 	  <%= submit_tag 'add', class: "btn btn-default" %>
       <%= link_to 'cancel', clear_path, remote:true %>	

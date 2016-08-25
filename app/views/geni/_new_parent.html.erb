@@ -44,16 +44,12 @@
 	  <br>
       <%= render partial: "event_edit", 
 		         locals: { eventname: "Birth", event: Event.new, autofocus: false } %>
-      <% if ! union %>	
-        <%= render partial: "event_edit", 
-	           locals: { eventname: "Marriage", event: Event.new, autofocus: true } %>		  
-	  <% end %>
+      <%= render partial: "event_edit", 
+	           locals: { eventname: "Marriage", event: ( union ? union.marriage : Event.new), autofocus: true } %>		  
 	  <br>
-   
-      <%= hidden_field_tag 'uuid', union.uid if union %>
-	  <%= hidden_field_tag 'uid', individual.uid %>	
 
 	  <div class="actions">
+	    <%= hidden_field_tag 'n_uuid', union.uid if union %>
 	    <%= submit_tag 'create', class: "btn btn-default" %>
 	    <%= link_to 'cancel', clear_path, remote:true %>
 	  </div>        		

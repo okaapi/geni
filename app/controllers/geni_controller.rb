@@ -106,6 +106,7 @@ class GeniController < ApplicationController
     @individual = Individual.new( name: "New Person" )
     @individual.save
 	@sources = []
+	@editable = true
   end  
   def save
 
@@ -244,30 +245,10 @@ class GeniController < ApplicationController
   #  add spouse
   #  
 
+  # add existing spouse
   def add_spouse
     @union = Union.by_uid( params[:uuid] )
-    @individual = Individual.by_uid( params[:uid] )    
-  end
-  def save_added_spouse
-    @individual = Individual.by_uid( params[:uid] )
-    @union = Union.by_uid( params[:uuid] )
-    @spouse = Individual.by_uid( params[:'names-search-uid'] )    
-    @union.update_marriage( rawdate: params[:Marriagedate] ) 
-    @union.update_marriage( location: params[:Marriagelocation] ) 	
-    if @spouse
-      if @union.husband_uid == @individual.uid
-	    @union.wife_uid = @spouse.uid
-      elsif @union.wife_uid == @individual.uid
-	    @union.husband_uid = @spouse.uid
-	  end
-      @union.save
-    end
-    redirect_to display_path( @individual.uid )    
-  end
-  
-  def new_spouse
-    @individual = Individual.by_uid( params[:uid] )
-    @union = Union.by_uid( params[:uuid] )     
+    @individual = Individual.by_uid( params[:uid] )   
     if !@union
       @union = Union.new
       if @individual.female?
@@ -276,11 +257,43 @@ class GeniController < ApplicationController
 	    @union.husband_uid = @individual.uid
 	  end      	  
       @union.save      
-    end 
+    end      
+  end
+  def save_added_spouse
+    @individual = Individual.by_uid( params[:uid] )
+    @union = Union.by_uid( params[:uuid] )
+    @spouse = Individual.by_uid( params[:'names-search-uid'] )    	
+    if @spouse
+      if @union.husband_uid == @individual.uid
+	    @union.wife_uid = @spouse.uid
+      elsif @union.wife_uid == @individual.uid
+	    @union.husband_uid = @spouse.uid
+	  end
+      @union.save
+    end
+    @union.update_marriage( rawdate: params[:Marriagedate] ) 
+    @union.update_marriage( location: params[:Marriagelocation] )     
+    @union.save
+    redirect_to display_path( @individual.uid )    
+  end
+  
+  # create new spouse
+  def new_spouse
+    @individual = Individual.by_uid( params[:uid] )
+    @union = Union.by_uid( params[:uuid] )
+    if !@union
+      @union = Union.new
+      if @individual.female?
+        @union.wife_uid = @individual.uid
+      else
+	    @union.husband_uid = @individual.uid
+	  end      	  
+      @union.save      
+    end  
   end    
   def create_new_spouse
     @individual = Individual.by_uid( params[:uid] )
-    @union = Union.by_uid( params[:uuid] )
+    @union = Union.by_uid( params[:n_uuid] )    
     @spouse = Individual.new( given: params[:given], surname: params[:surname], 
                sex: params[:sex], nickname: params[:nickname],
                prefix: params[:prefix], suffix: params[:suffix], 
@@ -329,7 +342,7 @@ class GeniController < ApplicationController
   end    
   def create_new_parent
     @individual = Individual.by_uid( params[:uid] )
-    @union = Union.by_uid( params[:uuid] )
+    @union = Union.by_uid( params[:n_uuid] )
     @parent = Individual.new( given: params[:given], surname: params[:surname], 
                sex: params[:sex], nickname: params[:nickname],
                prefix: params[:prefix], suffix: params[:suffix], 
@@ -340,10 +353,10 @@ class GeniController < ApplicationController
 	@parent.save
 	
 	if !@union || !( @individual.parents.uid == @union.uid )
-	  @union = Union.new
-      @union.update_marriage( rawdate: params[:Marriagedate] ) 
-      @union.update_marriage( location: params[:Marriagelocation] ) 	   
+	  @union = Union.new   
 	end	
+    @union.update_marriage( rawdate: params[:Marriagedate] ) 
+    @union.update_marriage( location: params[:Marriagelocation] ) 		
 	if @parent.female?
       @union.wife_uid = @parent.uid
     elsif @parent.male?
