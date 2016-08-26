@@ -54,13 +54,13 @@ Rails.application.routes.draw do
   get 'source_content/:sid' => 'geni#source_content', as: 'source_content'  
   post 'source_save/:sid' => 'geni#source_save', as: 'source_save'    
   
-  #match 'marriage_new/:uid' => 'geni#marriage_new', as: 'marriage_new', via: [:get, :post]
-  #post 'save_marriage_new/:uid' => 'geni#save_marriage_new', as: 'save_marriage_new'  
-  #match 'marriage_existing/:uid' => 'geni#marriage_existing', as: 'marriage_existing', via: [:get, :post]
-  #post 'save_marriage_existing/:uid' => 'geni#save_marriage_existing', as: 'save_marriage_existing'    
-  #get 'delete_marriage/:uid/:uuid' => 'geni#delete_marriage', as: 'delete_marriage' 
+  match 'marriage_new/:uid' => 'geni#marriage_new', as: 'marriage_new', via: [:get, :post]
+  post 'save_marriage_new/:uid' => 'geni#save_marriage_new', as: 'save_marriage_new'  
+  match 'marriage_existing/:uid' => 'geni#marriage_existing', as: 'marriage_existing', via: [:get, :post]
+  post 'save_marriage_existing/:uid' => 'geni#save_marriage_existing', as: 'save_marriage_existing'    
+  get 'delete_marriage/:uid/:uuid' => 'geni#delete_marriage', as: 'delete_marriage' 
 
-  match 'add_spouse/:uid/(:uuid)' => 'geni#add_spouse', as: 'add_spouse', via: [:get, :post]  
+  match 'add_spouse/:uid/:uuid' => 'geni#add_spouse', as: 'add_spouse', via: [:get, :post]  
   match 'new_spouse/:uid/:uuid' => 'geni#new_spouse', as: 'new_spouse', via: [:get, :post]    
   post 'save_added_spouse/:uid/:uuid' => 'geni#save_added_spouse', as: 'save_added_spouse'  
   post 'create_new_spouse/:uid/:uuid' => 'geni#create_new_spouse', as: 'create_new_spouse'   

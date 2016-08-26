@@ -80,6 +80,7 @@ class GeniController < ApplicationController
   end
   
   def vis_change
+    init_session
     @individual = Individual.by_uid( params[:uid] )
     if session[:display] == "graph"
       session[:display] = "tree"
@@ -255,21 +256,20 @@ class GeniController < ApplicationController
         @union.wife_uid = @individual.uid
       else
 	    @union.husband_uid = @individual.uid
-	  end      	  
-      @union.save      
+	  end      	     
     end      
   end
   def save_added_spouse
     @individual = Individual.by_uid( params[:uid] )
-    @union = Union.by_uid( params[:uuid] )
     @spouse = Individual.by_uid( params[:'names-search-uid'] )    	
-    if @spouse
-      if @union.husband_uid == @individual.uid
-	    @union.wife_uid = @spouse.uid
-      elsif @union.wife_uid == @individual.uid
-	    @union.husband_uid = @spouse.uid
-	  end
-      @union.save
+	@union = Union.by_uid( params[:uuid] )
+	@union = Union.new if !@union
+	if @individual.male?
+	  @union.husband = @individual if !@union.husband
+	  @union.wife = @spouse
+	else
+	  @union.wife = @individual if !@union.husband
+	  @union.husband = @spouse	  
     end
     @union.update_marriage( rawdate: params[:Marriagedate] ) 
     @union.update_marriage( location: params[:Marriagelocation] )     
@@ -287,13 +287,11 @@ class GeniController < ApplicationController
         @union.wife_uid = @individual.uid
       else
 	    @union.husband_uid = @individual.uid
-	  end      	  
-      @union.save      
+	  end      	    
     end  
   end    
   def create_new_spouse
-    @individual = Individual.by_uid( params[:uid] )
-    @union = Union.by_uid( params[:n_uuid] )    
+    @individual = Individual.by_uid( params[:uid] )  
     @spouse = Individual.new( given: params[:given], surname: params[:surname], 
                sex: params[:sex], nickname: params[:nickname],
                prefix: params[:prefix], suffix: params[:suffix], 
@@ -302,11 +300,15 @@ class GeniController < ApplicationController
     @spouse.update_birth( rawdate: params[:Birthdate] ) 
     @spouse.update_birth( location: params[:Birthlocation] ) 
 	@spouse.save	
-    if @union.husband_uid == @individual.uid
-      @union.wife_uid = @spouse.uid
-    elsif @union.wife_uid == @individual.uid
-	  @union.husband_uid = @spouse.uid
-	end
+	@union = Union.by_uid( params[:uuid] )
+	@union = Union.new if !@union
+	if @individual.male?
+	  @union.husband = @individual if !@union.husband
+	  @union.wife = @spouse
+	else
+	  @union.wife = @individual if !@union.husband
+	  @union.husband = @spouse	  
+    end
     @union.update_marriage( rawdate: params[:Marriagedate] ) 
     @union.update_marriage( location: params[:Marriagelocation] ) 	  
     @union.save
@@ -316,17 +318,17 @@ class GeniController < ApplicationController
   def remove_spouse
     @individual = Individual.by_uid( params[:uid] )
     @union = Union.by_uid( params[:uuid] )	
+
     if @union.husband_uid == @individual.uid
       @union.husband_uid = nil
-	  @union.save
-      redirect_to display_path( @union.wife_uid ? @union.wife_uid : @individual.uid )
+	  @union.save 
+      #redirect_to display_path( @union.wife_uid ? @union.wife_uid : @individual.uid )
     elsif @union.wife_uid == @individual.uid
       @union.wife_uid = nil
-	  @union.save
-      redirect_to display_path( @union.husband_uid ? @union.husband_uid : @individual.uid )
-    else
-      redirect_to display_path( @individual.uid )
-	end	
+	  @union.save  
+      #redirect_to display_path( @union.husband_uid ? @union.husband_uid : @individual.uid )
+    end
+    redirect_to display_path( @individual.uid )
 
   end  
 
@@ -392,7 +394,7 @@ class GeniController < ApplicationController
   #
   #  add marriage
   #
-=begin     
+=begin  
   def marriage_existing
     @individual = Individual.by_uid( params[:uid] )
   end
@@ -457,7 +459,7 @@ class GeniController < ApplicationController
     Union.destroy_all( uid: params[:uuid] )    
     redirect_to display_path( @individual.uid )
   end
-=end  
+=end
   
   ###################################################################################
   #

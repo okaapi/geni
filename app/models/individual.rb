@@ -54,10 +54,10 @@ class Individual < ActiveRecord::Base
   def pretty_name_multiline( is_user = false )
 
     if is_user or !self.living?
-      p = self.given ? (self.given.split(' ')[0] +'\n') : ''
-      p = p + self.surname + '\n' if self.surname and self.surname.length > 0
+      p = self.given ? (self.given.capitalize.split(' ')[0] +'\n') : ''
+      p = p + self.surname.capitalize + '\n' if self.surname and self.surname.length > 0
       p = p + ( (self.birth and self.birth.year) ? self.birth.year : '' ) 
-      p = p + ( (self.death and self.death.year) ? '-' + self.death.year : '' )       
+      p = p + ( (self.death and self.death.year) ? '-' + self.death.year : '' )  
     else
       n = self.name.gsub( /\//, '').upcase
       n.split(' ').collect { |s| s[0] }.join('. ') + '.'

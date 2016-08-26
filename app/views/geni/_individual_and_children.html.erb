@@ -28,7 +28,7 @@
 	
 	        <% if @individual == individual  %>		
 		      <%= link_to( delete_symbol, 
-			                 delete_marriage_path( individual.uid, union.uid ), 
+			                 remove_spouse_path( individual.uid, union.uid ), 
 				             class: 'editlink',
 			                 data: { confirm: 'Are you sure?' } ) if is_editor? %>												                	               
 	        <% end %>        						

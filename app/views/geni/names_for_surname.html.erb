@@ -1,12 +1,13 @@
 <h1>First names for <%= @surname %>... </h1>
 
-<% @names.each_with_index do |name, index| %>
+<div id="names">
+  <% @names.each_with_index do |name, index| %>
   
-  <%= link_to name[:given], 
-      display_path( name[:uid] ) %>
-  <%= '|' if index < @names.count-1 %> 
+    <%= link_to name[:given], display_path( name[:uid] ) %>
+    <%= '|' if index < @names.count-1 %> 
   
-<% end %>
+  <% end %>
+</div>
 
 <%= render partial: "footer" %>
 

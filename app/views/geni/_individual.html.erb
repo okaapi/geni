@@ -83,10 +83,10 @@
       <br> <br> <br> 
       <div class="geni-add">
         <%= link_to '<span style="font-size: 150%">&nbsp;</span>'.html_safe, 
-                      marriage_existing_path( @individual.uid ), 
+                      add_spouse_path( @individual.uid, 'dummy' ), 
                       class: 'editlink', remote: true %>
         <%= link_to '<span style="font-size: 200%">&#8734; </span>&nbsp;'.html_safe, 
-		              marriage_new_path( @individual.uid ), 
+		              new_spouse_path( @individual.uid, 'dummy' ), 
 			          class: 'editlink', remote: true %>  
       </div>
     <% end %>
