@@ -1,0 +1,85 @@
+
+
+<table class="geni-tree">
+<tr><td valign=top width=45%>
+
+  <% @comparison_with = @individual1 %>
+  <br>
+  <table border=0 class="panel-body" style="border: 1px solid red" >
+  
+    <tr >
+	  <td width=50% height=0px >&nbsp;</td>
+      <td rowspan=2 valign=top >	
+        <%= render partial: "parents", 
+		           locals: { individual: @individual, level: @level } %>
+        <div  id="geni-editcontainer"></div>				
+      </td>
+    </tr>
+    <tr >
+      <td style="padding:0px" valign=top align=right>    
+        
+	    <%= render partial: "individual_and_children", 
+	             locals: { individual: @individual, spacers: [], level: @level } %>
+
+      </td>
+    </tr>
+   
+  </table>
+</td>
+<td align=center valign=top width=5% >  
+            <br><br><br><br>
+	        <% if @individual and @individual1 and @individual.tree != @individual1.tree %>
+	          <% if @individual.uid == @individual1.linkuid and 
+	                @individual.linkuid == @individual1.uid %>
+	            <%= link_to( "<-unlink->".html_safe, 
+	                       link_path( @individual.uid, @individual1.uid, "unlink" ),
+	                       class: "editlink" )  %>
+	          <% else %>
+	            <%= link_to( "<-link->".html_safe, 
+	                       link_path( @individual.uid, @individual1.uid, "link" ),
+	                       class: "editlink" )  %>	          		          
+              <% end %>	<br><br>	
+              <%= link_to( '<-swap->', compare_path( @individual1.uid, @individual.uid ),
+                           class: "editlink" ) %>
+	        <% end %>     	        
+</td>
+<td valign=top width=45%>
+
+  <% @comparison_with = @individual %>
+  <br>
+  <table border=0 class="panel-body" style="border: 1px solid red">
+  
+    <tr >
+	  <td width=50% height=0px >&nbsp;</td>
+      <td rowspan=2 valign=top >	
+        <%= render partial: "parents", 
+		           locals: { individual: @individual1, level: @level } %>
+        <div  id="geni-editcontainer"></div>				
+      </td>
+    </tr>
+    <tr >
+      <td style="padding:0px" valign=top align=right>    
+        
+	    <%= render partial: "individual_and_children", 
+	             locals: { individual: @individual1, spacers: [], level: @level } %>
+
+      </td>
+    </tr>
+   
+  </table>
+  
+</td></tr>
+
+</table>
+
+<br>
+<%= render partial: "footer" %>
+<br>
+  
+<div id="geni-editcontainer"></div>
+
+
+<script> $(function() { $( "#geni-editcontainer" ).draggable(); }); </script>
+
+
+
