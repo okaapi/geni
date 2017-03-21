@@ -49,9 +49,11 @@ class GeniController < ApplicationController
 	  is_editor = @current_user and @current_user.user?	  
 	  @nodes = [] 
 	  @edges = []  
-	  @nodes << @individual.graph_focus_node( is_user, is_editor )		  
-	  @nodes, @edges = @individual.graph_up( 0, @maxlevel, @nodes, @edges, is_user, is_editor )		           
-	  @nodes, @edges = @individual.graph_down( 0, @maxlevel, @nodes, @edges, is_user, is_editor )	         
+	  @nodes << @individual.graph_focus_node( is_user, (is_editor and session[:edit] == 'on') )		  
+	  @nodes, @edges = @individual.graph_up( 
+	                     0, @maxlevel, @nodes, @edges, is_user, (is_editor and session[:edit] == 'on') )		           
+	  @nodes, @edges = @individual.graph_down( 
+	                     0, @maxlevel, @nodes, @edges, is_user, (is_editor and session[:edit] == 'on') )	         
 	  render :graph	
 	else
 	  render
@@ -79,6 +81,20 @@ class GeniController < ApplicationController
     end
   end
   
+  def toggle_edit
+    if session[:edit] == 'on' 
+      session[:edit] = 'off' 
+    else
+      session[:edit] = 'on'
+    end
+    @individual = Individual.by_uid( params[:uid] )
+    if @individual 
+      redirect_to display_path( @individual.uid )
+    else
+      redirect_to root_path
+    end    
+  end
+  
   def vis_change
     init_session
     @individual = Individual.by_uid( params[:uid] )
@@ -96,11 +112,49 @@ class GeniController < ApplicationController
   
   ###################################################################################
   #
+  # compare two trees
+  #   
+  def compare
+    init_session
+	@level = 1
+    @maxlevel = session[:'max-level']	
+    @font = session[:'tree-font']  
+    @individual = Individual.by_uid( params[:uid] )
+    @individual1 = Individual.by_uid( params[:uid1] )
+	if !@individual
+	  redirect_to root_path
+	elsif !@individual1
+	  @individual1 = @individual.other_tree_match
+	  redirect_to root_path if ! @individual1
+	end
+  end
+  def link
+    @individual = Individual.by_uid( params[:uid] )
+    @individual1 = Individual.by_uid( params[:uid1] )
+    if !@individual or !@individual1 or
+       @individual.tree == @individual1.tree
+	  redirect_to root_path
+	elsif params[:link] == "link"
+      @individual.linkuid = params[:uid1]
+      @individual.save
+      @individual1.linkuid = params[:uid]
+      @individual1.save      
+	elsif params[:link] == "unlink"
+      @individual.linkuid = nil
+      @individual.save
+      @individual1.linkuid = nil
+      @individual1.save       
+    end
+    redirect_to :back
+  end
+    
+  ###################################################################################
+  #
   #  edit individual
   #   
   def edit
     @individual = Individual.by_uid( params[:uid] )
-    @editable = ( params[:editable] == 'true' )
+    @editable = params[:editable] == 'true' 
 	@sources = @individual.sources
   end 
   def new_person
@@ -140,7 +194,7 @@ class GeniController < ApplicationController
 	  sref.save
 	end
 	
-    redirect_to display_path( @individual.uid )
+	redirect_back fallback_location: display_path( @individual.uid )
   end
 
   ###################################################################################
@@ -169,7 +223,7 @@ class GeniController < ApplicationController
     @union.user_id = @current_user.id
     @union.save
 
-    redirect_to display_path( @individual.uid )
+    redirect_back fallback_location: display_path( @individual.uid )
   end
       
   ###################################################################################
@@ -198,7 +252,7 @@ class GeniController < ApplicationController
       @child.user_id = @current_user.id    
       @child.save
     end
-    redirect_to display_path( @individual.uid )    
+    redirect_back fallback_location: display_path( @individual.uid )
   end
   
   def new_child
@@ -229,8 +283,9 @@ class GeniController < ApplicationController
     @child.update_birth( location: params[:Birthlocation] ) 
     @child.parents = @union
     @child.user_id = @current_user.id
+    @child.tree = params[:tree]
     @child.save
-    redirect_to display_path( @individual.uid )    
+    redirect_back fallback_location: display_path( @individual.uid )
   end
     
   def remove_child
@@ -238,7 +293,7 @@ class GeniController < ApplicationController
     @child.parents_uid = nil
     @child.save 
     @parent = Individual.by_uid( params[:puid] )
-    redirect_to display_path( @parent.uid )
+    redirect_back fallback_location: display_path( @parent.uid )
   end  
   
   ###################################################################################
@@ -274,7 +329,7 @@ class GeniController < ApplicationController
     @union.update_marriage( rawdate: params[:Marriagedate] ) 
     @union.update_marriage( location: params[:Marriagelocation] )     
     @union.save
-    redirect_to display_path( @individual.uid )    
+    redirect_back fallback_location: display_path( @individual.uid )
   end
   
   # create new spouse
@@ -299,6 +354,7 @@ class GeniController < ApplicationController
     @spouse.name = @spouse.given + ' /' + @spouse.surname + '/'    
     @spouse.update_birth( rawdate: params[:Birthdate] ) 
     @spouse.update_birth( location: params[:Birthlocation] ) 
+    @spouse.tree = params[:tree]
 	@spouse.save	
 	@union = Union.by_uid( params[:uuid] )
 	@union = Union.new if !@union
@@ -311,24 +367,24 @@ class GeniController < ApplicationController
     end
     @union.update_marriage( rawdate: params[:Marriagedate] ) 
     @union.update_marriage( location: params[:Marriagelocation] ) 	  
+    @union.tree = params[:tree]
     @union.save
 
-    redirect_to display_path( @individual.uid )    
+    redirect_back fallback_location: display_path( @individual.uid )  
   end  
   def remove_spouse
     @individual = Individual.by_uid( params[:uid] )
+    @remove = Individual.by_uid( params[:ruid] )
     @union = Union.by_uid( params[:uuid] )	
 
-    if @union.husband_uid == @individual.uid
+    if @union.husband_uid == @remove.uid
       @union.husband_uid = nil
 	  @union.save 
-      #redirect_to display_path( @union.wife_uid ? @union.wife_uid : @individual.uid )
-    elsif @union.wife_uid == @individual.uid
+    elsif @union.wife_uid == @remove.uid
       @union.wife_uid = nil
 	  @union.save  
-      #redirect_to display_path( @union.husband_uid ? @union.husband_uid : @individual.uid )
     end
-    redirect_to display_path( @individual.uid )
+    redirect_back fallback_location: display_path( @individual.uid )
 
   end  
 
@@ -364,11 +420,12 @@ class GeniController < ApplicationController
     elsif @parent.male?
 	  @union.husband_uid = @parent.uid
 	end 	  
+	@union.tree = params[:tree]
     @union.save
 	@individual.parents_uid = @union.uid
 	@individual.save
 
-    redirect_to display_path( @individual.uid )    
+    redirect_back fallback_location: display_path( @individual.uid )
   end  
   
   def remove_parent
@@ -387,7 +444,7 @@ class GeniController < ApplicationController
       @individual.save
     end
     
-    redirect_to display_path( @individual.uid )
+    redirect_back fallback_location: display_path( @individual.uid )
   end  
   
   ###################################################################################
@@ -418,7 +475,7 @@ class GeniController < ApplicationController
     @union.update_marriage( location: params[:Marriagelocation] )     
     @union.save
     
-    redirect_to display_path( @individual.uid )
+    redirect_to :back #display_path( @individual.uid )
   end
   
   def marriage_new
@@ -448,16 +505,17 @@ class GeniController < ApplicationController
       @union.wife = @individual
     end
     @union.update_marriage( rawdate: params[:Marriagedate] ) 
-    @union.update_marriage( location: params[:Marriagelocation] )     
+    @union.update_marriage( location: params[:Marriagelocation] )   
+    @union.tree = params[:tree]  
     @union.save
     
-    redirect_to display_path( @individual.uid )
+    redirect_to :back #display_path( @individual.uid )
   end  
 
   def delete_marriage
     @individual = Individual.by_uid( params[:uid] )
     Union.destroy_all( uid: params[:uuid] )    
-    redirect_to display_path( @individual.uid )
+    redirect_to :back #display_path( @individual.uid )
   end
 =end
   
@@ -465,6 +523,7 @@ class GeniController < ApplicationController
   #
   #  edit source
   #   
+=begin  
   def source_edit
     if params[:sid]
       @source = Source.where( id: params[:sid] ).first
@@ -479,7 +538,7 @@ class GeniController < ApplicationController
 	@source.title = params[:title]
 	@source.content = params[:content]
 	@source.save
-    redirect_to source_edit_path( @source.id )
+    redirect_to :back #source_edit_path( @source.id )
   end
   def source_content
     @source = Source.where( id: params[:sid] ).first
@@ -488,8 +547,9 @@ class GeniController < ApplicationController
     @source = Source.where( id: params[:sid] ).first
     @individual = Individual.by_uid( params[:uid] )  
 	SourceRef.destroy_all( individual_uid: @individual.uid, source_id: @source.id )
-    redirect_to display_path( @individual.uid )	
+    redirect_to :back #display_path( @individual.uid )	
   end	
+=end
   
   ###################################################################################
   #
@@ -545,6 +605,7 @@ class GeniController < ApplicationController
 	session[:'max-level'] ||= 2
 	session[:'absolute-max-level'] = 4
 	session[:display] ||= "graph"
+	session[:edit] ||= 'off'
   end
     
 end

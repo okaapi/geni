@@ -7,6 +7,12 @@ module Admin
 	  # GET /site_maps.json
 	  def index
 	    @site_maps = SiteMap.all
+		users = User.all
+		@sites = []
+		users.each do |u|
+		  @sites << u.site
+		end
+		@sites.uniq! 
 	  end
 	
 	  # GET /site_maps/1
@@ -66,7 +72,7 @@ module Admin
 	  private
 	    # Use callbacks to share common setup or constraints between actions.
 	    def set_site_map
-	      @site_map = SiteMap.find(params[:id])
+	      @site_map = SiteMap.where(id: params[:id]).take
 	    end
 	
 	    # Never trust parameters from the scary internet, only allow the white list through.

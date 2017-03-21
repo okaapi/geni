@@ -29,16 +29,21 @@ class Import
 	  # 
 	  # open the file!
 	  #
-	  contents = File.open(gedfile,'r')
+	  contents = File.open(gedfile,'r',:encoding => 'iso-8859-1')
 	  
 	  Individual.transaction do
 	  Union.transaction do
 	  Source.transaction do
 	  
 	    i = 0
-	    contents.each_line do |line|    
-
-	 	  line.gsub!(/\r/,'')			
+	    contents.each_line do |line|
+	    
+          line.gsub!(/@P/,'@I')
+          line.gsub!(/@S-/,'@S')
+	 	  line.gsub!(/\r/,'')	
+	 	  #puts '-------------------------'
+	 	  #p line
+	 	  
 	      i += 1      
 	      if line =~ /[\d]* _UID/ or line =~ /[\d]* REFN/
 	        # ignore
@@ -88,6 +93,7 @@ class Import
             else
               ignored += line			
 	        end
+
 	        
 	      # 
 	      #  header is ignored
@@ -248,8 +254,9 @@ class Import
 	            ignored += "Ignored #{mode} #{submode}: " + line            
 	          end
 	               
-	        else                  
-	          ignored += "Ignored #{mode} #{submode}: " + line   
+	        else               
+	          ignored += "Ignored #{mode} #{submode}: " + line
+	             
 	        end # elsif mode == :individual    
 	       
 	        

@@ -13,7 +13,7 @@ PROBLEMS in import.rb"
 
     ign = Import.from_gedfile('test-tree', 'test/fixtures/files/test.ged','test.ged', false)
 
-    assert_equal ign[0..1373], "Ignoring all _UID, REFN or CHAN fields
+    assert_equal ign[0..1305], "Ignoring all _UID, REFN or CHAN fields
 Other ignored lines follow:
 Header : 0 HEAD 
 Header : 1 SOUR PAF
@@ -41,14 +41,12 @@ Ignored individual death: 6 INVALID
 Ignored individual source: 6 INVALID
 Ignored individual note: 6 INVALID
 Ignored individual child: 6 INVALID
-Ignored individual source: 1 WHAT ever
 Ignored individual : 6 INVALID
 Ignored individual birth: 6 INVALID
 |Ignored individual death: 6 INVALID
 Ignored union marriage: 6 INVALID
 Ignored union divorce: 6 INVALID
 Ignored union marriage: 6 INVALID
-Ignored union source: 2 SOME
 Ignored union source: 6 INVALID
 Ignored union note: 6 INVALID
 Ignored union : 6 INVALID

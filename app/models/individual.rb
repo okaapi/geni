@@ -5,8 +5,20 @@ class IndividualValidator < ActiveModel::Validator
     if ( !record.name or record.name == '' ) and 
        ( !record.given or record.given == '' ) and 
        ( !record.surname or record.surname == '' )
-      record.errors[:base] << "Need either name or given name or surname."
+      record.name = "//"
+      # record.errors[:base] << "Need either name or given name or surname."
     end
+    if ( !record.surname or record.surname == '' )
+      if record.name =~ /\/(.*)\//
+        record.surname = $1.strip
+      end
+    end
+    if ( !record.given or record.given == '' )
+      if record.name =~ /(.*)\/.*\//
+        record.given = $1.strip
+      end
+    end    
+    
   end
 end
 
@@ -18,7 +30,7 @@ class Individual < ActiveRecord::Base
   
   def self.new( params = {} )
     if params
-      params.merge!( uid: SecureRandom.uuid )
+      params = params.merge( uid: SecureRandom.uuid )
     else
       params = { uid: SecureRandom.uuid }
     end
@@ -54,7 +66,7 @@ class Individual < ActiveRecord::Base
   def pretty_name_multiline( is_user = false )
 
     if is_user or !self.living?
-      p = self.given ? (self.given.capitalize.split(' ')[0] +'\n') : ''
+      p = self.given ? ( (self.given.capitalize.split(' ')[0] || '' ) +'\n') : ''
       p = p + self.surname.capitalize + '\n' if self.surname and self.surname.length > 0
       p = p + ( (self.birth and self.birth.year) ? self.birth.year : '' ) 
       p = p + ( (self.death and self.death.year) ? '-' + self.death.year : '' )  
@@ -77,10 +89,10 @@ class Individual < ActiveRecord::Base
   end  
   
   def male?
-    sex.downcase == 'm'
+    sex ? sex.downcase == 'm' : false
   end
   def female?
-    sex.downcase == 'f'
+    sex ? sex.downcase == 'f' : false
   end
   
   def self.by_uid( uid )
@@ -142,7 +154,8 @@ class Individual < ActiveRecord::Base
   end  
  
   def unions
-    unions_old
+    u_arr = unions_old
+    u_arr.sort { |a,b| sort_by_marriage_date( a, b ) }
   end
   
   def parents=( u )
@@ -206,10 +219,12 @@ class Individual < ActiveRecord::Base
   #
   
   def self.all_by_uid_old  
-    uid_groups = Individual.group( :uid )
+    #uid_groups = Individual.order( tree: :asc).order( name: :asc ).group( :uid )
+    sql = "select uid from individuals group by tree, name, uid order by tree asc, name asc;"
+    uid_groups = ActiveRecord::Base.connection.execute(sql)    
     arr = []
     uid_groups.each do |u|
-      arr << Individual.by_uid( u.uid )
+      arr << Individual.by_uid( u[0] )
     end
     arr
   end
@@ -226,9 +241,11 @@ class Individual < ActiveRecord::Base
   
   def unions_old
     uid_groups = Union.where( "husband_uid = ? OR wife_uid = ?", self.uid, self.uid ).group( :uid )
+    sql = "select uid from unions where (husband_uid = \"#{self.uid}\" or wife_uid = \"#{self.uid}\") group by uid"
+    uid_groups = ActiveRecord::Base.connection.execute(sql)        
     union_arr = []
     uid_groups.each do |u|
-      union = Union.by_uid( u.uid )
+      union = Union.by_uid( u[0] )
       if ( union.husband and union.husband.uid == self.uid ) or 
          ( union.wife and union.wife.uid == self.uid )
         union_arr << union
@@ -249,15 +266,17 @@ class Individual < ActiveRecord::Base
 =end
   
   def self.names_for_surname_old( surname, is_user )
-    uid_groups = Individual.where( surname: surname ).group( :uid ).order( given: :asc )
+    #uid_groups = Individual.where( surname: surname ).group( :uid ).order( given: :asc )
+    sql = "select uid from individuals where surname = '#{surname}' group by uid "
+    uid_groups = ActiveRecord::Base.connection.execute(sql)
     arr = []	
     uid_groups.each do |u|
-	  indi = Individual.by_uid( u.uid )
+	  indi = Individual.by_uid( u[0] )
 	  given = indi.pretty_first_name( is_user )
       arr << { fullname: indi.pretty_name( is_user ), given: given, 
 	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ), ver: indi.ver }
     end
-    arr  
+    arr.sort { |a,b| a[:given] <=> b[:given] } 
   end
   
 =begin  
@@ -271,7 +290,7 @@ class Individual < ActiveRecord::Base
 	arr = []
     indis.each do |indi|
       arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
-	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ), ver: indi.ver }
+	           uid: indi.ulabel_parents_recursively( seed )id, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ), ver: indi.ver }
  	end
     arr  
   end
@@ -285,17 +304,19 @@ class Individual < ActiveRecord::Base
 	  sql = sql + " and "  if index < terms.count-1
     end
 
-    uid_groups = Individual.where( sql ).group( :uid ).order( given: :asc )
+    #uid_groups = Individual.where( sql ).group( :uid ).order( given: :asc )
+    sql = "select uid from individuals where " + sql + " group by uid ;"
+    uid_groups = ActiveRecord::Base.connection.execute(sql)
     arr = []
 	uid_groups.each do |u|	
-	  indi = Individual.by_uid( u.uid )
+	  indi = Individual.by_uid( u[0] )
 	  if !indi.living? || is_user
         arr << { fullname: indi.pretty_name( is_user ), given: indi.pretty_first_name( is_user ), 
-	           ver: indi.ver,
+	           ver: indi.ver, tree: indi.tree,
 	           uid: indi.uid, birth: ( (indi.birth ? indi.birth.date : '' ) || '' ) }
 	  end
     end
-    arr 
+    arr.sort { |a,b| a[:given] <=> b[:given] } 
   end  
 
 =begin  
@@ -425,7 +446,7 @@ class Individual < ActiveRecord::Base
       
       unions.each do |unio|
         
-        if level == 0 and is_editor
+        if level == 0 and is_editor 
           if unio.uid != newunion_uid
             unio_id = 'XHR/union_edit/' +  unio.uid + '/' + self.uid
 	        nodes << { id: unio_id, group: "unions", level: level -1, 
@@ -436,7 +457,8 @@ class Individual < ActiveRecord::Base
 	        nodes << { id: unio_id, group: "newunion", level: level -1 }	      
 	      end	       
 	      if unio.husband_uid == self.uid or unio.wife_uid == self.uid	
-	        edges << { from: self.uid, to: unio_id, id: 'CONF/remove_spouse/' + self.uid + '/' + unio.uid,
+	        edges << { from: self.uid, to: unio_id, 
+	                   id: 'CONF/remove_spouse/' + self.uid + '/' + unio.uid + '/' + self.uid,
 	                   title: 'double click to remove' }
 	      else
 	        edges << { from: self.uid, to: unio_id, id: 'NIL/' + self.uid + '/' + unio.uid }
@@ -454,7 +476,8 @@ class Individual < ActiveRecord::Base
 	      nodes << { id: spou.uid, group: gen, level: level , 
 	                 label: spou.pretty_name_multiline( is_user ) }
 	      if level == 0 and is_editor
-	        edges << { from: spou.uid, to: unio_id, id: 'CONF/remove_spouse/' + spou.uid + '/' + unio.uid,
+	        edges << { from: spou.uid, to: unio_id, 
+	                   id: 'CONF/remove_spouse/' + self.uid + '/' + unio.uid + '/' + spou.uid,
 	                   title: 'double click to remove from marriage' }
 	      else
 	        edges << { from: spou.uid, to: unio_id, id: 'NIL/' + spou.uid + '/' + unio.uid }	      
@@ -494,13 +517,55 @@ class Individual < ActiveRecord::Base
 	                 title: 'double click to add new child' }	                 
 	      edges << { from: unio_id, to: node_ident, id: edge_ident, title: 'double click to add new child' }
 	    end 
-		
+	    
 	  end
 	end
 
 	return nodes, edges
   
   end  
-      
+  
+  def self.trees
+    sql = "select tree, count(*) from individuals where (uid, ver) in (select uid, max(ver) from individuals group by uid) group by tree;"
+    trees = {}; ActiveRecord::Base.connection.execute(sql).each { |n| trees[n[0]] = n[1] }
+    trees
+  end
+  
+  def self.labels
+    sql = "select tree, label, count(*) from individuals where (uid, ver) in (select uid, max(ver) from individuals group by uid) group by tree, label;"
+    labels = {}; ActiveRecord::Base.connection.execute(sql).each { |n| labels[n[1]] = n[2] }
+    labels
+  end  
+    
+  def sort_by_marriage_date( a, b )
+    adate = a.marriage ? a.marriage.date_as_datetime : ''
+    bdate = b.marriage ? b.marriage.date_as_datetime : ''
+    if adate.class == bdate.class
+      adate <=> bdate
+    elsif adate.class == Date
+      -1
+    elsif bdate.class == Date
+      +1
+    else
+      0
+    end       
+  end
+
+  def other_tree_match    
+
+    self.surname.strip! if self.surname
+    self.given.strip! if self.given
+    
+    sql = "select uid from individuals where surname like '%#{self.surname}%' and given like '%#{self.given}%' and tree != '#{self.tree}'"
+    res = ActiveRecord::Base.connection.execute(sql)
+    candidates = []
+    res.each do |n|
+      if n[0]
+        candidates << n[0]
+      end
+    end    
+    Individual.by_uid( candidates.uniq[0] )
+  end
+  
 end
 

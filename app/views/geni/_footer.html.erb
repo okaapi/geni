@@ -6,33 +6,40 @@
 <strong> <%= link_to 'Home', root_path, class: "btn btn-info" %> </strong> 
 <strong> <%= link_to 'Search', search_path, class: "btn btn-default" %> </strong>
 
-<% uid = ( @individual ? @individual.uid : nil ) %>
+<% if !@compare %>
 
-<div class="btn-group">
-  <%= link_to 'depth <span class="badge">up</span>'.html_safe, 
-            depth_change_path(-2,uid), class: "btn btn-default"  %>
-  <%= link_to '<span class="badge">down</span>'.html_safe, 
-            depth_change_path(2,uid), class: "btn btn-default"  %>
-  <%= link_to 'graph/tree'.html_safe, 
-            vis_change_path( uid ), class: "btn btn-default"  %>            
-</div>
-         
-<br> 
-<br> 
+	<% uid = ( @individual ? @individual.uid : nil ) %>
+	
+	<div class="btn-group">
+	  <%= link_to 'depth <span class="badge">up</span>'.html_safe, 
+	            depth_change_path(-1,uid), class: "btn btn-default"  %>
+	  <%= link_to '<span class="badge">down</span>'.html_safe, 
+	            depth_change_path(1,uid), class: "btn btn-default"  %>
+	  <%= link_to 'graph/tree'.html_safe, 
+	            vis_change_path( uid ), class: "btn btn-default"  %>   	  
+	</div>
+	         
+	
+	
+	<% if is_editor? %>
+	  <%= link_to 'Edit <span class="badge">'.html_safe + edit? + '</span>'.html_safe, 
+	            toggle_edit_path( uid ), class: "btn btn-default"  %> 
+	<% end %>
+	
+    <%= ( link_to 'Compare', compare_path( uid ), class: "btn btn-default" ) if uid %> 
+	
+	<br> 
+	<br> 
+	
+	<% if is_admin? %>
+	  <%= link_to 'New person', new_person_path, class: "btn btn-warning"%> 
+	  <%= link_to 'New source', source_edit_path, class: "btn btn-warning"%>   
+	  <%= link_to 'Individuals', all_individuals_by_uid_path, class: "btn btn-warning" %> 
+	  <%= link_to 'Marriages', all_unions_by_uid_path, class: "btn btn-warning" %>   
+	  <%= link_to 'Sources', sources_path, class: "btn btn-warning" %>  
+	  <%= link_to 'Import', import_path, class: "btn btn-warning" %> 
+	  <%= link_to 'Users', users_path, class: "btn btn-warning" %>  
+	<% end %>
+	<br>
 
-<% if is_editor? %>
-  <%= link_to 'New person', new_person_path, class: "btn btn-warning"%> 
-  <%= link_to 'New source', source_edit_path, class: "btn btn-warning"%>   
-  <%= link_to 'Individuals', all_individuals_by_uid_path, class: "btn btn-warning" %> 
-  <%= link_to 'Marriages', all_unions_by_uid_path, class: "btn btn-warning" %>   
-  <%= link_to 'Sources', sources_path, class: "btn btn-warning" %>   
-
-<% end %>
-
-<% if is_admin? %>
- <%= link_to 'Import', import_path, class: "btn btn-warning" %> 
- <%= link_to 'Users', users_path, class: "btn btn-warning" %>  
-<% end %>
-<br>.
-
-  
+ <% end %>

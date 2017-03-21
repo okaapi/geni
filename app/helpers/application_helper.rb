@@ -10,8 +10,11 @@ module ApplicationHelper
     end
   end
   def is_editor?
-    ( @current_user and @current_user.editor? ) == true
+    ( ( @current_user and @current_user.editor? ) == true ) 
   end  
+  def edit?
+    session[:edit] 
+  end   
   def is_user?
     ( @current_user and @current_user.user? ) == true 
   end

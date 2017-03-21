@@ -13,16 +13,16 @@ class Union < ActiveRecord::Base
   belongs_to :marriage, class_name: "Event", foreign_key: "marriage_id"
   belongs_to :divorce, class_name: "Event", foreign_key: "divorce_id"
   belongs_to :user
-  
+   
   def self.new( params = {} )
     if params
-      params.merge!( uid: SecureRandom.uuid )
+      params = params.merge( uid: SecureRandom.uuid )
     else
       params = { uid: SecureRandom.uuid }
     end
     super( params )
   end
-  
+    
   before_save do
     self.updated_at = nil
     self.ver = self.ver + 1
@@ -74,10 +74,12 @@ class Union < ActiveRecord::Base
   end
   
   def self.all_by_uid
-    uid_groups = Union.group( :uid )    
+    #uid_groups = Union.group( :uid )    
+    sql = "select uid from unions group by uid;"
+    uid_groups = ActiveRecord::Base.connection.execute(sql)        
     arr = []
     uid_groups.each do |u|
-      arr << Union.by_uid( u.uid )
+      arr << Union.by_uid( u[0] )
     end    
     arr
   end
@@ -85,16 +87,18 @@ class Union < ActiveRecord::Base
   def children
     # this might pull uids who in the past had this value of parents_uid
     # so need to check in the == statement below
-    uid_groups = Individual.where( parents_uid: self.uid ).group( :uid )
+    sql = "select uid from individuals where parents_uid = \"#{self.uid}\" group by uid"
+    uid_groups = ActiveRecord::Base.connection.execute(sql)    
     child_arr = []
     uid_groups.each do |u|
-      i = Individual.by_uid( u.uid )
+      i = Individual.by_uid( u[0] )
       if( i.parents_uid == self.uid )
         child_arr << i
       end
-    end
-    child_arr.sort! { |a,b| a.name <=> b.name }    
+    end 
+    child_arr.sort! { |a,b| a.name <=> b.name }
     child_arr.sort! { |a,b| sort_by_birth_date( a, b ) }
+    
   end
   
   def spouse( uid )
@@ -117,12 +121,14 @@ class Union < ActiveRecord::Base
   private
   
   def sort_by_birth_date( a, b )
-    adate = a.birth ? a.birth.date : ''
-    bdate = b.birth ? b.birth.date : ''
-    begin apdate = Date.parse( adate ) rescue apdate = '' end 
-    begin bpdate = Date.parse( bdate ) rescue bpdate = '' end 
-    if apdate.class == bpdate.class
-      apdate <=> bpdate
+    adate = a.birth ? a.birth.date_as_datetime : ''
+    bdate = b.birth ? b.birth.date_as_datetime : ''
+    if adate.class == bdate.class
+      adate <=> bdate
+    elsif adate.class == Date
+      -1
+    elsif bdate.class == Date
+      +1
     else
       0
     end       

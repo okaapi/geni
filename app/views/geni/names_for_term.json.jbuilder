@@ -4,6 +4,7 @@
     json.uid name[:uid]
     json.fullname name[:fullname]
     json.birth name[:birth]
+    json.tree name[:tree]
   end
 #end
 

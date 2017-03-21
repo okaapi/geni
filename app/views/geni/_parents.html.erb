@@ -7,11 +7,10 @@
 	        <tr>
 		      <td >
                 <div class="geni-inner"
-				            style="min-width: <%= 180-20*@level %>px;
-	                               max-width: <%= 180-20*@level %>px;">
+				            style="min-width: <%= 220-60*level %>px;
+	                               max-width: <%= 220-60*level %>px;">
 	              <% if individual.father %>
-	                &nbsp;	
-			        <% if( is_editor? and 
+			        <% if( is_editor? and @individual and
 					       individual.uid == @individual.uid ) %>
 		              <%= link_to( delete_symbol, 
 		                  remove_parent_path( individual.uid, 
@@ -20,8 +19,18 @@
 		                               data: { confirm: 'Are you sure?' } ) %>				            
 		            <% end %>	          
 	  	            <%= sex_symbol( individual.father.sex )  %> 
-		            <%= link_to( individual.father.pretty_name(is_user?), 
-		                           display_path( individual.father.uid ) )   %>	
+	  	            <% if !@comparison_with %>
+		              <%= link_to( individual.father.pretty_name(is_user?), 
+		                           display_path( individual.father.uid ) )   %>
+		            <% else %>
+		              <% if @comparison_with == @individual %>
+                        <%= link_to( individual.father.pretty_name(is_user?),
+		                  compare_path( @individual.uid, individual.father.uid ) ) if individual %>
+		              <% else %>
+                        <%= link_to( individual.father.pretty_name(is_user?),
+		                  compare_path( individual.father.uid, @individual1.uid ) ) if individual %>
+		              <% end %>			            
+		            <% end %>	
 		          <% elsif is_editor? and individual.uid == @individual.uid %>
                     &nbsp;
                     <%= link_to sex_symbol( 'm' )+ ' create father', 
@@ -38,7 +47,8 @@
               </td>
 			  <% if level < @maxlevel and individual.father %>
 	            <td >	          
-	              <%= render partial: "parents", locals: { individual: individual.father, level: level + 1  } %>
+	              <%= render partial: "parents", 
+	                  locals: { individual: individual.father, level: level + 1  } %>
                 </td>
 			  <% end %> 	
 	        </tr>
@@ -51,19 +61,29 @@
 	        <tr>
 		      <td>
                 <div class="geni-inner"
-				            style="min-width: <%= 180-20*@level %>px;
-	                        max-width: <%= 180-20*@level %>px;">	
+				            style="min-width: <%= 220-60*level %>px;
+	                               max-width: <%= 220-60*level %>px;">
 		          <% if individual.mother %>
 		            &nbsp;	
- 		            <% if( is_editor? and individual.uid == @individual.uid ) %>
+ 		            <% if( is_editor? and @individual and individual.uid == @individual.uid ) %>
 		              <%= link_to( delete_symbol, 
 		                     remove_parent_path( individual.uid, 
 						     individual.mother.uid ), class: 'editlink',
 		                     data: { confirm: 'Are you sure?' } ) %>				            
 		            <% end %>	 	          	                    
 	                <%= sex_symbol( individual.mother.sex ) if individual.mother %> 
-		            <%= link_to( individual.mother.pretty_name(is_user?), 
+		            <% if !@comparison_with %>
+		              <%= link_to( individual.mother.pretty_name(is_user?), 
 		                         display_path( individual.mother.uid ) ) %>	
+		            <% else %>
+		              <% if @comparison_with == @individual %>
+                        <%= link_to( individual.mother.pretty_name(is_user?),
+		                  compare_path( @individual.uid, individual.mother.uid ) ) if individual %>
+		              <% else %>
+                        <%= link_to( individual.mother.pretty_name(is_user?),
+		                  compare_path( individual.mother.uid, @individual1.uid ) ) if individual %>
+		              <% end %>			            
+		            <% end %>			                         
 		          <% elsif is_editor? and individual.uid == @individual.uid %>
                     &nbsp;
                     <%= link_to sex_symbol( 'f' )+ ' create mother', 

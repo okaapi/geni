@@ -1,5 +1,5 @@
-	
-		                   
+
+	  		                   
 <div class="geni-tree" >
   <div id="geni-graphcontainer" >
   </div>
@@ -45,6 +45,6 @@
 	      id: '<%= edge[:id] %>' },
       <% end %> ];
       
-      draw_vis( '<%= @individual.uid %>', nodesFA, edgesFA, <%= is_editor? %> );
+      draw_vis( '<%= @individual.uid %>', nodesFA, edgesFA, <%= is_editor? and edit? == 'on' %> );
 </script>
  

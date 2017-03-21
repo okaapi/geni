@@ -46,12 +46,12 @@ module Admin
 	  # POST /unions.json
 	  def create
 	    @union = Union.new(union_params)
-	
+	       
 	    respond_to do |format|
-	      if @union.save
+	      if @union.save       
 	        format.html { redirect_to @union, notice: 'Union was successfully created.' }
 	        format.json { render :show, status: :created, location: @union }
-	      else
+	      else      
 	        format.html { render :new }
 	        format.json { render json: @union.errors, status: :unprocessable_entity }
 	      end

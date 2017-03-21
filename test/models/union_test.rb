@@ -158,10 +158,10 @@ class UnionTest < ActiveSupport::TestCase
     assert_equal c.parents.wife.name, 'Trixi'   
     assert_equal c.father.name, 'Wido'
     assert_equal c.mother.name, 'Trixi'  
-       
-    assert_equal fam.children[0].name, 'Camilla'
-    assert_equal fam.children[1].name, 'Mats'
     
+    assert_equal fam.children[0].name, 'Camilla'
+    assert_equal fam.children[1].name, 'Mats'  
+        
     mats.update_birth( rawdate: 'April 28 1996' )
     mats.save
     fam.children # execute the sort function with missing birthday

@@ -9,15 +9,32 @@ module Admin
 	  # GET /user_sessions.json
 	  def index	    
 	    if params[:by_name]
-        @user_sessions = UserSession.all.order( user_id: :asc )
+          @user_sessions = UserSession.all.order( user_id: :asc )
 	    elsif params[:by_ip]
-        @user_sessions = UserSession.all.order( ip: :asc )          
+          @user_sessions = UserSession.all.order( ip: :asc )          
 	    else
-        @user_sessions = UserSession.all.order( updated_at: :desc )
+          @user_sessions = UserSession.all.order( updated_at: :desc )
 	    end
-	    	    
 	  end
-	
+
+	  def stats
+	    user_actions = UserAction.all
+		actions = {}
+        user_actions.each do |u_action|
+		  if u_action.action == 'index'
+		    if u_action.params =~ /seite: (.*);/
+			  h = $1
+			else
+			  h = u_action.action
+			end
+	      else
+		    h = u_action.action
+	      end
+		  actions[h] = ( actions[h] ||= 0 ) + 1
+		end
+		@stats = actions.sort_by { |action, f| -f }
+	  end
+
 	  # GET /user_sessions/1
 	  # GET /user_sessions/1.json
 	  def show
@@ -74,7 +91,7 @@ module Admin
 	  private
 	    # Use callbacks to share common setup or constraints between actions.
 	    def set_user_session
-	      @user_session = UserSession.find(params[:id])
+	      @user_session = UserSession.where(id: params[:id]).take
 	    end
 	
 	    # Never trust parameters from the scary internet, only allow the white list through.

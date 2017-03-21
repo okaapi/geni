@@ -28,32 +28,49 @@
 	      <% if defined? union %>
             <% if is_editor? and union and ( union.husband.uid == @individual.uid or union.wife.uid == @individual.uid )  %>
 		      <%= link_to( delete_symbol, 
-		                   remove_spouse_path( individual.uid, union.uid ), 
+		                   remove_spouse_path( @individual.uid, union.uid, individual.uid ), 
 			               class: 'editlink',
 		                   data: { confirm: 'Are you sure?' } )  %>
 		    <% end %>
 	      <% end %>
 	      <%= sex_symbol( individual.sex ) if individual %>  
-	      <% if level == 1 %>
-		    <%= link_to( individual.pretty_name(is_user?),
-		                   edit_path( individual.uid, editable: false ), remote: true ) if individual %>
-		  <% elsif individual %>
-		    <%= link_to( individual.pretty_name(is_user?),
-		                   display_path( individual.uid ) ) if individual %>
+	      <% if !@comparison_with %>
+	        <% if level == 1 %>
+		      <%= link_to( individual.pretty_name(is_user?),
+		                   edit_path( individual.uid, editable: false ), 
+		                   title: individual.gedraw, remote: true ) if individual %>
+		    <% elsif individual %>
+		      <%= link_to( individual.pretty_name(is_user?),
+		                   display_path( individual.uid ),
+		                   title: individual.gedraw ) if individual %>		
+		    <% else %>
+		      unknown		  		          
+		    <% end %>
 		  <% else %>
-		    unknown		  
+		    <% if @comparison_with == @individual %>
+              <%= link_to( individual.pretty_name(is_user?),
+		          compare_path( @individual.uid, individual.uid ),
+		          title: individual.gedraw ) if individual %>
+		    <% else %>
+              <%= link_to( individual.pretty_name(is_user?),
+		          compare_path( individual.uid, @individual1.uid ),
+		          title: individual.gedraw ) if individual %>
+		    <% end %>		    			  
 		  <% end %> 	                     
 	      <% if is_editor? and level == 1 %>
 	        <br>      
-	        <%= link_to( '<small><i>edit</i></small>'.html_safe, 
+	        <% if @comparison_with != @individual %>
+	          <%= link_to( '<small><i>edit</i></small>'.html_safe, 
 		                          edit_path( individual.uid, editable: true ), 
 		                          class: "editlink",
 			                      remote: true ) if individual %>
+			<% end %>
 	      <% end %>   
-	      <% if is_admin? and level == 1 %>
-	        <%= link_to( '<small><i>gedinfo</i></small>'.html_safe, 
+	      <% if individual and is_admin? and level == 1 %>	
+	                    
+	        <%= link_to( "<small><i> #{individual.tree} #{individual.label}</i></small>".html_safe, 
 	                     individual_by_uid_path( individual.uid ),
-	                     class: "editlink" ) if individual %>
+	                     class: "editlink" ) %>
 	      <% end %>  
 	       
 	    </div>
@@ -79,14 +96,14 @@
   </div>
   
   <div class="geni-combo">   
-    <% if @individual == individual and is_editor? %>
+    <% if ( @individual == individual ) and is_editor? %>
       <br> <br> <br> 
       <div class="geni-add">
         <%= link_to '<span style="font-size: 150%">&nbsp;</span>'.html_safe, 
-                      add_spouse_path( @individual.uid, 'dummy' ), 
+                      add_spouse_path( individual.uid, 'dummy' ), 
                       class: 'editlink', remote: true %>
         <%= link_to '<span style="font-size: 200%">&#8734; </span>&nbsp;'.html_safe, 
-		              new_spouse_path( @individual.uid, 'dummy' ), 
+		              new_spouse_path( individual.uid, 'dummy' ), 
 			          class: 'editlink', remote: true %>  
       </div>
     <% end %>
@@ -108,5 +125,6 @@
   </div>
     
 </div>
+
 
 

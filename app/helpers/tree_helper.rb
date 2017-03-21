@@ -25,8 +25,11 @@ module TreeHelper
   end
 
   def geni_gender( s )
+    
     if !s
       ''
+    elsif s.linkuid 
+      'geni-linked' 
     elsif s.male?
       'geni-male'
     elsif s.female?

@@ -27,7 +27,8 @@ app.Names.prototype = {
 
   _render: function(ul, item) {
     var markup = [
-      '<span class="fullname">' + item.fullname + ' &nbsp; &nbsp; <small><i>' + item.birth + '</i></small></span>',
+      '<span class="fullname">' + item.fullname + ' &nbsp; &nbsp; <small><i>' + item.birth + ' '
+      + item.tree + '</i></small></span>',
     ];
     return $('<li>')
       .append(markup.join(''))

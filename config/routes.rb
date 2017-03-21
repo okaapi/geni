@@ -39,6 +39,7 @@ Rails.application.routes.draw do
   get 'names_for_term' => 'geni#names_for_term', as: 'names_for_term' 
   get 'sources_for_term' => 'geni#sources_for_term', as: 'sources_for_term'   
   get 'depth_change/:change/(:uid)' => 'geni#depth_change', as: 'depth_change' 
+  get 'toggle_edit/(:uid)' => 'geni#toggle_edit', as: 'toggle_edit' 
   get 'import' => 'geni#import', as: 'import'
   post 'file_upload' => 'geni#file_upload', as: 'file_upload'
   
@@ -54,17 +55,19 @@ Rails.application.routes.draw do
   get 'source_content/:sid' => 'geni#source_content', as: 'source_content'  
   post 'source_save/:sid' => 'geni#source_save', as: 'source_save'    
   
+=begin  
   match 'marriage_new/:uid' => 'geni#marriage_new', as: 'marriage_new', via: [:get, :post]
   post 'save_marriage_new/:uid' => 'geni#save_marriage_new', as: 'save_marriage_new'  
   match 'marriage_existing/:uid' => 'geni#marriage_existing', as: 'marriage_existing', via: [:get, :post]
   post 'save_marriage_existing/:uid' => 'geni#save_marriage_existing', as: 'save_marriage_existing'    
   get 'delete_marriage/:uid/:uuid' => 'geni#delete_marriage', as: 'delete_marriage' 
+=end
 
   match 'add_spouse/:uid/:uuid' => 'geni#add_spouse', as: 'add_spouse', via: [:get, :post]  
   match 'new_spouse/:uid/:uuid' => 'geni#new_spouse', as: 'new_spouse', via: [:get, :post]    
   post 'save_added_spouse/:uid/:uuid' => 'geni#save_added_spouse', as: 'save_added_spouse'  
   post 'create_new_spouse/:uid/:uuid' => 'geni#create_new_spouse', as: 'create_new_spouse'   
-  get 'remove_spouse/:uid/:uuid' => 'geni#remove_spouse', as: 'remove_spouse'  
+  get 'remove_spouse/:uid/:uuid/:ruid' => 'geni#remove_spouse', as: 'remove_spouse'  
 	
   match 'add_child/:uid/:uuid' => 'geni#add_child', as: 'add_child', via: [:get, :post]  
   match 'new_child/:uid/:uuid' => 'geni#new_child', as: 'new_child', via: [:get, :post]    
@@ -84,6 +87,9 @@ Rails.application.routes.draw do
   
   get 'vis_change/(:uid)' => 'geni#vis_change', as: 'vis_change'
   
+  get 'compare/:uid/(:uid1)' => 'geni#compare', as: 'compare'
+  get 'link/:uid/:uid1/:link' => 'geni#link', as: 'link'  
+
   # this has to be the last one or else...
   get ':uid' => 'geni#display', as: 'display'
 

@@ -20,24 +20,23 @@
   <div class="geni-row">
   
     <%= render partial: 'spacers', locals: { spacers: spacers, height: ( level == 1 ? :medium : :low ) } %> 
-  
     <div class="geni-combo">
   
 	    <div class="geni-box geni-both geni-union <%= geni_level( level, 'union' ) %>" >
 	      <div class="geni-inner">
-	
+
 	        <% if @individual == individual  %>		
 		      <%= link_to( delete_symbol, 
-			                 remove_spouse_path( individual.uid, union.uid ), 
+			                 remove_spouse_path( individual.uid, union.uid, individual.uid ), 
 				             class: 'editlink',
 			                 data: { confirm: 'Are you sure?' } ) if is_editor? %>												                	               
 	        <% end %>        						
 		    <%= marriage_symbol %>
-		    <% if @individual == individual  %>		
+		    <% if @individual == individual %>		
 		      <%= link_to(  (( union.marriage and union.marriage.date) ? 
 		                       union.marriage.date : 'date n/a'), 
 		                       union_edit_path( union.uid, individual.uid ), 
-		                       class: "editlink", remote: true )  %>											                	               
+		                       class: "editlink", title: union.gedraw || "no ged", remote: true )  %>											                	               
 		    <% else %>
 	          <%= union.marriage ? union.marriage.date : 'date n/a'  %>
 	        <% end %>

@@ -4,7 +4,7 @@ class Source < ActiveRecord::Base
 
   def self.new( params = {} )
     if params
-      params.merge!( sid: SecureRandom.uuid )
+      params = params.merge( sid: SecureRandom.uuid )
     else
       params = { sid: SecureRandom.uuid }
     end

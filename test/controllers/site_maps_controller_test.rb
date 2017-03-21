@@ -45,7 +45,7 @@ module Admin
 	  test "should create site_map" do
 	    assert_equal SiteMap.count, 1
 	    assert_difference('SiteMap.count') do
-	      post :create, site_map: { external: 'ext', internal: 'int' }
+	      post :create, params: { site_map: { external: 'ext', internal: 'int' } }
 	    end
 	    assert_redirected_to site_map_path(assigns(:site_map))
 	  end
@@ -53,38 +53,40 @@ module Admin
 	  test "should create site_map error" do
 	    assert_equal SiteMap.count, 1
 	    assert_difference('SiteMap.count', 0) do
-	      post :create, site_map: { external: @site_map.external , internal: 'int' }
+	      post :create, params: { site_map: { external: @site_map.external , internal: 'int' } }
 	    end
         assert_equal assigns(:site_map).errors.count, 1    	    
 	    assert_response :success
 	  end	  
 	  	
 	  test "should show site_map" do
-	    get :show, id: @site_map
+	    get :show, params: { id: @site_map }
 	    assert_response :success
 	  end
 
 	  test "should get edit" do
-	    get :edit, id: @site_map
+	    get :edit, params: { id: @site_map }
 	    assert_response :success
 	  end
 
 	  test "should update site_map" do
-	    patch :update, id: @site_map, site_map: { aux: @site_map.aux, external: @site_map.external, internal: @site_map.internal }
+	    patch :update, params: { id: @site_map, 
+		  site_map: { aux: @site_map.aux, external: @site_map.external, internal: @site_map.internal } }
 	    assert_redirected_to site_map_path(assigns(:site_map))
 	  end
 	  
 	  test "should update site_map error" do
 	    sm = SiteMap.new( external: "ext1", internal: "int1" )
 	    sm.save
-	    patch :update, id: @site_map, site_map: { aux: @site_map.aux, external: "ext1", internal: @site_map.internal }
+	    patch :update, params: { id: @site_map, 
+		  site_map: { aux: @site_map.aux, external: "ext1", internal: @site_map.internal } }
         assert_equal assigns(:site_map).errors.count, 1    	    
 	    assert_response :success
 	  end	  
 	
 	  test "should destroy site_map" do
 	    assert_difference('SiteMap.count', -1) do
-	      delete :destroy, id: @site_map
+	      delete :destroy, params: { id: @site_map }
 	    end
 	
 	    assert_redirected_to site_maps_path

@@ -20,30 +20,30 @@ class SourceRefsControllerTest < ActionController::TestCase
 
   test "should create source_ref" do
     assert_difference('SourceRef.count') do
-      post :create, source_ref: { individual_uid: @source_ref.individual_uid, source_id: @source_ref.source_id, union_uid: @source_ref.union_uid }
+      post :create, params: { source_ref: { individual_uid: @source_ref.individual_uid, source_id: @source_ref.source_id, union_uid: @source_ref.union_uid } }
     end
 
     assert_redirected_to source_ref_path(assigns(:source_ref))
   end
 
   test "should show source_ref" do
-    get :show, id: @source_ref
+    get :show, params: { id: @source_ref }
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @source_ref
+    get :edit, params: { id: @source_ref }
     assert_response :success
   end
 
   test "should update source_ref" do
-    patch :update, id: @source_ref, source_ref: { individual_uid: @source_ref.individual_uid, source_id: @source_ref.source_id, union_uid: @source_ref.union_uid }
+    patch :update, params: { id: @source_ref, source_ref: { individual_uid: @source_ref.individual_uid, source_id: @source_ref.source_id, union_uid: @source_ref.union_uid } }
     assert_redirected_to source_ref_path(assigns(:source_ref))
   end
 
   test "should destroy source_ref" do
     assert_difference('SourceRef.count', -1) do
-      delete :destroy, id: @source_ref
+      delete :destroy, params: { id: @source_ref }
     end
 
     assert_redirected_to source_refs_path
