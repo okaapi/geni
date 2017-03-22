@@ -4,9 +4,7 @@ class ImportTest < ActiveSupport::TestCase
 
   test "bad ged file" do
     ign = Import.from_gedfile('test-tree', 'test/fixtures/files/badtest.ged','badtest.ged', false)
-    assert_equal ign, "Ignoring all _UID, REFN or CHAN fields
-Other ignored lines follow:
-PROBLEMS in import.rb"
+    assert_equal ign, "Ignoring all _UID, REFN or CHAN fields\nOther ignored lines follow:\nPROBLEMS   in import.rb\nLAST LINE -->ï»¿6 INVALID\n<--\n"
   end
   
   test "import normal" do

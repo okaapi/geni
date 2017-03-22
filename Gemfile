@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'rails', '5.0.0'
+gem 'rails', '5.0.2'
 gem 'mysql2', '~> 0.3.18'
 
 gem 'rails-controller-testing'
-gem 'jquery-rails'
+gem "jquery-rails"
 gem 'jquery-ui-rails'
 gem 'turbolinks'
 gem 'uglifier'
@@ -19,4 +19,4 @@ gem 'simplecov'
 
 gem 'font-awesome-rails', '~> 4.6', '>= 4.6.3.1'
 
-gem 'unicorn'
+#gem 'unicorn'

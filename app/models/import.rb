@@ -41,24 +41,25 @@ class Import
           line.gsub!(/@P/,'@I')
           line.gsub!(/@S-/,'@S')
 	 	  line.gsub!(/\r/,'')	
-	 	  #puts '-------------------------'
+	 	  #puts "------#{mode}---#{submode}-------------------"
 	 	  #p line
-	 	  
+		  
 	      i += 1      
 	      if line =~ /[\d]* _UID/ or line =~ /[\d]* REFN/
 	        # ignore
             
+	  
 	      #
 	      #  new block starts
 	      #        
-	      elsif line =~ /^[^\w\s\d]?0/
+	      elsif line =~ /^\S*0/
 
 	        individual.save! if individual
 	        union.save! if union
 	        source.save! if source
 	        individual = union = source = nil       
 	        submode = nil
-	        if line =~ /[^\w\s\d]?0 HEAD/
+	        if line =~ /^\S*0 HEAD/
 	          mode = :header  
 	          ignored += "Header : " + line        
 	        elsif line =~ /^0 @SUB\d+@ SUBM/
@@ -108,7 +109,6 @@ class Import
 	      #  individual!
 	      #
 	      elsif mode == :individual    
-		  
 	        individual.gedraw += line
 	        if line =~ /1 NAME (.+)/  # removed trailing \r for Windows
 	          submode = :name 
@@ -390,7 +390,8 @@ class Import
 	        end # elsif mode == :source
 				
 	      else
-	        ignored += "PROBLEMS in import.rb"
+	        ignored += "PROBLEMS #{mode} #{submode} in import.rb\n"
+			ignored += "LAST LINE -->#{line}<--\n"
 	        return ignored
 	        
 	      end # line =~ /^[^\w\s\d]?0/ ....  :mode

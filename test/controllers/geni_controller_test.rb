@@ -583,7 +583,7 @@ class GeniControllerTest < ActionController::TestCase
     parents.save    
     assert_equal jill.parents.wife_uid, jill.mother.uid
 
-    @request.env['HTTP_REFERER'] = '/' + + jill.uid.to_s
+    @request.env['HTTP_REFERER'] = '/' + jill.uid.to_s
     get :remove_parent, params: { uid: jill.uid, puid: jill.mother.uid }
 	assert_redirected_to root_path + jill.uid.to_s
     assert_nil jill.mother

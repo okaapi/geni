@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 20170306015407) do
 
-  create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "rawdate"
     t.string   "location"
     t.text     "text",       limit: 65535
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20170306015407) do
     t.datetime "updated_at"
   end
 
-  create_table "individuals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "individuals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.string   "surname"
     t.string   "given"
@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20170306015407) do
     t.string   "label",                     default: ""
   end
 
-  create_table "site_maps", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "site_maps", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "external"
     t.string   "internal"
     t.string   "aux"
@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 20170306015407) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "source_refs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "source_refs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "individual_uid"
     t.string   "union_uid"
     t.integer  "source_id"
@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(version: 20170306015407) do
     t.datetime "updated_at",     null: false
   end
 
-  create_table "sources", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "sources", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.text     "content",    limit: 65535
     t.string   "filename"
@@ -73,7 +73,7 @@ ActiveRecord::Schema.define(version: 20170306015407) do
     t.datetime "updated_at",               null: false
   end
 
-  create_table "unions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "unions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "uid"
     t.string   "husband_uid"
     t.string   "wife_uid"
@@ -90,28 +90,28 @@ ActiveRecord::Schema.define(version: 20170306015407) do
     t.datetime "updated_at"
   end
 
-  create_table "user_actions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "user_actions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_session_id"
     t.string   "controller"
     t.string   "action"
     t.string   "params"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
     t.string   "site",            default: "localhost"
     t.index ["user_session_id"], name: "index_user_actions_on_user_session_id", using: :btree
   end
 
-  create_table "user_sessions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "user_sessions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.string   "client"
     t.string   "ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.string   "site",       default: "localhost"
     t.index ["user_id"], name: "index_user_sessions_on_user_id", using: :btree
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "username"
     t.string   "email"
     t.string   "alternate_email", default: ""
@@ -119,8 +119,8 @@ ActiveRecord::Schema.define(version: 20170306015407) do
     t.string   "token"
     t.string   "role",            default: "user"
     t.string   "active",          default: "unconfirmed"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
     t.string   "site",            default: "localhost"
   end
 
